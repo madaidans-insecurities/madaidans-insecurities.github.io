@@ -1,0 +1,75 @@
+<html lang=en>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>Android | Madaidan's Insecurities</title>
+</head>
+
+<body>
+  <h1>Android</h1>
+
+  <h2>Unlocking the bootloader</h2>
+
+  <p>
+    Unlocking the bootloader in Android is a massive security risk. It disables <a
+      href="https://source.android.com/security/verifiedboot/">verified boot</a>, a fundamental part of the security
+    model. Verified boot ensures the integrity of the base system and boot chain to prevent malware persistence. If an
+    attacker has managed to compromise the entire system and gain extremely high privileges, verified boot will revert
+    their changes upon reboot and ensure they cannot persist. <br>
+    <br>
+    Verified boot is not just for local security as many people assume. Its main purpose is protection against remote
+    attackers and the physical security is a nice side-effect. <br>
+    <br>
+    Unlocking the bootloader is highly unrecommended.
+  </p>
+
+  <h2>Rooting your device</h2>
+
+  <p>
+    Rooting your device allows an attacker to trivially gain extremely high privileges. In Android, by default,
+    unrestricted root is found nowhere due to the full system SELinux policy. Even the init system is not unrestricted
+    root. Exposing privileges far greater than init to the application layer is extremely silly. <br>
+    <br>
+    It does not matter if you have to whitelist apps that have root. An attacker can fake user input by for example,
+    clickjackers or they can exploit vulnerabilities in apps you've granted root to. <br>
+    <br>
+    People often try to argue that if root was insecure then why does Linux allow root. Linux does not have a security
+    model like Android does. On the usual Linux system, <a href="linux.html">gaining root is extremely easy</a>.
+  </p>
+
+  <h2>Custom ROMs</h2>
+
+  <p>
+    The majority of custom ROMs severely worsen the security model by disabling verified boot, using userdebug builds,
+    disabling SELinux, not including firmware updates, lacking rollback protection and so much more. A common ROM that
+    does this is LineageOS.
+  </p>
+
+  <h3>LineageOS</h3>
+
+  <p>
+    LineageOS uses <a href="https://github.com/LineageOS/hudson/blob/master/lineage-build-targets">userdebug builds</a>
+    which <a href="https://source.android.com/setup/build/building">adds tons of debugging tools as extra attack
+      surface</a>, weakens SELinux polices and exposes root access via adb. LineageOS requires an unlocked bootloader
+    and disables verified boot which is essential to verify the integrity of the OS. It does not implement rollback
+    protection so an attacker can downgrade the OS to an old version and exploit already patched vulnerabilities (you
+    can tell as the updater allows you to downgrade versions). It does not include firmware updates which prevents you
+    from getting new patches to fix vulnerabilities. And there are so many more issues.
+  </p>
+
+  <h2>MicroG</h2>
+
+  <p>
+    MicroG is a common alternative to Google Play Services. Many people use this to get rid of Google tracking on their
+    device but many people do not realise that this substantially worsens security by requiring signature spoofing which
+    allows apps to request to bypass signature verification.
+  </p>
+
+  <p class="p-final">
+    <a href="index.html" class="back">Go back</a>
+  </p>
+
+  <button onclick="setDarkMode()" class="dark-mode-toggle">🌓</button>
+  <script type="text/javascript" src="toggle.js"></script>
+</body>

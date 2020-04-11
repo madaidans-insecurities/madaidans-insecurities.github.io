@@ -1,0 +1,48 @@
+<html lang=en>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>OpenBSD | Madaidan's Insecurities</title>
+</head>
+
+<body>
+  <h1>OpenBSD</h1>
+
+  <p>
+    OpenBSD is lacking in a lot of ways. Many of its exploit mitigations are half-baked/useless such as its <a
+      href="https://undeadly.org/cgi?action=article&sid=20160527203200">W^X</a> which can be bypassed by transitioning a
+    writable memory mapping to executable or <a
+      href="https://undeadly.org/cgi?action=article&sid=20170622065629">TRAPSLED</a> which doesn't actually make
+    exploitation harder in the era of ASLR. <br>
+    <br>
+    OpenBSD is also missing many important security features such as <a
+      href="https://en.wikipedia.org/wiki/Control-flow_integrity">CFI</a>, <a
+      href="https://clang.llvm.org/docs/SafeStack.html">SafeStack</a>, <a
+      href="https://source.android.com/security/verifiedboot/">verified boot</a>, <a
+      href="http://phrack.org/issues/52/6.html#article">TPE</a> and a lot more. OpenBSD hasn't innovated much and many
+    of its (real) mitigations were developed long before OpenBSD implemented them such as W^X and ASLR which <a
+      href="https://pax.grsecurity.net/">were developed by PaX</a> (PAX_MPROTECT and PAX_ASLR). <br>
+    <br>
+    OpenBSD has a non-existent desktop security model. It does not have any MAC implementation to fully lock down
+    userspace and lacks any GUI isolation. <br>
+    <br>
+    OpenBSD has received criticism from many respected security experts. One example is <a
+      href="https://grsecurity.net/~spender/exploits/exp_moosecox.c">Brad Spengler</a>, the developer of grsecurity.
+    <br>
+    <br>
+    This website goes in-depth into the issues with most of OpenBSD's mitigations: <a
+      href="https://isopenbsdsecu.re/">https://isopenbsdsecu.re/</a> <br>
+    <br>
+    A more promising alternative to OpenBSD is <a href="https://hardenedbsd.org/">HardenedBSD</a>. There are
+    advantages/disadvantages of HardenedBSD over OpenBSD. HardenedBSD has many mitigations OpenBSD does not such as CFI,
+    SafeStack, SEGVGUARD, a proper W^X implementation and more but it lacks things OpenBSD has such as LibreSSL, a
+    hardened malloc etc.
+  </p>
+  <p class="p-final">
+    <a href="index.html" class="back">Go back</a>
+  </p>
+
+  <button onclick="setDarkMode()" class="dark-mode-toggle">🌓</button>
+  <script type="text/javascript" src="toggle.js"></script>
+</body>

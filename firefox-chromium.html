@@ -1,0 +1,38 @@
+<html lang=en>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>Firefox and Chromium Security | Madaidan's Insecurities</title>
+</head>
+
+<body>
+  <h1>Firefox and Chromium Security</h1>
+
+  <p>
+    Chromium is far more secure than Firefox. Firefox lacks many security features that Chromium has such as <a
+      href="https://www.chromium.org/Home/chromium-security/site-isolation">site isolation</a>, <a
+      href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md">a
+      hardened memory allocator</a> (<a
+      href="https://searchfox.org/mozilla-central/source/memory/build/mozjemalloc.cpp">mozjemalloc</a> is just a few
+    security features tacked on to jemalloc and <a
+      href="https://lists.torproject.org/pipermail/tor-dev/2019-August/013990.html">is not similar to a hardened memory
+      allocator</a>), <a href="https://www.chromium.org/developers/testing/control-flow-integrity">Control-Flow
+      Integrity</a> and many more. Firefox's current security features such as its <a
+      href="https://wiki.mozilla.org/Security/Sandbox">browser sandbox</a> are a lot worse than Chromium's. Excluding
+    the issue of site isolation, only the Firefox sandbox on Windows is similar to Chromium's. The others are very
+    insecure and the Linux sandbox can hardly be called a sandbox at all as there are many trivial escapes such as the
+    <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">X11 server</a> (this is also a 5 year old, critical
+    issue). <br>
+    <br>
+    Just look at what security experts such as <a
+      href="https://medium.com/@thegrugq/tor-and-its-discontents-ef5164845908">thegrugq</a> and <a
+      href="https://grapheneos.org/usage#web-browsing">Daniel Micay</a> have to say about Firefox.
+  </p>
+  <p class="p-final">
+    <a href="index.html" class="back">Go back</a>
+  </p>
+
+  <button onclick="setDarkMode()" class="dark-mode-toggle">🌓</button>
+  <script type="text/javascript" src="toggle.js"></script>
+</body>

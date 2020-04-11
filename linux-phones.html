@@ -1,0 +1,71 @@
+<html lang=en>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>Linux Phones | Madaidan's Insecurities</title>
+</head>
+
+<body>
+  <h1>Linux Phones</h1>
+
+  <h2>Comparison with Other Phones</h2>
+
+  <p>
+    Linux phones such as the Librem 5 are a major degradation from Android/iOS. They lack any proper security model and
+    are ridiculously insecure. The comments from the <a href="linux.html">Linux article</a> apply to Linux phones fully
+    and there is not yet a single Linux phone with a sane security model. They do not have security features such as
+    full system MAC policies, verified boot, hardened kernels, app sandboxing etc. that modern Android phones do. <br>
+    <br>
+    Distros like PureOS are not secure at all. They're mostly a reskinned Debian. They enable AppArmor but most
+    processes still run unconfined so it's mostly useless. They <a
+      href="https://source.puri.sm/pureos/packages/pureos-security-hardening">change a few security-relevant
+      settings</a> but these are also mostly useless as they don't even apply the exec-shield patch so that sysctl
+    doesn't exist, disabling kexec is to prevent root from booting a malicious kernel but root can do so many other
+    things to modify the kernel such as loading a kernel module, hiding kernel symbols from <code>/proc</code> ignores
+    the fact that they're clearly visible in System.map and finally, disabling source routing is already a Debian
+    default. PureOS also uses <a href="https://en.wikipedia.org/wiki/Linux-libre">linux-libre</a> which prevents you
+    from loading any firmware updates and the <a
+      href="https://puri.sm/posts/librem5-solving-the-first-fsf-ryf-hurdle/">Librem 5 prevents you from even flashing
+      new firmware manually</a> which leaves you with insecure firmware with known vulnerabilities. <br>
+    <br>
+    The hardware lacks many modern security features like verified boot, hardware backed keystore and more. <br>
+    <br>
+    These devices are also not open hardware/firmware unlike what they try to claim. The majority of the
+    hardware/firmware is still proprietary.
+  </p>
+
+  <h2>Hardware Kill Switches</h2>
+
+  <p>
+    Hardware kill switches are nothing but marketing frills. <br>
+    <br>
+    The microphone kill switch is useless since audio can still be gotten via the sensors (such as the <a
+      href="https://crypto.stanford.edu/gyrophone/files/gyromic.pdf">gyroscope</a>). <br>
+    <br>
+    The network kill switch is useless since the attacker will just wait until you turn them back on again to exfiltrate
+    data. If you need to disable network access, you can use airplane mode. <br>
+    <br>
+    The camera kill switch is no better than some tape.
+  </p>
+
+  <h2>Modem Isolation</h2>
+
+  <p>
+    Modem isolation isn't anything special. Qualcomm SoCs have isolated the modem via an IOMMU <a
+      href="https://www.defcon.org/html/defcon-27/dc-27-speakers.html#Gong">for years</a>. The way the Librem 5 isolates
+    the modem is via the Linux kernel USB stack which is not a strong barrier as shown in the <a href="linux.html">Linux
+      article</a>. <br>
+    <br>
+    There is also a lot of misinformation about how the modem being on a separate chip means it's isolated. This is
+    completely untrue. Just look at how FireWire for example can be <a
+      href="https://en.wikipedia.org/wiki/IEEE_1394#Security_issues">used for DMA</a> yet it's completely separate from
+    the rest of the hardware. Whether the modem is on a separate chip or not is irrelevant to if it's isolated.
+  </p>
+  <p class="p-final">
+    <a href="index.html" class="back">Go back</a>
+  </p>
+
+  <button onclick="setDarkMode()" class="dark-mode-toggle">🌓</button>
+  <script type="text/javascript" src="toggle.js"></script>
+</body>
