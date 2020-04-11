@@ -66,6 +66,19 @@
     allows apps to request to bypass signature verification.
   </p>
 
+  <h2>Firewalls</h2>
+
+  <p>
+    Firewalls such as <a href="https://github.com/ukanth/afwall/">AFWall+</a> or <a href="https://www.netguard.me/">
+    Netguard</a> are regularly used on Android to attempt to block network access from a specific app but these
+    do not reliably work. Apps can use IPC to bypass the restrictions. If you cut off network access to an app, it
+    will not prevent the app from sending an <a href="https://developer.android.com/reference/android/content/Intent">
+    intent</a> to another app (such as the browser) to make it make the same connection. <br>
+    <br>
+    Many apps already do this unintentionally with things such as with the <a
+    href="https://developer.android.com/reference/android/app/DownloadManager">download manager</a>.
+  </p>
+
   <p class="p-final">
     <a href="index.html" class="back">Go back</a>
   </p>
