@@ -1,0 +1,61 @@
+<html lang=en>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>Messengers | Madaidan's Insecurities</title>
+</head>
+
+<body>
+  <h1>Messengers</h1>
+
+  <h2>Telegram</h2>
+
+  <p>
+    <a href="https://telegram.org/">Telegram</a> is <a href="https://telegram.org/faq#q-why-not-just-make-all-chats-secret">not end-to-end encrypted by default</a>, allowing the
+    Telegram server to see all of your data unless you use a "Secret Chat". Telegram uses <a href="https://core.telegram.org/mtproto">custom, unaudited encryption</a>. The first
+    version of MTProto had <a href="https://eprint.iacr.org/2015/1177.pdf">severe security issues</a> but these were fixed with MTProto 2.0. Telegram uses odd cryptographic
+    primitives such as AES-IGE for "performance" although they use it in a way that they <a href="https://core.telegram.org/techfaq#q-do-you-use-ige-ige-is-broken">aren't affected
+    by its security issues</a>. <br>
+    <br>
+    Telegram has <a href="https://telegram.org/crypto_contest">held crypto cracking contests</a> but these <a href="https://www.schneier.com/crypto-gram/archives/1998/1215.html#contests">
+    were</a> <a href="https://web.archive.org/web/20161127125809/https://moxie.org/blog/telegram-crypto-challenge/">rigged</a>. <br>
+    <br>
+    Although the <a href="https://telegram.org/apps#source-code">clients are open source</a>, the server is not. <br>
+    <br>
+    The creators of Telegram have <a href="https://nitter.net/durov/status/872891017418113024">spread baseless misinformation</a> about competing apps before. <br>
+    <br>
+    Telegram, along with most other messengers, leak <a href="https://en.wikipedia.org/wiki/Metadata">metadata</a> about your messages, even if the message itself was end-to-end
+    encrypted.
+  </p>
+
+  <h2>Silence</h2>
+
+  <p>
+    <a href="https://silence.im">Silence</a> is dead and the only commits for a long time <a href="https://git.silence.dev/Silence/Silence-Android/-/commits/master">have been translations</a>,
+    not code updates.
+  </p>
+
+  <h2>Wire</h2>
+
+  <p>
+    <a href="https://wire.com/en/">Wire</a> <a href="https://www.vice.com/en_us/article/gvzw5x/secure-messaging-app-wire-stores-everyone-youve-ever-contacted-in-plain-text">stores all metadata
+    unencrypted</a> and is <a href="https://www.thinkprivacy.ch/cutting-the-wire">owned by a US company</a>, a country known for privacy abuses. <br>
+    <br>
+    Unlike Telegram however, Wire <a href="https://wire.com/en/security/#audits">has been audited</a> and its server code is <a href="https://github.com/wireapp/wire-server">fully
+    open source</a>, allowing it to be self-hosted.
+  </p>
+
+  <h2>Conclusion</h2>
+
+  <p>
+    Use <a href="https://www.signal.org/">Signal</a>. It <a href="https://www.signal.org/docs/">uses solid encryption</a>, has <a href="https://signal.org/bigbrother/eastern-virginia-grand-jury/">a
+    great track record</a>, is recommended by many experts in the field and a lot more. Most other messengers are subpar.
+  </p>
+  <p class="p-final">
+    <a href="index.html" class="back">Go back</a>
+  </p>
+
+  <button onclick="setDarkMode()" class="dark-mode-toggle">🌓</button>
+  <script type="text/javascript" src="toggle.js"></script>
+</body>
