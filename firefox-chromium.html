@@ -20,7 +20,8 @@
       allocator</a>), <a href="https://www.chromium.org/developers/testing/control-flow-integrity">Control-Flow
       Integrity</a> and many more. Firefox's current security features such as its <a
       href="https://wiki.mozilla.org/Security/Sandbox">browser sandbox</a> are a lot worse than Chromium's. Excluding
-    the issue of site isolation, only the Firefox sandbox on Windows is similar to Chromium's. The others are very
+    the issue of site isolation, only the Firefox sandbox on Windows is similar to Chromium's but even then, it lacks features
+    such as <a href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">win32k lockdown</a>. The others are very
     insecure and the Linux sandbox can hardly be called a sandbox at all as there are many trivial escapes such as the
     <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">X11 server</a> (this is also a 5 year old, critical
     issue). <br>
