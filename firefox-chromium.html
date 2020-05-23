@@ -21,7 +21,9 @@
       href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">win32k lockdown</a>. The sandboxing
     on other platforms is very insecure and the Linux sandbox can hardly be called a sandbox at all as there are plenty
     of trivial escapes such as the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">X11 server</a> (this
-    is also a 5 year old, critical issue). <br>
+    is also a 5 year old, critical issue). On Android, Firefox does not have a sandbox at all beyond the OS app sandbox
+    unlike Chromium which uses the <a href="https://developer.android.com/guide/topics/manifest/service-element#isolated">
+    <code>isolatedProcess</code> feature</a>. <br>
     <br>
     Firefox lacks important exploit mitigations that Chromium has such as <a
       href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md">a
