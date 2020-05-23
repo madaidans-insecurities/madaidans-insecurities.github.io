@@ -10,25 +10,36 @@
   <h1>Firefox and Chromium Security</h1>
 
   <p>
-    Chromium is far more secure than Firefox. Firefox lacks many security features that Chromium has such as <a
-      href="https://www.chromium.org/Home/chromium-security/site-isolation">site isolation</a>, <a
+    Chromium is far more secure than Firefox. Firefox's sandboxing and exploit mitigations are poorer than Chromium's
+    by a large degree. <br>
+    <br>
+    Firefox's <a href="https://wiki.mozilla.org/Security/Sandbox">sandboxing</a> lacks any <a
+      href="https://www.chromium.org/Home/chromium-security/site-isolation">site isolation</a>. It's only focused on
+    isolating the browser as a whole from the rest of the OS and even that is quite poor. Excluding the issue of site
+    isolation, only the Firefox sandbox on Windows is similar to Chromium's but even then, it <a
+      href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=win32k">lacks</a> <a
+      href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">win32k lockdown</a>. The sandboxing
+    on other platforms is very insecure and the Linux sandbox can hardly be called a sandbox at all as there are plenty
+    of trivial escapes such as the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">X11 server</a> (this
+    is also a 5 year old, critical issue). <br>
+    <br>
+    Firefox lacks important exploit mitigations that Chromium has such as <a
       href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md">a
-      hardened memory allocator</a> (<a
+    hardened memory allocator</a> (<a
       href="https://searchfox.org/mozilla-central/source/memory/build/mozjemalloc.cpp">mozjemalloc</a> is just a few
-    security features tacked on to jemalloc and <a
+    security features tacked on to jemalloc which is <a href="
+      https://media.blackhat.com/bh-us-12/Briefings/Argyoudis/BH_US_12_Argyroudis_Exploiting_the_%20jemalloc_Memory_%20Allocator_Slides.pdf">
+    inherently exploitation-friendly</a> and <a
       href="https://lists.torproject.org/pipermail/tor-dev/2019-August/013990.html">is not similar to a hardened memory
       allocator</a>), <a href="https://www.chromium.org/developers/testing/control-flow-integrity">Control-Flow
-      Integrity</a> and many more. Firefox's current security features such as its <a
-      href="https://wiki.mozilla.org/Security/Sandbox">browser sandbox</a> are a lot worse than Chromium's. Excluding
-    the issue of site isolation, only the Firefox sandbox on Windows is similar to Chromium's but even then, it lacks features
-    such as <a href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">win32k lockdown</a>. The others are very
-    insecure and the Linux sandbox can hardly be called a sandbox at all as there are many trivial escapes such as the
-    <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">X11 server</a> (this is also a 5 year old, critical
-    issue). <br>
+      Integrity</a>, <a href="https://github.com/struct/research/blob/master/Attacking_Clientside_JIT_Compilers_Paper.pdf">JIT hardening</a>,
+    <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1381050">ACG</a>, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1378417">
+    CIG</a> and many more. <br>
     <br>
-    Just look at what security experts such as <a
-      href="https://medium.com/@thegrugq/tor-and-its-discontents-ef5164845908">thegrugq</a> and <a
-      href="https://grapheneos.org/usage#web-browsing">Daniel Micay</a> have to say about Firefox.
+    Just look at what <a href="https://medium.com/@thegrugq/tor-and-its-discontents-ef5164845908">security</a> <a
+      href="https://grapheneos.org/usage#web-browsing">experts</a> <a href="
+      https://jandemooij.nl/blog/2015/12/29/wx-jit-code-enabled-in-firefox/#comment-2432279846">have</a> to <a href="
+      https://marc.info/?l=openbsd-misc&m=152872551609819&w=2">say</a> about Firefox.
   </p>
   <p class="p-final">
     <a href="index.html" class="back">Go back</a>
