@@ -1,13 +1,13 @@
 function setDarkMode() {
   if (localStorage.getItem('mode') === 'dark') {
     localStorage.setItem('mode', 'white');
-    location.reload();
+    document.body.classList.remove('dark-mode');
   } else {
     localStorage.setItem('mode', 'dark');
-    location.reload();
+    document.body.classList.add('dark-mode');
   }
 }
 
 if (localStorage.getItem('mode') === 'dark') {
-  document.body.classList.toggle('dark-mode');
+  document.body.classList.add('dark-mode');
 }
