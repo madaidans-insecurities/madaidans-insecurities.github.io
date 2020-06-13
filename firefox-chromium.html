@@ -14,18 +14,30 @@
     by a large degree. <br>
     <br>
     Firefox's <a href="https://wiki.mozilla.org/Security/Sandbox">sandboxing</a> lacks any <a
-      href="https://www.chromium.org/Home/chromium-security/site-isolation">site isolation</a>. It's only focused on
-    isolating the browser as a whole from the rest of the OS and even that is quite poor. Excluding the issue of site
-    isolation, only the Firefox sandbox on Windows is similar to Chromium's but even then, it <a
-      href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=win32k">lacks</a> <a
-      href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">win32k lockdown</a>. The sandboxing
-    on other platforms is very insecure and the Linux sandbox can hardly be called a sandbox at all as there are plenty
-    of trivial escapes such as the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">X11 server</a> (this
-    is also a 5 year old, critical issue). On Android, Firefox does not have a sandbox at all beyond the OS app sandbox
-    unlike Chromium which uses the <a href="https://developer.android.com/guide/topics/manifest/service-element#isolated">
-    <code>isolatedProcess</code> feature</a>. <br>
+      href="https://www.chromium.org/Home/chromium-security/site-isolation">site isolation</a>. <a
+      href="https://wiki.mozilla.org/Project_Fission">Project Fission</a> is still a WIP. The sandbox is currently only
+    focused on isolating the browser as a whole from the rest of the OS and even that is quite poor. Excluding the issue
+    of site isolation, only the Firefox sandbox on Windows is similar to <a
+      href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md">Chromium's</a> but even then,
+    it <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=win32k">lacks</a> <a
+      href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">win32k lockdown</a>. <br>
     <br>
-    Firefox lacks important exploit mitigations that Chromium has such as <a
+    The sandboxing on other platforms is very insecure and the Linux sandbox can hardly be called a sandbox at all as there
+    are plenty of trivial escapes such as the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">X11 server</a>
+    (this is also a 5 year old, critical issue). The issues with the Linux sandbox also go far beyond X11. One example is that
+    there is <a
+      href="https://wiki.mozilla.org/Security/Sandbox/Process_model#GPU_Process">no GPU process sandboxing</a>. Another example
+      is that the seccomp filter is weaker; for example, there is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1302711">
+    barely any ioctl filtering</a> and <a
+      href="https://dxr.mozilla.org/mozilla-central/rev/a5cb1a40413ebfb37e68bc8961e5a46467f06d14/security/sandbox/linux/SandboxFilter.cpp#1125">
+    only tty ioctls are blocked</a> and there are a lot more issues. <br>
+    <br>
+    On Android, Firefox <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1565196">does not have a sandbox at all beyond
+    the OS app sandbox</a> unlike Chromium which uses the <a
+      href="https://developer.android.com/guide/topics/manifest/service-element#isolated"><code>isolatedProcess</code>
+    feature</a>. <br>
+    <br>
+    Firefox also lacks important exploit mitigations that Chromium has such as <a
       href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md">a
     hardened memory allocator</a> (<a
       href="https://searchfox.org/mozilla-central/source/memory/build/mozjemalloc.cpp">mozjemalloc</a> is just a few
@@ -36,7 +48,7 @@
       allocator</a>), <a href="https://www.chromium.org/developers/testing/control-flow-integrity">Control-Flow
       Integrity</a>, <a href="https://github.com/struct/research/blob/master/Attacking_Clientside_JIT_Compilers_Paper.pdf">JIT hardening</a>,
     <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1381050">ACG</a>, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1378417">
-    CIG</a> and many more. <br>
+    CIG</a> and many more. You can look through <a href="https://bugzilla.mozilla.org/home">Bugzilla</a> for more examples. <br>
     <br>
     Just look at what <a href="https://medium.com/@thegrugq/tor-and-its-discontents-ef5164845908">security</a> <a
       href="https://grapheneos.org/usage#web-browsing">experts</a> <a href="

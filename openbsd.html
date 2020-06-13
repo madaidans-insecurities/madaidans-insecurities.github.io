@@ -17,15 +17,20 @@
     exploitation harder in the era of ASLR. <br>
     <br>
     OpenBSD is also missing many important security features such as <a
-      href="https://en.wikipedia.org/wiki/Control-flow_integrity">CFI</a>, <a
-      href="https://clang.llvm.org/docs/SafeStack.html">SafeStack</a>, <a
+      href="https://en.wikipedia.org/wiki/Control-flow_integrity">Control-Flow Integrity</a>, <a
+      href="https://clang.llvm.org/docs/SafeStack.html">SafeStack</a> or <a href="https://clang.llvm.org/docs/ShadowCallStack.html">
+      ShadowCallStack</a>, <a
       href="https://source.android.com/security/verifiedboot/">verified boot</a>, <a
-      href="http://phrack.org/issues/52/6.html#article">TPE</a> and a lot more. OpenBSD hasn't innovated much and many
-    of its (real) mitigations were developed long before OpenBSD implemented them such as W^X and ASLR which <a
-      href="https://pax.grsecurity.net/">were developed by PaX</a> (PAX_MPROTECT and PAX_ASLR). <br>
+      href="http://phrack.org/issues/52/6.html#article">Trusted Path Execution</a> and a lot more. OpenBSD hasn't
+    innovated much and many of its (real) mitigations were developed long before OpenBSD implemented them such as W^X
+    and ASLR which <a href="https://pax.grsecurity.net/">were developed by PaX</a> (PAX_MPROTECT and PAX_ASLR). <br>
     <br>
-    OpenBSD has a non-existent desktop security model. It does not have any MAC implementation to fully lock down
-    userspace and lacks any GUI isolation. <br>
+    Although, some of OpenBSD's mitigations are pretty solid like <a href="https://ftp.openbsd.org/papers/eurobsdcon2009/otto-malloc.pdf">
+    their malloc implementation</a>. <br>
+    <br>
+    OpenBSD has a non-existent application security model. It does not have any MAC implementation to fully lock down
+    userspace and lacks any GUI isolation. It uses <a href="https://www.xenocara.org/">Xenocara</a>, a fork of X11 and
+    does not support <a href="https://wayland.freedesktop.org/">Wayland</a>. <br>
     <br>
     OpenBSD has received criticism from many respected security experts. One example is <a
       href="https://grsecurity.net/~spender/exploits/exp_moosecox.c">Brad Spengler</a>, the developer of grsecurity.

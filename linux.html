@@ -36,8 +36,9 @@
       href="https://www.washingtonpost.com/sf/business/2015/11/05/net-of-insecurity-the-kernel-of-the-argument/">do not
       care enough</a>. <br>
     <br>
-    On ordinary desktops, a compromised non-root user account with access to <code>sudo</code> is almost equal to full
-    root compromise as there are too many ways for an attacker to retrieve the sudo password. Usually, the standard user
+    On ordinary desktops, a compromised non-root user account with access to <code>sudo</code> is <a
+    href="https://www.whonix.org/wiki/Dev/Strong_Linux_User_Account_Isolation">almost equal to full
+    root compromise</a> as there are too many ways for an attacker to retrieve the sudo password. Usually, the standard user
     is part of group <code>sudo</code> which makes this a massive issue and makes a sudo password almost security
     theater. For example, the attacker can exploit the plethora of keylogging opportunities such as <a
       href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">X’s lack of GUI
@@ -63,7 +64,7 @@ chmod +x /tmp/sudo
 export PATH="/tmp:${PATH}"
     </code></pre>
     <br>
-    Now the attacker is just a <code>modprobe</code> away from full kernel access.
+    Now the attacker is just a <code>modprobe</code> away from full kernel privileges.
   </p>
 
   <h2>"But I harden my system!"</h2>
@@ -75,7 +76,7 @@ export PATH="/tmp:${PATH}"
     running most processes unconfined, doesn't mean you can escape from these. <br>
     <br>
     The hardening required for a reasonably secure Linux distro is far greater than people assume. You will need full
-    system MAC policies, full verified boot (not just the boot chain, the entire base system), a strong sandboxing
+    system MAC policies, full verified boot (not just the kernel but the entire base system), a strong sandboxing
     architecture, a hardened kernel, widespread use of modern exploit mitigations and plenty more. <br>
     <br>
     One Linux distro that actually is working on fixing these issues is <a
@@ -85,9 +86,9 @@ export PATH="/tmp:${PATH}"
   <h3>Flatpak</h3>
 
   <p>
-    Flatpak aims to sandbox applications but its sandboxing is very flawed. It fully trusts the applications and allows
-    them to specify their own policy. This means security is optional and apps can just choose not to be sufficiently
-    sandboxed. <br>
+    Flatpak aims to sandbox applications but <a href="https://flatkill.org/">its sandboxing is very flawed</a>. It fully
+    trusts the applications and allows them to specify their own policy. This means security is optional and apps can
+    just choose not to be sufficiently sandboxed. <br>
     <br>
     Flatpak's permissions are also far too broad to be meaningful. For example, many applications come with
     <code>filesystem=home</code> which is read-write access to the user's home directory, giving access to all of your
@@ -100,7 +101,11 @@ export PATH="/tmp:${PATH}"
       secure"</a>. <br>
     <br>
     Even more examples of this is how Flatpak gives full access to directories such as <code>/sys</code> or
-    <code>/proc</code> (kernel interfaces known for information leaks).
+    <code>/proc</code> (kernel interfaces known for information leaks). <br>
+    <br>
+    <i>Another</i> example is how the seccomp filter <a
+      href="https://github.com/flatpak/flatpak/blob/f687f6b2ebfe9bc69f59e42bb96475ca01f08548/common/flatpak-run.c#L2646-L2693">
+    only blacklists ~20 syscalls</a>.
   </p>
   <p class="p-final">
     <a href="index.html" class="back">Go back</a>

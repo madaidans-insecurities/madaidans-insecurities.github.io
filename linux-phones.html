@@ -13,9 +13,9 @@
 
   <p>
     Linux phones such as the Librem 5 are a major degradation from Android/iOS. They lack any proper security model and
-    are ridiculously insecure. The comments from the <a href="linux.html">Linux article</a> apply to Linux phones fully
+    are ridiculously insecure. The points from the <a href="linux.html">Linux article</a> apply to Linux phones fully
     and there is not yet a single Linux phone with a sane security model. They do not have security features such as
-    full system MAC policies, verified boot, hardened kernels, app sandboxing etc. that modern Android phones do. <br>
+    full system MAC policies, verified boot, hardened kernels, strong app sandboxing etc. that modern Android phones do. <br>
     <br>
     Distros like PureOS are not secure at all. They're mostly a reskinned Debian. They enable AppArmor but most
     processes still run unconfined so it's mostly useless. They <a
@@ -29,7 +29,13 @@
       href="https://puri.sm/posts/librem5-solving-the-first-fsf-ryf-hurdle/">Librem 5 prevents you from even flashing
       new firmware manually</a> which leaves you with insecure firmware with known vulnerabilities. <br>
     <br>
-    The hardware lacks many modern security features like verified boot, hardware backed keystore and more. <br>
+    The hardware lacks many modern security features like <a href="https://source.android.com/security/verifiedboot/">
+    proper verified boot</a>, <a href="https://source.android.com/security/keystore/">hardware backed keystore</a>
+    (some PGP smartcard is not the same) and more. <br>
+    <br>
+    Although, one way to fix the issues in software would be to install a more sane OS like Android or its derivatives
+    such as GrapheneOS if support for the hardware was added. Keep in mind though that it would still lack important
+    hardware and firmware security features like verified boot so it still isn't close to a normal Android device. <br>
     <br>
     These devices are also not open hardware/firmware unlike what they try to claim. The majority of the
     hardware/firmware is still proprietary.
@@ -41,12 +47,15 @@
     Hardware kill switches are nothing but marketing frills. <br>
     <br>
     The microphone kill switch is useless since audio can still be gotten via the sensors (such as the <a
-      href="https://crypto.stanford.edu/gyrophone/files/gyromic.pdf">gyroscope</a>). <br>
+      href="https://crypto.stanford.edu/gyrophone/files/gyromic.pdf">gyroscope</a>). While the Librem 5
+    does have a "lockdown mode" that disables the sensors, it also requires flipping all of the other
+    switches, including the network ones which effectively turns your device into a brick just to
+    prevent audio recording. <br>
     <br>
     The network kill switch is useless since the attacker will just wait until you turn them back on again to exfiltrate
     data. If you need to disable network access, you can use airplane mode. <br>
     <br>
-    The camera kill switch is no better than some tape.
+    The camera kill switch can be useful as a small usability improvement but it is really no better than some tape.
   </p>
 
   <h2>Modem Isolation</h2>
