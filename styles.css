@@ -45,7 +45,22 @@ a {
 h1, h2, h3, h4 {
     line-height: 1.125;
     max-width: 800px;
-    text-decoration: underline;
+}
+
+h2 a {
+    border-bottom: 0;
+}
+
+h3 a {
+    border-bottom: 0;
+}
+
+h2 a:hover {
+    border-bottom: 1px solid #007b9c;
+}
+
+h3 a:hover {
+    border-bottom: 1px solid #007b9c;
 }
 
 h1 {
