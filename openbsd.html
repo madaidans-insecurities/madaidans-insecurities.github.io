@@ -20,7 +20,9 @@
     OpenBSD is also missing many important security features such as <a
       href="https://en.wikipedia.org/wiki/Control-flow_integrity">Control-Flow Integrity</a>, <a
       href="https://clang.llvm.org/docs/SafeStack.html">SafeStack</a> or <a href="https://clang.llvm.org/docs/ShadowCallStack.html">
-      ShadowCallStack</a>, <a
+      ShadowCallStack</a> (<a href="https://marc.info/?l=openbsd-tech&m=150317547021396&w=2">RETGUARD</a> is not a replacement
+    for CFI or SafeStack/ShadowCallStack since it only covers backward edges and is <a
+      href="https://isopenbsdsecu.re/mitigations/retguard/">bypassed with a single information leak</a>), <a
       href="https://source.android.com/security/verifiedboot/">verified boot</a>, <a
       href="http://phrack.org/issues/52/6.html#article">Trusted Path Execution</a> and a lot more. OpenBSD hasn't
     innovated much and many of its (real) mitigations were developed long before OpenBSD implemented them such as W^X
