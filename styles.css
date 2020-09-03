@@ -23,6 +23,14 @@ ul {
     overflow: hidden;
 }
 
+.ullist {
+    padding-left: 2em;
+}
+
+.lilist {
+    padding-bottom: 1em;
+}
+
 *+* {
     margin-top: 2.25rem;
 }
