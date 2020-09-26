@@ -70,7 +70,10 @@
 
   <p>
     For security, use Chromium. Avoid Firefox or browsers based on it as they are currently <a
-    href="https://madaidans-insecurities.github.io/firefox-chromium.html">very lacking in security</a>. <br>
+    href="https://madaidans-insecurities.github.io/firefox-chromium.html">very lacking in security</a>. The new Microsoft
+    Edge browser that is based on Chromium may be a better choice for Windows users as it can utilize <a
+    href="https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-application-guard/md-app-guard-overview">
+    Windows Defender Application Guard</a> (WDAG). <br>
     <br>
     For privacy, use the Tor Browser and consider using the security slider. Do not assume that "hardening" Firefox or
     other browsers will make it private, <a href="https://madaidans-insecurities.github.io/browser-tracking.html">it won't</a>.
@@ -92,9 +95,16 @@
 
   <p>
     If you can, stay away from email but if you must use it, use a reputable email provider with a strong focus on security
-    such as <a href="https://protonmail.com/">ProtonMail</a> and <a href="https://www.tutanota.com/">Tutanota</a>. Stay
-    away from web apps as they <a href="https://protonmail.com/blog/cryptographic-architecture-response/">inherently
-    provide weaker security</a>.
+    such as <a href="https://protonmail.com/">ProtonMail</a> and <a href="https://www.tutanota.com/">Tutanota</a>. <br>
+    <br>
+    Consider staying away from web apps as they <a href="https://protonmail.com/blog/cryptographic-architecture-response/">can
+    provide weaker security</a>. When a user visits a website in a browser, that website can target that specific user with
+    malicious JavaScript whereas with an app, the code is static. Additionally, apps can offer better protection against MITM
+    attacks by pinning TLS certificates. This is commonly used in apps like <a
+    href="https://protonmail.com/blog/tls-ssl-certificate/#Extra-security-precautions-taken-by-ProtonMail">ProtonMail</a>, <a
+    href="https://www.signal.org/blog/certifiably-fine/">Signal</a>, etc. <br>
+    <br>
+    Although, websites in a browser are much less privileged and using an app could add additional attack surface.
   </p>
 
   <h2 id="passwords-2fa"><a href="#passwords-2fa">Passwords/2FA</a></h2>
@@ -122,7 +132,9 @@
       </li>
 
       <li class="lilist">
-        Always use full-disk encryption. <a href="https://www.veracrypt.fr/en/Home.html">VeraCrypt</a> is good for this.
+        Always use full-disk encryption. Use <a href="https://www.veracrypt.fr/en/Home.html">VeraCrypt</a> for this or
+        <a href="https://docs.microsoft.com/en-us/windows/security/information-protection/bitlocker/bitlocker-overview">
+        Bitlocker</a> if on Windows.
       </li>
 
       <li class="lilist">
@@ -149,8 +161,11 @@
       </li>
 
       <li class="lilist">
-        Install <a href="https://en.wikipedia.org/wiki/NoScript">NoScript</a> to block JavaScript as much as you can.
-        JavaScript inherently presents a massive attack surface as it is arbitrary code executed straight off of a website.
+        Install <a href="https://en.wikipedia.org/wiki/NoScript">NoScript</a> to block content such as JavaScript as much
+        as you can. JavaScript inherently presents a massive attack surface as it is arbitrary code executed straight off
+        of a website. NoScript also provides protection against attacks such as <a
+        href="https://en.wikipedia.org/wiki/Cross-site_scripting">cross-site scripting</a>, <a
+        href="https://en.wikipedia.org/wiki/Cross-site_request_forgery">cross-site request forgery</a> and more.
       </li>
 
       <li class="lilist">
