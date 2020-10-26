@@ -152,6 +152,9 @@ code {
         margin-top: 0;
         max-width: 75%;
     }
+    .dark-mode-toggle {
+        margin-top: 5px;
+    }
     code {
         word-break: break-all;
     }
