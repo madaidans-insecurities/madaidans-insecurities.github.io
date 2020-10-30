@@ -132,6 +132,7 @@ code {
     right: 20px;
     outline: none;
     font-size: 2rem;
+    background: transparent;
 }
 
 .p-final {
@@ -140,8 +141,19 @@ code {
 }
 
 @media screen and (max-width: 45em) {
+    body {
+        padding: 25px;
+    }
     body a {
         hyphens: auto;
+    }
+    h1 {
+        margin-left: 0;
+        margin-top: 0;
+        max-width: 75%;
+    }
+    .dark-mode-toggle {
+        margin-top: 5px;
     }
     code {
         word-break: break-all;
