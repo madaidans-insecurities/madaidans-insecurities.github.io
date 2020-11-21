@@ -173,3 +173,10 @@ code {
         white-space: pre-wrap !important;
     }
 }
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #252627;
+        color: #a9a9b3;
+    }
+}
