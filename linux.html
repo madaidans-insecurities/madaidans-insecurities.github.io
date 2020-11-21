@@ -9,46 +9,172 @@
 </head>
 
 <body>
-  <h1>Linux</h1>
+  <h1>Linux (In)security</h1>
 
   <p>
-    Due to inevitable pedanticism, "Linux" in this article refers to a standard Linux or GNU/Linux distro.
+    Linux being secure is a common misconception in the security and privacy realm. Linux is thought to be secure primarily
+    because of its source model, popular usage in servers, small userbase and confusion about its security features. This
+    article is intended to debunk these misunderstandings. Due to inevitable pedanticism, "Linux" in this article refers
+    to a standard desktop Linux or GNU/Linux distribution.
   </p>
 
-  <h2 id="linux-insecurity"><a href="#linux-insecurity">Linux (in)security</a></h2>
+  <h2 id="sandboxing"><a href="#sandboxing">Sandboxing</a></h2>
 
   <p>
-    There is a common assumption that Linux is a very secure operating system. This is very far from the truth for
-    various different reasons. <br>
+    There is no strong sandboxing in the standard Linux desktop. This means that all applications have access to each other’s data
+    and can snoop on your personal information. Linux still follows the <a
+    href="https://theinvisiblethings.blogspot.com/2010/08/ms-dos-security-model.html">MS-DOS security model</a> - any malicious
+    application you install or an RCE vulnerability in a benevolent application can result in the attacker instantly gaining
+    access to your data. <br>
     <br>
-    There is no strong sandboxing in the standard desktop. This means all applications have access to each other’s data
-    and can snoop on your personal information. Most programs are written in memory unsafe languages such as C or C++
-    which has been the cause of <a
-      href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">the majority of
-      discovered security vulnerabilities</a> and modern exploit mitigations such as Control-Flow Integrity are not
-    widely used. <br>
+    This is in contrast to other desktop operating systems such as macOS or Windows 10 which have already put considerable effort into
+    sandboxing applications. macOS <a href="https://developer.apple.com/documentation/security/app_sandbox">requires that all applications
+    are sandboxed</a>. Windows <a href="https://docs.microsoft.com/en-us/windows/uwp/security/intro-to-secure-windows-app-development#41-windows-app-model">
+    automatically sandboxes UWP applications</a> and provides the <a
+    href="https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview">Windows Sandbox
+    utility</a> for non-UWP applications.
+  </p>
+
+  <h3 id="flatpak"><a href="#flatpak">Flatpak</a></h3>
+
+  <p>
+    Flatpak aims to sandbox applications, but <a href="https://flatkill.org/">its sandboxing is very flawed</a>. It fully
+    trusts the applications and allows them to specify their own policy. This means security is optional and apps can
+    just choose not to be sufficiently sandboxed. <br>
     <br>
-    The kernel is also very lacking in security. It is a monolithic kernel written entirely in a memory unsafe language
-    and has hundreds of bugs, many being security vulnerabilities, <a
-      href="https://events19.linuxfoundation.org/wp-content/uploads/2017/11/Syzbot-and-the-Tale-of-Thousand-Kernel-Bugs-Dmitry-Vyukov-Google.pdf">found
-      each <i>month</i></a>. In fact, there are so many bugs being found in the kernel, developers can’t keep up which
+    Flatpak's permissions are also far too broad to be meaningful. For example, many applications come with
+    <code>filesystem=home</code> which is read-write access to the user's home directory, giving access to all of your
+    personal files and allowing trivial escapes via writing to <code>~/.bashrc</code> or similar. <br>
+    <br>
+    Another example of Flatpak's broad permissions is how it allows unfiltered access to the X11 socket, allowing easy
+    escapes due to X11's lack of GUI isolation. Adding X11 sandboxing via a nested X11 server such as Xpra is easy but
+    <a href="https://blogs.gnome.org/alexl/2015/02/17/first-fully-sandboxed-linux-desktop-app/">Flatpak developers refuse
+    to acknowledge this and continue to claim, "X11 is impossible to secure"</a>. <br>
+    <br>
+    Even more examples of this is how Flatpak gives full access to directories such as <code>/sys</code> or
+    <code>/proc</code> (kernel interfaces known for information leaks). <br>
+    <br>
+    <i>Another</i> example is how the seccomp filter <a
+      href="https://github.com/flatpak/flatpak/blob/f687f6b2ebfe9bc69f59e42bb96475ca01f08548/common/flatpak-run.c#L2646-L2693">
+    only blacklists ~20 syscalls</a> which still exposes significant kernel attack surface.
+  </p>
+
+  <h3 id="firejail"><a href="#firejail">Firejail</a></h3>
+
+  <p>
+    Firejail also aims to sandbox applications but is, again, uneffective. If anything, it worsens security by acting as a
+    privilege escalation hole. Firejail requires being SUID root, meaning it executes with the privileges of the root user.
+    This could be acceptable if Firejail followed good security practices but, unfortunately, they do not. Firejail has too
+    large attack surface which has resulted in <a href="https://seclists.org/oss-sec/2017/q1/25">many</a> <a
+    href="https://www.cvedetails.com/vulnerability-list.php?vendor_id=16191&product_id=0&version_id=0&page=1">vulnerabilities</a>
+    in the past. <a href="https://github.com/netblue30/firejail/issues/3046">There are more details in this thread</a>.
+  </p>
+
+  <h2 id="exploit-mitigations"><a href="#exploit-mitigations">Exploit Mitigations</a></h2>
+
+  <p>
+    Most programs on Linux  are written in memory unsafe languages such as C or C++
+    which causes <a
+    href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">the majority of discovered security vulnerabilities</a>.
+    Other operating systems have made more progress on adopting memory safe languages such as Windows which is <a
+    href="https://msrc-blog.microsoft.com/2019/07/22/why-rust-for-safe-systems-programming/">leaning heavily towards Rust, a memory-safe language</a>. <br>
+    <br>
+    Modern exploit mitigations such as Control-Flow Integrity (CFI) are also not widely used unlike on alternative operating systems. These are
+    just a few examples:
+
+    <ul class="ullist">
+      <li class="lilist">
+        <a href="https://en.wikipedia.org/wiki/Control-flow_integrity">Control-Flow Integrity</a> is an exploit mitigation that aims to prevent
+        code reuse attacks like ROP or JOP. A large portion of vulnerabilities are exploited using these techniques due to mitigations like NX
+        making older techniques obsolete. On Linux, CFI is practically non-existent outside of Chromium whereas
+        Windows has their own coarse-grained, forward-edge CFI implementation, <a
+        href="https://docs.microsoft.com/en-us/windows/win32/secbp/control-flow-guard">Control Flow Guard</a> (CFG) as well as <a
+        href="https://techcommunity.microsoft.com/t5/windows-kernel-internals/understanding-hardware-enforced-stack-protection/ba-p/1247815">
+        Intel CET shadow stacks for backward-edge protection</a>. While CFG is only coarse-grained, Microsoft are <a
+        href="https://connormcgarr.github.io/examining-xfg/">working on making it more fine-grained</a>.
+      </li>
+
+      <li class="lilist">
+        A very basic exploit technique is simply to find a way to execute the attackers own malicious code either by loading
+        a malicious library on disk or by dynamically modifying executable code in memory. Linux has yet to provide strong mitigations
+        against this while Windows has <a href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">
+        Arbitrary Code Guard and Code Integrity Guard</a> to enforce strict W^X and mitigate this avenue of attacks. SELinux does provide
+        the <code>execmem</code> boolean, however this is rarely ever used. There is also the <a
+        href="https://lore.kernel.org/lkml/1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com/">S.A.R.A. LSM</a> but this is yet to
+        be accepted upstream.
+      </li>
+
+      <li class="lilist">
+        One of the most common memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">
+        uninitialized memory</a>. Windows <a href="https://msrc-blog.microsoft.com/2020/05/13/solving-uninitialized-stack-memory-on-windows/">
+        uses InitAll</a> to automatically initialize stack variables to zero for the kernel and some user space code as well as <a
+        href="https://msrc-blog.microsoft.com/2020/07/02/solving-uninitialized-kernel-pool-memory-on-windows/">safer APIs for the kernel pool</a>
+        whereas the solution in Linux is... nothing. There are some mitigations for kernel memory specifically but this doesn't cover
+        any user space code and good luck finding a mainstream distribution that actually enables them.
+      </li>
+    </ul>
+  </p>
+
+  <h2 id="kernel"><a href="kernel">Kernel</a></h2>
+
+  <p>
+    The kernel is also very lacking in security. It is a monolithic kernel, meaning it contains a colossal amount of code all within
+    the most privileged part of the operating system. The kernel has huge attack surface and is constantly adding new and dangerous features.
+    The Linux kernel is equivalent to running all user space code as root in PID 1. <br>
+    <br>
+    One example of these features is <a href="https://lwn.net/Articles/740157/">eBPF</a>. In a nutshell, eBPF is a framework within the
+    Linux kernel that allows <i>unprivileged</i> user space to execute arbitrary code within the kernel for increased performance. eBPF
+    also includes a JIT compiler which is fundamentally a W^X violation and opens up the possibility of JIT spraying. The kernel does perform
+    a number of checks on the code that is executed but even then, this feature <a
+    href="https://ricklarabee.blogspot.com/2018/07/ebpf-and-analysis-of-get-rekt-linux.html">has</a> <a
+    href="https://nitter.net/spendergrsec/status/1244703091037024257">still</a> <a
+    href="https://nitter.net/bleidl/status/943714277403357185">caused</a> <a
+    href="https://scannell.me/fuzzing-for-ebpf-jit-bugs-in-the-linux-kernel/">numerous</a> <a
+    href="https://www.thezdi.com/blog/2020/4/8/cve-2020-8835-linux-kernel-privilege-escalation-via-improper-ebpf-program-verification">security</a>
+    <a href="https://haxx.in/blasty-vs-ebpf.c">vulnerabilities</a>. <br>
+    <br>
+    Another example of these features is <a href="https://www.man7.org/linux/man-pages/man7/user_namespaces.7.html">user namespaces</a>.
+    User namespaces allow unprivileged users to interact with lots of kernel code that is normally reserved for the root user. It adds a
+    massive amount of networking, mount, etc. functionality as new attack surface. It has also been the cause of <a
+    href="https://lists.archlinux.org/pipermail/arch-general/2017-February/043066.html">numerous</a> <a
+    href="https://lists.archlinux.org/pipermail/arch-general/2017-February/043078.html">privilege</a> <a
+    href="https://github.com/a13xp0p0v/kconfig-hardened-check#questions-and-answers">escalation</a>
+    <a href="https://github.com/subgraph/oz/issues/11#issuecomment-163396758">vulnerabilities</a> which is why many distributions <a
+    href="https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/patches/debian/add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by-default.patch">
+    such as Debian</a> have started to restrict it by default. The endless stream of vulnerabilities
+    arising from this feature shows no sign of stopping either even after years since its introduction. <br>
+    <br>
+    The kernel is written entirely in a memory unsafe language and has hundreds of bugs, many being security vulnerabilities, <a
+    href="https://events19.linuxfoundation.org/wp-content/uploads/2017/11/Syzbot-and-the-Tale-of-Thousand-Kernel-Bugs-Dmitry-Vyukov-Google.pdf">discovered
+    each <i>month</i></a>. In fact, there are so many bugs being found in the kernel, developers can’t keep up which
     results in many of the bugs <a href="https://syzkaller.appspot.com/upstream">staying unfixed for a long time</a>.
-    The kernel is also <a href="https://jon.oberheide.org/files/syscan12-exploitinglinux.pdf">decades behind in exploit
-      mitigations</a> and many kernel developers simply <a
-      href="https://www.washingtonpost.com/sf/business/2015/11/05/net-of-insecurity-the-kernel-of-the-argument/">do not
-      care enough</a>. <br>
+    <a href="https://jon.oberheide.org/files/syscan12-exploitinglinux.pdf">The kernel is decades behind in exploit
+    mitigations</a> and many kernel developers simply <a
+    href="https://www.washingtonpost.com/sf/business/2015/11/05/net-of-insecurity-the-kernel-of-the-argument/">do not
+    care enough</a>. <br>
     <br>
-    On ordinary desktops, a compromised non-root user account with access to <code>sudo</code> is <a
-    href="https://www.whonix.org/wiki/Dev/Strong_Linux_User_Account_Isolation">almost equal to full
-    root compromise</a> as there are too many ways for an attacker to retrieve the sudo password. Usually, the standard user
-    is part of group <code>sudo</code> which makes this a massive issue and makes a sudo password almost security
-    theater. For example, the attacker can exploit the plethora of keylogging opportunities such as <a
-      href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">X’s lack of GUI
+    Other kernels such as the  Windows and macOS kernels are somewhat similar too in that they are also large and bloated monolithic kernels with huge
+    attack surface but they at least realise that these issues exist and take further steps to mitigate them.
+  </p>
+
+  <h2 id="root"><a href="#root">The Non-Existent Boundary of Root</a></h2>
+
+  <p>
+    On ordinary desktops, <a
+    href="https://www.whonix.org/wiki/Dev/Strong_Linux_User_Account_Isolation">a compromised non-root user account with access
+    to <code>sudo</code> is almost equal to full root compromise</a> as there are too many ways for an attacker to retrieve the
+    sudo password. Usually, the standard user is part of group <code>sudo</code> which makes this a massive issue and makes a
+    sudo password security theater. For example, the attacker can exploit the plethora of keylogging opportunities such as <a
+      href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">Xorg’s lack of GUI
       isolation</a>, the <a href="https://www.openwall.com/lists/oss-security/2011/11/05/3">many infoleaks in
-      <code>/proc</code></a>, use <a href="https://github.com/Aishou/wayland-keylogger"><code>LD_PRELOAD</code> to hook
+      <code>/proc</code></a>, using <a href="https://github.com/Aishou/wayland-keylogger"><code>LD_PRELOAD</code> to hook
       into every process</a> and so much more. Even if we mitigate every single way to log keystrokes, the attacker can
-    just setup their own fake sudo program to grab the user password. <br>
-    <br>
+    just setup their own fake sudo program to grab the user password.
+  </p>
+
+  <h2 id="examples"><a href="#examples">Examples</a></h2>
+
+  <p>
     This is all it takes to get your <code>sudo</code> password:
     <pre><code>cat &lt;&lt;\EOF > /tmp/sudo
 #!/bin/bash
@@ -70,46 +196,52 @@ xinput test id # replace "id" with the ID from the above command</code></pre>
     <br>
     etc. <br>
     <br>
-    Now the attacker is just a <code>modprobe</code> away from full kernel privileges.
+    Now the attacker is just a <code>modprobe</code> away from full kernel privileges. <br>
+    <br>
+    An attacker can also trivially setup a session-wide rootkit via <code>LD_PRELOAD</code> or similar variables:
+    <br>
+    <pre><code>echo "LD_PRELOAD=\"/path/to/malicious_library\"" >> ~/.bashrc</code></pre> <br>
+    <br>
+    This technique is quite common and is used in the majority of user space rootkits. A few examples are <a
+    href="https://github.com/chokepoint/azazel">azazel</a>, <a href="https://github.com/chokepoint/Jynx2">Jynx2</a>
+    and <a href="https://www.intezer.com/blog/linux/hiddenwasp-malware-targeting-linux-systems/">HiddenWasp</a>. <br>
+    <br>
+    These are just a few examples and they don't even require exploiting bugs.
+  </p>
+
+  <h2 id="distro-specific-issues"><a href="#distro-specific-issues">Distribution-Specific Issues</a></h2>
+
+  <h3 id="debian"><a href="#debian">Debian, Ubuntu, RHEL, CentOS</a></h3>
+
+  <p>
+    Debian, among other distributions such as Ubuntu that freeze packages for a long time only ever backport security fixes
+    that receive a CVE. However, this misses the majority of them. Most fixes do not receive CVEs because either the developer
+    doesn’t care or because it’s not obvious whether or not a bug is exploitable at first. <br>
+    <br>
+    Debian maintainers cannot analyze every single commit perfectly and backport every security fix. They have to rely on CVEs
+    which people do not use properly. <br>
+    <br>
+    For example, the Linux kernel is <a href="https://github.com/gregkh/presentation-cve-is-dead/blob/master/cve-linux-kernel.pdf">
+    particularly</a>
+    <a href="https://grsecurity.net/reports_of_cves_death_greatly_exaggerated">bad</a> at this. Even when there is a CVE for the
+    issue, sometimes fixes still aren't backported such as in the Debian Chromium package which is <a
+    href="https://forums.whonix.org/t/chromium-browser-for-kicksecure-discussions-not-whonix/10388/49">still affected by many severe
+    and public vulnerabilities, some of which are even being exploited in the wild.
   </p>
 
   <h2 id="hardening"><a href="#hardening">"But I harden my system!"</a></h2>
 
   <p>
     Standard system hardening is not enough to fix any of these massive architectural security issues. Restricting a few
-    minor things is not going to fix this. Likewise, a few common security features distros deploy by default is also
-    not going to fix this. Just because your distro enables a MAC framework without creating a strict policy and still
+    minor things is not going to fix this. Likewise, a few common security features distributions deploy by default is also
+    not going to fix this. Just because your distribution enables a MAC framework without creating a strict policy and still
     running most processes unconfined, doesn't mean you can escape from these. <br>
     <br>
-    The hardening required for a reasonably secure Linux distro is far greater than people assume. You will need full
+    The hardening required for a reasonably secure Linux distribution is far greater than people assume. You will need full
     system MAC policies, full verified boot (not just the kernel but the entire base system), a strong sandboxing
     architecture, a hardened kernel, widespread use of modern exploit mitigations and plenty more.
   </p>
 
-  <h3 id="flatpak"><a href="#flatpak">Flatpak</a></h3>
-
-  <p>
-    Flatpak aims to sandbox applications but <a href="https://flatkill.org/">its sandboxing is very flawed</a>. It fully
-    trusts the applications and allows them to specify their own policy. This means security is optional and apps can
-    just choose not to be sufficiently sandboxed. <br>
-    <br>
-    Flatpak's permissions are also far too broad to be meaningful. For example, many applications come with
-    <code>filesystem=home</code> which is read-write access to the user's home directory, giving access to all of your
-    personal files and allowing trivial escapes via writing to <code>~/.bashrc</code> or similar. <br>
-    <br>
-    Another example of Flatpak's broad permissions is how it allows unfiltered access to the X11 socket, allowing easy
-    escapes due to X11's lack of GUI isolation. Adding X11 sandboxing via a nested X11 server such as Xpra is easy but
-    Flatpak developers refuse to acknowledge this and continue to claim <a
-      href="https://blogs.gnome.org/alexl/2015/02/17/first-fully-sandboxed-linux-desktop-app/">"X11 is impossible to
-      secure"</a>. <br>
-    <br>
-    Even more examples of this is how Flatpak gives full access to directories such as <code>/sys</code> or
-    <code>/proc</code> (kernel interfaces known for information leaks). <br>
-    <br>
-    <i>Another</i> example is how the seccomp filter <a
-      href="https://github.com/flatpak/flatpak/blob/f687f6b2ebfe9bc69f59e42bb96475ca01f08548/common/flatpak-run.c#L2646-L2693">
-    only blacklists ~20 syscalls</a>.
-  </p>
   <p class="p-final">
     <a href="index.html" class="back">Go back</a>
   </p>
