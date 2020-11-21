@@ -140,6 +140,11 @@ code {
     padding-bottom: 5rem;
 }
 
+.date {
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+}
+
 @media screen and (max-width: 45em) {
     body {
         padding: 25px;
