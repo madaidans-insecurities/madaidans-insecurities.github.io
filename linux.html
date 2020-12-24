@@ -178,7 +178,9 @@
 
   <p>
     This is all it takes to get your <code>sudo</code> password:
-    <pre><code>cat &lt;&lt;\EOF > /tmp/sudo
+  </p>
+
+  <pre><code>cat &lt;&lt;\EOF > /tmp/sudo
 #!/bin/bash
 if [[ "${@}" = "" ]]; then
   /usr/bin/sudo
@@ -191,19 +193,25 @@ fi
 EOF
 chmod +x /tmp/sudo
 export PATH="/tmp:${PATH}"</code></pre>
-    <br>
+
+  <p>
     Or:
-    <pre><code>xinput list # find your keyboard ID
+  </p>
+
+  <pre><code>xinput list # find your keyboard ID
 xinput test id # replace "id" with the ID from the above command</code></pre>
-    <br>
+
+  <p>
     etc. <br>
     <br>
     Now the attacker is just a <code>modprobe</code> away from full kernel privileges. <br>
     <br>
     An attacker can also trivially setup a session-wide rootkit via <code>LD_PRELOAD</code> or similar variables:
-    <br>
-    <pre><code>echo "LD_PRELOAD=\"/path/to/malicious_library\"" >> ~/.bashrc</code></pre> <br>
-    <br>
+  </p>
+
+  <pre><code>echo "LD_PRELOAD=\"/path/to/malicious_library\"" >> ~/.bashrc</code></pre>
+
+  <p>
     This technique is quite common and is used in the majority of user space rootkits. A few examples are <a
     href="https://github.com/chokepoint/azazel">azazel</a>, <a href="https://github.com/chokepoint/Jynx2">Jynx2</a>
     and <a href="https://www.intezer.com/blog/linux/hiddenwasp-malware-targeting-linux-systems/">HiddenWasp</a>. <br>
@@ -228,7 +236,7 @@ xinput test id # replace "id" with the ID from the above command</code></pre>
     <a href="https://grsecurity.net/reports_of_cves_death_greatly_exaggerated">bad</a> at this. Even when there is a CVE for the
     issue, sometimes fixes still aren't backported such as in the Debian Chromium package which is <a
     href="https://forums.whonix.org/t/chromium-browser-for-kicksecure-discussions-not-whonix/10388/49">still affected by many severe
-    and public vulnerabilities, some of which are even being exploited in the wild.
+    and public vulnerabilities, some of which are even being exploited in the wild</a>.
   </p>
 
   <h2 id="hardening"><a href="#hardening">"But I harden my system!"</a></h2>
