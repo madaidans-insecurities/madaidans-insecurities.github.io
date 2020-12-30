@@ -11,7 +11,7 @@
 <body>
   <h1>OpenBSD</h1>
 
-  <p class="date"><i><time datetime="2020-10-05">Last edited: October 5, 2020</time></i></p>
+  <p class="date"><i><time datetime="2020-12-30">Last edited: December 30, 2020</time></i></p>
 
   <p>
     Despite popular belief, OpenBSD's security is actually lacking in a lot of ways.
@@ -20,19 +20,22 @@
   <h2 id="half-baked-mitigations"><a href="#half-baked-mitigations">Half-Baked Mitigations</a></h2>
 
   <p>
-    Many of OpenBSD's exploit mitigations are actually half-baked or even useless. This is a nonexhaustive list of a few
+    Many of OpenBSD's exploit mitigations are half-baked or even useless. This is a nonexhaustive list of a few
     of them.
   </p>
 
   <ul>
     <li class="lilist">
       One of OpenBSD's popular features is its <a href="https://undeadly.org/cgi?action=article&sid=20160527203200">"W^X"</a>
-      but OpenBSD's W^X is not a complete implementation. It <a href="https://github.com/openbsd/src/commit/9f25ea04447">only
-      prevents someone from creating a memory mapping with writable and executable permissions</a> but does not prevent someone
-      from transitioning a writable memory mapping to executable which makes it not very hard to bypass. An attacker can
-      create a ROP chain to transition the mapping to executable and execute their shellcode from there. Many exploits in the
-      wild have been shown to do this instead of purely relying on ROP since that takes more effort. Complete implementations
-      are already found in other operating systems like <a
+      however, OpenBSD's W^X is not a complete implementation — it does <a href="https://github.com/openbsd/src/commit/9f25ea04447">
+      prevent a process from creating a memory mapping with both writable and executable permissions</a> but it does not prevent
+      a process from transitioning a writable memory mapping to executable. This means that it's not very hard to bypass. <br>
+      <br>
+      An attacker can simply write code to a writable memory mapping, create a ROP chain to transition the mapping to executable and
+      then execute their shellcode from there. Many exploits in the wild have been shown to do this instead of purely relying on ROP
+      since that takes more effort. <br>
+      <br>
+      Complete W^X implementations are already found in other operating systems like <a
       href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">Windows'
       ACG</a>, iOS' code signing and so on. <a
       href="https://lore.kernel.org/lkml/1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com/">Even Linux is working on it</a>,
@@ -45,16 +48,16 @@
       Another of OpenBSD's mitigations is <a href="https://undeadly.org/cgi?action=article&sid=20170622065629">TRAPSLED</a>.
       This aims to neutralize NOP sleds but this mitigation <a
       href="https://isopenbsdsecu.re/mitigations/trapsled/">doesn't really do
-      anything with ASLR</a>. TRAPSLED can definitely be useful for some non-security use cases but it is absolutely not an
-      exploit mitigation.
+      anything since the adoption of ASLR</a>. TRAPSLED can be useful for some non-security use cases but it is absolutely
+      not an exploit mitigation.
     </li>
 
     <li class="lilist">
       <a href="https://marc.info/?l=openbsd-tech&m=150317547021396&w=2">RETGUARD</a> is a supposed mitigation against ROP
       but it <a href="https://nitter.net/lazytyped/status/899173090550312961">is trivially bypassed with an arbitrary read</a>.
       It is not a solid mitigation for ROP unlike proper mitigations such as <a href="https://clang.llvm.org/docs/ShadowCallStack.html">
-      ShadowCallStack</a>, <a href="https://software.intel.com/sites/default/files/managed/4d/2a/control-flow-enforcement-technology-preview.pdf">
-      CET</a>, <a href="https://grsecurity.net/rap_faq">PaX RAP</a>, etc. Meaningful defenses against ROP are again, already found in
+      Clang's ShadowCallStack</a>, <a href="https://software.intel.com/sites/default/files/managed/4d/2a/control-flow-enforcement-technology-preview.pdf">
+      Intel CET shadow stacks</a>, <a href="https://grsecurity.net/rap_faq">PaX RAP</a>, etc. Meaningful defenses against ROP are again, already found in
       other operating systems like <a
       href="https://techcommunity.microsoft.com/t5/windows-kernel-internals/understanding-hardware-enforced-stack-protection/ba-p/1247815">
       Windows' CET</a>, <a href="https://developer.apple.com/documentation/security/preparing_your_app_to_work_with_pointer_authentication">iOS'
@@ -72,7 +75,7 @@
   <ul>
     <li class="lilist">
       OpenBSD has no reliable protection against code reuse attacks. It only has a few mitigations that aren't very effective
-      as discussed above. It lacks both forward and backward-edge protection meanwhile Windows has a coarse-grained forward-edge
+      as discussed above. It lacks both forward and backward-edge protection. Meanwhile, Windows has a coarse-grained forward-edge
       <a href="https://en.wikipedia.org/wiki/Control-flow_integrity">Control-Flow Integrity</a> (CFI) implementation known as
       <a href="https://docs.microsoft.com/en-us/windows/win32/secbp/control-flow-guard">Control Flow Guard</a> as well as
       backward-edge protection via <a
@@ -87,9 +90,9 @@
     </li>
 
     <li class="lilist">
-      Verified boot is an important security feature that eliminates privileged malware persistence by verifying the integrity
-      of the entire base operating system. This is most commonly used on mobile devices with <a
-      href="https://source.android.com/security/verifiedboot/">Android</a> and <a
+      <a href="android.html#unlocking-the-bootloader">Verified boot</a> is an important security feature that eliminates privileged
+      malware persistence by verifying the integrity of the entire base operating system. This is most commonly used on mobile devices
+      with <a href="https://source.android.com/security/verifiedboot/">Android</a> and <a
       href="https://www.apple.com/ca/business/docs/site/iOS_Security_Guide.pdf">iOS</a> both having solid implementations but desktop
       operating systems have made substantial progress on this as well, mainly <a href="https://support.apple.com/en-jo/HT208330">
       macOS</a> and <a
@@ -98,7 +101,7 @@
     </li>
 
     <li class="lilist">
-      <a href="http://phrack.org/issues/52/6.html#article">Trusted Path Execution</a> (TPE) prevents an attacker from executing arbitary code
+      <a href="http://phrack.org/issues/52/6.html#article">Trusted Path Execution</a> (TPE) prevents an attacker from executing arbitrary code
       from the filesystem and can be used as a supplement to proper W^X to prevent dynamic native code execution in both memory and the
       filesystem but, like the lack of actual W^X, OpenBSD also has no TPE.
     </li>
@@ -139,27 +142,27 @@
     cryptography and standalone tools, just not really when it comes to general OS security.
   </p>
 
-  <h2 id="other-criticism"><a href="#other-criticism">Other Criticism</a></h2>
+  <h2 id="other-criticism"><a href="#other-criticism">Other Security Researcher Views on OpenBSD</a></h2>
 
   <p>
-    OpenBSD has also received a lot of criticism from many respected security experts. One example is <a
-      href="https://grsecurity.net/~spender/exploits/exp_moosecox.c">Brad Spengler</a>, the developer of grsecurity.
-  </p>
-
-  <h2 id="additional-resources"><a href="#additional-resources">Additional Resources</a></h2>
-
-  <p>
-    This website goes more in-depth into the issues with most of OpenBSD's mitigations: <a
-      href="https://isopenbsdsecu.re/">https://isopenbsdsecu.re/</a>
+    Many security experts <a href="https://grsecurity.net/~spender/exploits/exp_moosecox.c">also</a>
+    <a href="https://nitter.net/grsecurity/status/1211303353340366848">share</a>
+    <a href="https://nitter.net/uid1000/status/1138409210889363456">these</a>
+    <a href="https://nitter.net/lazytyped/status/899184004792016896">views</a>
+    <a href="https://old.reddit.com/r/GrapheneOS/comments/bddq5u/os_security_ios_vs_grapheneos_vs_stock_android/elgl6xt/">about</a>
+    <a href="https://nitter.net/qwertyoruiopz/status/899178816047902721">OpenBSD</a>. <br>
+    <br>
+    This website especially goes very in-depth into the issues with most of OpenBSD's mitigations: <a
+    href="https://isopenbsdsecu.re/">https://isopenbsdsecu.re/</a>
   </p>
 
   <h2 id="alternative"><a href="#alternative">Alternative</a></h2>
 
   <p>
     A more promising alternative to OpenBSD is <a href="https://hardenedbsd.org/">HardenedBSD</a>. There are
-    advantages/disadvantages of HardenedBSD over OpenBSD. HardenedBSD has many mitigations OpenBSD does not such as CFI,
+    advantages and disadvantages of HardenedBSD over OpenBSD. HardenedBSD has many mitigations OpenBSD does not such as CFI,
     SafeStack, SEGVGUARD, a proper W^X implementation and more but it lacks things OpenBSD has such as LibreSSL, a
-    hardened malloc etc.
+    hardened memory allocator, etc.
   </p>
 
   <p class="p-final">
