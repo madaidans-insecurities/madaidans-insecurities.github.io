@@ -76,8 +76,9 @@
     <li class="lilist">
       LineageOS <a href="https://github.com/LineageOS/hudson/blob/master/lineage-build-targets">uses
       userdebug builds by default</a>. This <a href="https://source.android.com/setup/build/building#choose-a-target">
-      adds many debugging features as additional attack surface</a>. It also weakens various SELinux polices and exposes
-      root access via adb which <a href="#root">as discussed above</a>, is not a good idea.
+      adds many debugging features as additional attack surface</a>. It also <a
+      href="https://github.com/LineageOS/android_system_sepolicy/search?q=userdebug&type=code">weakens various SELinux
+      polices</a> and exposes root access via adb which <a href="#root">as discussed above</a>, is not a good idea.
     </li>
 
     <li class="lilist">
