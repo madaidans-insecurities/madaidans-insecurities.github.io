@@ -9,7 +9,7 @@
   <body>
     <h1>Linux Hardening Guide</h1>
 
-    <p class="date"><i><time datetime="2020-12-25">Last edited: December 25, 2020</time></i></p>
+    <p class="date"><i><time datetime="2021-03-05">Last edited: March 5, 2021</time></i></p>
 
     <p>
       <a href="../linux.html">Linux is not a secure operating system</a>. However, there are steps you can take to improve it. This guide aims to explain
@@ -771,7 +771,7 @@ install btusb /bin/false</code></pre>
       Removing the user from the <code>adm</code> group is often sufficient to revoke access to these logs:
     </p>
 
-    <pre><code>gpasswd -d adm $user</code></pre>
+    <pre><code>gpasswd -d $user adm</code></pre>
 
     <h3 id="restricting-sysfs"><a href="#restricting-sysfs">2.7 Restricting access to sysfs</a></h3>
 
