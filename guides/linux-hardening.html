@@ -957,12 +957,15 @@ PrivateUsers=yes
 PrivateDevices=true
 MemoryDenyWriteExecute=true
 NoNewPrivileges=true
+LockPersonality=true
 RestrictRealtime=true
 RestrictSUIDSGID=true
 RestrictAddressFamilies=AF_INET
 RestrictNamespaces=yes
 SystemCallFilter=write read openat close brk fstat lseek mmap mprotect munmap rt_sigaction rt_sigprocmask ioctl nanosleep select access execve getuid arch_prctl set_tid_address set_robust_list prlimit64 pread64 getrandom
 SystemCallArchitectures=native
+UMask=0077
+IPAddressDeny=any
 AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <p>
@@ -985,12 +988,18 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       <li><code>PrivateDevices=true</code> — Creates a new <code>/dev</code> mount with minimal devices present.</li>
       <li><code>MemoryDenyWriteExecute=true</code> — Enforces a memory W^X policy.</li>
       <li><code>NoNewPrivileges=true</code> — Prevents escalating privileges.</li>
+      <li><code>LockPersonality=true</code> — Locks down the <code>personality()</code> syscall to prevent switching execution domains.</li>
       <li><code>RestrictRealtime=true</code> — Prevents attempts to enable realtime scheduling.</li>
       <li><code>RestrictSUIDSGID=true</code> — Prevents executing setuid or setgid binaries.</li>
       <li><code>RestrictAddressFamilies=AF_INET</code> — Restricts the usable socket address families to IPv4 only (<code>AF_INET</code>).</li>
       <li><code>RestrictNamespaces=true</code> — Prevents creating any new namespaces.</li>
-      <li><code>SystemCallFilter=...</code> — Restricts the allowed syscalls to the absolute minimum.</li>
+      <li><code>SystemCallFilter=...</code> — Restricts the allowed syscalls to the absolute minimum. If you aren't willing to maintain your own custom seccomp filter, then systemd provides many <a
+      href="https://www.freedesktop.org/software/systemd/man/systemd.exec.html#System%20Call%20Filtering">predefined system call sets</a> that you can use. <code>@system-service</code> will be suitable
+      for many use cases.</li>
       <li><code>SystemCallArchitectures=native</code> — Prevents executing syscalls from other CPU architectures.</li>
+      <li><code>UMask=0077</code> — Sets the <a href="#umask">umask</a> to a more restrictive value.</li>
+      <li><code>IPAddressDeny=any</code> — Blocks all incoming and outgoing traffic to/from any IP address. Set <code>IPAddressAllow=</code> to configure a whitelist. Alternatively, setup a network
+      namespace with <code>PrivateNetwork=true</code>.</li>
       <li><code>AppArmorProfile=...</code> — Runs the process under the specified AppArmor profile.</li>
     </ul>
 
