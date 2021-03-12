@@ -87,22 +87,27 @@
 
   <ul>
     <li class="lilist">
-      <a href="https://en.wikipedia.org/wiki/Control-flow_integrity">Control-Flow Integrity</a> is an exploit mitigation that aims to prevent
-      code reuse attacks like ROP or JOP. A large portion of vulnerabilities are exploited using these techniques due to mitigations like NX
-      making older techniques obsolete. On Linux, CFI is practically non-existent outside of Chromium whereas
-      Windows has their own coarse-grained, forward-edge CFI implementation, <a
-      href="https://docs.microsoft.com/en-us/windows/win32/secbp/control-flow-guard">Control Flow Guard</a> (CFG) as well as <a
+      <a href="https://en.wikipedia.org/wiki/Control-flow_integrity">Control-Flow Integrity</a> is an exploit mitigation that <a
+      href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">aims to prevent code reuse attacks like ROP or JOP</a>.
+      A large portion of vulnerabilities are exploited using these techniques due to more widely adopted mitigations such as NX making older
+      exploit techniques obsolete. On Linux, CFI is practically non-existent outside of Chromium whereas Windows has their own coarse-grained,
+      forward-edge CFI implementation, <a href="https://docs.microsoft.com/en-us/windows/win32/secbp/control-flow-guard">Control Flow Guard</a>
+      (CFG) as well as <a
       href="https://techcommunity.microsoft.com/t5/windows-kernel-internals/understanding-hardware-enforced-stack-protection/ba-p/1247815">
       Intel CET shadow stacks for backward-edge protection</a>. While CFG is only coarse-grained, Microsoft are <a
-      href="https://connormcgarr.github.io/examining-xfg/">working on making it more fine-grained</a>.
+      href="https://connormcgarr.github.io/examining-xfg/">working on making it more fine-grained</a>. <a
+      href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf">M1 Macs also use Pointer Authentication
+      Codes</a> (PAC) to ensure forward and backward-edge protection.
     </li>
 
     <li class="lilist">
       A very basic exploit technique is simply to find a way to execute the attackers own malicious code either by loading
       a malicious library on disk or by dynamically modifying executable code in memory. Linux has yet to provide strong mitigations
       against this while Windows has <a href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">
-      Arbitrary Code Guard and Code Integrity Guard</a> to enforce strict W^X and mitigate this avenue of attacks. SELinux does provide
-      the <code>execmem</code> boolean, however this is rarely ever used. There is also the <a
+      Arbitrary Code Guard and Code Integrity Guard</a> to enforce strict W^X and mitigate this avenue of attacks. macOS also has <a
+      href="https://developer.apple.com/documentation/security/hardened_runtime">Hardened Runtime</a> for user space code and M1 Macs have
+      <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf">Kernel Integrity Protection</a> (KIP)
+      for kernel code. On Linux, SELinux does provide the <code>execmem</code> boolean however, this is rarely ever used. There is also the <a
       href="https://lore.kernel.org/lkml/1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com/">S.A.R.A. LSM</a> but this is yet to
       be accepted upstream.
     </li>
@@ -110,10 +115,21 @@
     <li class="lilist">
       One of the most common memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">
       uninitialized memory</a>. Windows <a href="https://msrc-blog.microsoft.com/2020/05/13/solving-uninitialized-stack-memory-on-windows/">
-      uses InitAll</a> to automatically initialize stack variables to zero for the kernel and some user space code as well as <a
+      uses InitAll</a> to automatically initialize stack variables to zero for the kernel and some user space code, as well as <a
       href="https://msrc-blog.microsoft.com/2020/07/02/solving-uninitialized-kernel-pool-memory-on-windows/">safer APIs for the kernel pool</a>
-      whereas the solution in Linux is... nothing. There are some mitigations for kernel memory specifically but this doesn't cover
+      whereas on Linux, there are some mitigations for kernel memory specifically but this doesn't cover
       any user space code and good luck finding a mainstream distribution that actually enables them.
+    </li>
+
+    <li class="lilist">
+      Windows supports <a href="https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs">Virtualization-based Security</a>
+      (VBS) which allows it to run the entire operating system inside of a virtual machine — this is used to enforce a number of security guarantees.
+      One example of these is Hypervisor-Enforced Code Integrity (HVCI) which makes it significantly harder to inject malicious code into the kernel.
+      Another example is <a
+      href="https://www.microsoft.com/security/blog/2020/07/08/introducing-kernel-data-protection-a-new-platform-security-technology-for-preventing-data-corruption/">
+      Kernel Data Protection</a> (KDP) — this prevents tampering with kernel data structures, making <a
+      href="https://www.blackhat.com/docs/asia-17/materials/asia-17-Sun-The-Power-Of-Data-Oriented-Attacks-Bypassing-Memory-Mitigation-Using-Data-Only-Exploitation-Technique.pdf">
+      data-only attacks</a> more difficult. On Linux, there is no equivalent.
     </li>
   </ul>
 
