@@ -46,9 +46,12 @@
     full system SELinux policy</a>. Even the init system does not have unrestricted root access. Exposing privileges far
     greater than any other part of the OS to the application layer is not a good idea. <br>
     <br>
-    It does not matter if you have to whitelist apps that have root. An attacker can fake user input by for example,
+    It does not matter if you have to whitelist apps that have root — an attacker can fake user input by for example,
     <a href="https://en.wikipedia.org/wiki/Clickjacking">clickjacking</a> or they can exploit vulnerabilities in apps that
-    you have granted root to. By rooting your device, you are breaking Android's security model and adding further layers
+    you have granted root to. Rooting turns huge portions of the operating system into root attack surface; vulnerabilities
+    in the UI layer — such as in the display server, among other things — can now be abused to gain complete root access. In
+    addition, root fundamentally breaks verified boot and other security features by placing excessive trust in persistent
+    state. By rooting your device, you are breaking Android's security model and adding further layers
     of trust where it is inappropriate. <br>
     <br>
     A common argument for rooting is that Linux allows root but this does not account for the fact that the average
