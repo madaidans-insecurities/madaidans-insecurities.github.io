@@ -90,12 +90,25 @@
     flipping all of the other switches, including the network switches which effectively turns your device into a brick
     just to prevent audio recording. <br>
     <br>
-    The network kill switch is useless since the attacker can just wait until you turn them back on again to exfiltrate
-    data. If you need to disable network access, you can use airplane mode. Airplane mode can be disabled via a software
-    vulnerability but if an attacker has those capabilities, then they can also simply sit and record any sensitive data
-    and eventually upload it once you re-enable the hardware network kill switch, making it no more effective than airplane
-    mode. <br>
-    <br>
+    The network kill switch has two primary threat models: preventing cell tower triangulation or preventing data exfiltration
+    after the device has been compromised. The switch is useless in either of these threat models:
+  </p>
+
+  <ul>
+    <li class="lilist">
+      To prevent cell tower triangulation, you can simply enable airplane mode and it is just as effective.
+    </li>
+
+    <li class="lilist">
+      The network kill switch is useless for preventing data exfiltration since the attacker can just wait until you toggle
+      the switch on again to exfiltrate data. If you need to temporarily disable network access, you can use airplane mode.
+      Airplane mode can be disabled via a software vulnerability but if an attacker has those capabilities already, then
+      they can also simply sit and record any sensitive data and eventually upload it once you re-enable the hardware network
+      kill switch, making it no more effective than airplane mode.
+    </li>
+  </ul>
+
+  <p>
     The camera kill switch can be useful as a small usability improvement but it is really no better than some tape.
   </p>
 
