@@ -156,6 +156,16 @@
     surfaces so this isn't anything substantial and <a href="https://www.chromium.org/Home/chromium-security/memory-safety">Chromium is working on
     switching to memory-safe languages too</a>. <br>
     <br>
+    Additionally, writing parts in a memory-safe language does not necessarily improve security and may even <i>degrade</i> security by allowing for
+    bypasses of exploit mitigations. Some security features are geared towards a particular language and in an environment where different languages
+    are mixed, <a href="https://www.cs.ucy.ac.cy/~eliasathan/papers/tops20.pdf">those features may be bypassed by abusing the other language</a>. For
+    example, when mixing C and Rust code in the same binary with CFI enabled, the integrity of the control flow will be guaranteed in the C code but the
+    Rust code will remain unchanged because buffer overflows are impossible in Rust anyway. However, this allows an attacker to bypass CFI by exploiting
+    a buffer overflow in the C code and then abusing the lack of protection in the Rust code to hijack the control flow. Mixed binaries can be secure but
+    only if those security features are applied for all languages. Currently, <a href="https://opensrcsec.com/open_source_security_announces_rust_gcc_funding">
+    compilers generally don't support this</a>, excluding <a href="https://msrc-blog.microsoft.com/2020/08/17/control-flow-guard-for-clang-llvm-and-rust/">
+    Windows' Control Flow Guard support in Clang</a>. <br>
+    <br>
     Firefox also uses <a href="https://hacks.mozilla.org/2020/02/securing-firefox-with-webassembly/">RLBox</a> but this
     is only used to sandbox a single library, Graphite and again, is not anything substantial.
   </p>
