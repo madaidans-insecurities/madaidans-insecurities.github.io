@@ -11,7 +11,7 @@
 <body>
   <h1>Why encrypted DNS is ineffective</h1>
 
-  <p class="date"><i><time datetime="2020-09-25">Last edited: September 25, 2020</time></i></p>
+  <p class="date"><i><time datetime="2021-03-27">Last edited: March 27, 2021</time></i></p>
 
   <p>
     Encrypted DNS (<a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS">DoH</a>, <a
@@ -36,7 +36,13 @@
 
   <p>
     Encrypted DNS does prevent someone monitoring your traffic from seeing what domain you looked up via DNS but
-    this doesn't really matter since there are so many other ways to get that exact same information anyway.
+    this doesn't really matter since <a href="https://nitter.snopyta.org/PowerDNS_Bert/status/1175744071673028608">
+    there</a> <a href="https://blog.powerdns.com/2019/09/25/centralised-doh-is-bad-for-privacy-in-2019-and-beyond/">
+    are</a> <a href="https://grapheneos.org/faq#private-dns-visited">so</a> <a href="https://arxiv.org/pdf/1911.00563.pdf">
+    many</a> <a
+    href="https://old.reddit.com/r/GrapheneOS/comments/fajx43/verizon_pixel_how_dangerous_to_install_graphene/fiz0klm/?context=3">
+    other</a> <a href="https://www.ndss-symposium.org/wp-content/uploads/2020/02/24301-paper.pdf">ways</a> to get that
+    exact same information anyway.
   </p>
 
   <h3 id="sni"><a href="#sni">SNI</a></h3>
@@ -49,8 +55,8 @@
     <img src="images/wireshark-sni.jpg" alt="SNI in Wireshark">
     <br>
     <br>
-    There have been <a href="https://blog.cloudflare.com/esni/">efforts to encrypt SNI</a> which solves this
-    issue but currently, it's not very widespread.
+    There have been <a href="https://blog.cloudflare.com/encrypted-client-hello/">efforts to encrypt SNI</a>
+    which solves this issue but currently, it's not very widespread.
   </p>
 
   <h3 id="ocsp"><a href="#ocsp">OCSP</a></h3>
