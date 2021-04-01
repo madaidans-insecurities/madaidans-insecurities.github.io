@@ -11,7 +11,7 @@
 <body>
   <h1>Firefox and Chromium Security</h1>
 
-  <p class="date"><i><time datetime="2020-10-13">Last edited: October 13, 2020</time></i></p>
+  <p class="date"><i><time datetime="2021-03-20">Last edited: March 20, 2021</time></i></p>
 
   <p>
     Chromium is far more secure than Firefox. Firefox's sandboxing and exploit mitigations are much poorer than Chromium's.
@@ -28,127 +28,143 @@
     With a sandbox, they would need to chain their exploit with an additional sandbox escape vulnerability. <br>
     <br>
     However, sandboxes are not black and white. Just having a sandbox doesn't do much if it's full of holes.
-    Firefox's sandbox is quite weak for the following reasons: <br>
+    Firefox's sandbox is quite weak for the following reasons:
+  </p>
 
-    <ul class="ullist">
-      <li class="lilist">
-        Firefox's <a href="https://wiki.mozilla.org/Security/Sandbox">sandboxing</a> lacks any <a
-        href="https://www.chromium.org/Home/chromium-security/site-isolation">site isolation</a>. Site isolation runs
-        every website inside its own sandbox so that malware in one website cannot access the data from another.
-        Mozilla is working on this with <a
-        href="https://wiki.mozilla.org/Project_Fission">Project Fission</a> but it is still a WIP. The sandbox is currently
-        only focused on isolating the browser as a whole from the rest of the OS and even that is still not great.
-      </li>
+  <ul>
+    <li class="lilist">
+      Firefox's <a href="https://wiki.mozilla.org/Security/Sandbox">sandboxing</a> lacks any <a
+      href="https://www.chromium.org/Home/chromium-security/site-isolation">site isolation</a>. Site isolation runs
+      every website inside its own sandbox so that malware in one website cannot access the data from another.
+      Mozilla is working on this with <a
+      href="https://wiki.mozilla.org/Project_Fission">Project Fission</a> but it is still a WIP. The sandbox is currently
+      only focused on isolating the browser as a whole from the rest of the OS and even that is still not great.
+    </li>
 
-      <li class="lilist">
-        Excluding the issue
-        of site isolation, only the Firefox sandbox on Windows is similar to <a
-        href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md">Chromium's</a> but even then,
-        it <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=win32k">lacks</a> <a
-        href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">win32k lockdown</a>. Win32k is a set of
-        dangerous system calls in the NT kernel that expose a lot of attack surface and has been the result of many
-        vulnerabilities before. Microsoft aimed to lessen this risk by introducing a feature that <a
-        href="https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-process_mitigation_system_call_disable_policy?redirectedfrom=MSDN">
-        allows a program to block access to these syscalls, massively reducing attack surface</a>. Chromium implemented this in 2016
-        to strengthen the sandbox but Firefox has yet to follow suit.
-      </li>
+    <li class="lilist">
+      Excluding the issue
+      of site isolation, only the Firefox sandbox on Windows is similar to <a
+      href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md">Chromium's</a> but even then,
+      it <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=win32k">lacks</a> <a
+      href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">win32k lockdown</a>. Win32k is a set of
+      dangerous system calls in the NT kernel that expose a lot of attack surface and has been the result of many
+      vulnerabilities before. Microsoft aimed to lessen this risk by introducing a feature that <a
+      href="https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-process_mitigation_system_call_disable_policy">
+      allows a program to block access to these syscalls, therefore massively reducing attack surface</a>. <a
+      href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#win32k_sys-lockdown">Chromium
+      implemented this in 2016</a> to strengthen the sandbox but Firefox has yet to follow suit.
+    </li>
 
-      <li class="lilist">
-        The sandboxing on other platforms is much worse and the Linux sandbox even has unfixed critical sandbox escape issues such as through the
-        <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">X11 server</a> that go back as far as 5 years. The problem with X11
-        is that it <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">
-        doesn't implement any GUI isolation</a>. This makes it <a href="https://mjg59.dreamwidth.org/42320.html">very easy to escape sandboxes</a>.
-        Chromium resolves this issue by only exposing X11 to the GPU process so the renderer process (the process in which websites are loaded)
-        cannot access them.
-      </li>
+    <li class="lilist">
+      The sandboxing on other platforms is much worse and the Linux sandbox even has unfixed critical sandbox escape issues such as through the
+      <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">X11 server</a> that go back as far as 5 years. The problem with X11
+      is that it <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">
+      doesn't implement any GUI isolation</a> which makes it <a href="https://mjg59.dreamwidth.org/42320.html">very easy to escape sandboxes</a>.
+      Chromium resolves this issue by only exposing X11 to the GPU process so the renderer process (the process in which websites are loaded)
+      cannot access them.
+    </li>
 
-      <li class="lilist">
-        The issues with the Linux sandbox also go far beyond X11. One example is that
-        there is <a
-        href="https://wiki.mozilla.org/Security/Sandbox/Process_model#GPU_Process">no sandboxing at all for the GPU process</a>.
-      </li>
+    <li class="lilist">
+      The issues with the Linux sandbox also go far beyond X11. Another example
+      is that the seccomp filter is weaker; an example of this is that there is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1302711">
+      very little ioctl filtering</a> and <a
+      href="https://searchfox.org/mozilla-central/rev/9ae77e4ce3378bd683ac9a86b729ea6b6bd22cb8/security/sandbox/linux/SandboxFilter.cpp#1291">
+      only TTY-related ioctls are blocked</a>. Ioctl is a massive kernel attack surface that comprises of hundreds of different syscalls and
+      is somewhat similar to NT's Win32k. Android <a href="https://kernsec.org/files/lss2015/vanderstoep.pdf">implemented ioctl filtering in its
+      application sandbox</a> for this exact reason. Chromium permits only a few ioctls in its sandbox which reduces attack surface by a considerable
+      amount.
+    </li>
 
-      <li class="lilist">
-        Another example
-        is that the seccomp filter is weaker; for example, there is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1302711">
-        very little ioctl filtering</a> and <a
-        href="https://dxr.mozilla.org/mozilla-central/rev/a5cb1a40413ebfb37e68bc8961e5a46467f06d14/security/sandbox/linux/SandboxFilter.cpp#1125">
-        only TTY-related ioctls are blocked</a>. Ioctl is a massive kernel attack surface that comprises of hundreds of different syscalls.
-        It is somewhat similar to NT's Win32k. Android <a href="https://kernsec.org/files/lss2015/vanderstoep.pdf">implemented ioctl filtering in its application sandbox</a>
-        for this exact reason. Chromium allows only a few ioctls which reduces attack surface a considerable amount.
-        These issues are only a few examples and there are a lot more issues with the sandbox.
-      </li>
+    <li class="lilist">
+      On Linux, there is also <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1653444">no separate GPU process</a>, meaning it cannot
+      be sandboxed. This process <a href="https://wiki.mozilla.org/Security/Sandbox/Process_model#GPU_Process">exists on Windows</a> however,
+      <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1347710">the sandboxing for it is still not enabled</a>.
+    </li>
 
-      <li class="lilist">
-        On Android, Firefox <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1565196">does not have a sandbox at all beyond
-        the OS app sandbox</a> unlike Chromium which uses the <a
-        href="https://developer.android.com/guide/topics/manifest/service-element#isolated"><code>isolatedProcess</code>
-        feature</a> along with a more strict seccomp-bpf filter.
-      </li>
-    </ul>
+    <li class="lilist">
+      On Android, Firefox <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1565196">does not have a sandbox at all beyond
+      the OS app sandbox</a> unlike Chromium which uses the <a
+      href="https://developer.android.com/guide/topics/manifest/service-element#isolated"><code>isolatedProcess</code>
+      feature</a> along with a more strict seccomp-bpf filter.
+    </li>
+  </ul>
+
+  <p>
+    This is a non-exhaustive list — the above issues are only a few examples.
   </p>
 
   <h2 id="exploit-mitigations"><a href="#exploit-mitigations">Firefox's Exploit Mitigations</a></h2>
 
   <p>
-    Exploit mitigations are self-explanatory. They mitigate certain types of exploits. Firefox lacks many important mitigations
-    while Chromium generally excels in this area.
-
-    <ul class="ullist">
-      <li class="lilist">
-        Firefox lacks a hardened memory allocator. Firefox currently uses <a href="https://searchfox.org/mozilla-central/source/memory/build/mozjemalloc.cpp">
-        mozjemalloc</a> which is a fork of <a href="https://github.com/jemalloc/jemalloc">jemalloc</a>. Jemalloc is a performance-oriented
-        memory allocator. It doesn't focus on security which makes it <a
-        href="https://media.blackhat.com/bh-us-12/Briefings/Argyoudis/BH_US_12_Argyroudis_Exploiting_the_%20jemalloc_Memory_%20Allocator_Slides.pdf">
-        very friendly to exploitation</a>. Mozjemalloc does add on a few security features to jemalloc which is good but <a
-        href="https://lists.torproject.org/pipermail/tor-dev/2019-August/013990.html">it is not enough to
-        fix the issues present in the overall architecture of the allocator</a>. Chromium instead uses <a
-        href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md">
-        PartitionAlloc</a> which is much more <a href="https://struct.github.io/partition_alloc.html">hardened</a> than mozjemalloc.
-      </li>
-
-      <li class="lilist">
-        <a href="https://en.wikipedia.org/wiki/Control-flow_integrity">Control-Flow Integrity</a> (CFI) is an exploit mitigation that aims to prevent
-        code reuse attacks like ROP or JOP. A large portion of vulnerabilities are exploited using these techniques due to mitigations like NX
-        making older techniques obsolete. Mozilla has been <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=510629">planning to implement CFI for a while</a>
-        but has yet to make much progress. On Linux and Android, Chromium <a href="https://www.chromium.org/developers/testing/control-flow-integrity">uses Clang's
-        forward-edge CFI</a> and on Windows, they <a href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#Process-mitigation-policies">
-        use Control Flow Guard</a>.
-      </li>
-
-      <li class="lilist">
-        All common browsers include a <a href="https://en.wikipedia.org/wiki/Just-in-time_compilation">JIT compiler</a> to improve performance.
-        There is an inherent security hole in JIT however and that is the requirement of memory that is both writable and executable (a
-        <a href="https://en.wikipedia.org/wiki/W%5EX">W^X</a> violation). Due to not wanting massive security issues while also wanting
-        better performance, browsers have adopted JIT hardening techniques in an attempt to make exploiting JIT security issues much harder.
-        In <a href="https://github.com/struct/research/blob/master/Attacking_Clientside_JIT_Compilers_Paper.pdf">this study</a>, it
-        shows that Chromium's JIT engine has far better mitigations than Firefox's.
-      </li>
-
-      <li class="lilist">
-        A very basic exploit technique is simply to find a way to execute the attackers own malicious code either by loading
-        a malicious library on disk or by dynamically modifying executable code in memory. <a
-        href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">Arbitrary Code Guard (ACG) and Code Integrity
-        Guard (CIG) mitigate both of these issues</a>. Chromium <a href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#Process-mitigation-policies">
-        enables these by default</a>, but Firefox lacks both <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1381050">ACG</a> and <a
-        href="https://bugzilla.mozilla.org/show_bug.cgi?id=1378417">
-        CIG</a>. Technically, this is only a issue on Windows but that's only because other operating systems lack these mitigations in the first place.
-      </li>
-
-      <li class="lilist">
-        There are many more issues than these though but this article doesn't need to be a full novel. You can look through
-        <a href="https://bugzilla.mozilla.org/home">Mozilla's own bug tracker</a> for more examples.
-      </li>
-    </ul>
+    Exploit mitigations eliminate entire classes of common vulnerabilities / exploit techniques to prevent or severely hinder exploitation.
+    Firefox lacks many important mitigations while Chromium generally excels in this area.
   </p>
+
+  <ul>
+    <li class="lilist">
+      Firefox lacks a hardened memory allocator. Firefox currently uses <a href="https://searchfox.org/mozilla-central/source/memory/build/mozjemalloc.cpp">
+      mozjemalloc</a> which is a fork of <a href="https://github.com/jemalloc/jemalloc">jemalloc</a>. Jemalloc is a performance-oriented
+      memory allocator — it doesn't focus on security which makes it <a
+      href="https://media.blackhat.com/bh-us-12/Briefings/Argyoudis/BH_US_12_Argyroudis_Exploiting_the_%20jemalloc_Memory_%20Allocator_Slides.pdf">
+      very friendly to exploitation</a>. Mozjemalloc does add on a few security features to jemalloc which is useful but <a
+      href="https://lists.torproject.org/pipermail/tor-dev/2019-August/013990.html">it is not enough to
+      fix the issues present in the overall architecture of the allocator</a>. Chromium instead uses <a
+      href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md">
+      PartitionAlloc</a> which is much more <a href="https://struct.github.io/partition_alloc.html">hardened</a> than mozjemalloc.
+    </li>
+
+    <li class="lilist">
+      <a href="https://en.wikipedia.org/wiki/Control-flow_integrity">Control-Flow Integrity</a> (CFI) is an exploit mitigation that <a
+      href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">aims to prevent code reuse attacks like ROP or JOP</a>. A
+      large portion of vulnerabilities are exploited using these techniques due to more widely adopted mitigations such as NX making older exploit
+      techniques obsolete. Mozilla has been <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=510629">planning to implement CFI for a while</a>
+      but has yet to make much progress. On Linux and Android, Chromium <a href="https://www.chromium.org/developers/testing/control-flow-integrity">uses Clang's
+      forward-edge CFI</a> and on Windows, they <a href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#Process-mitigation-policies">
+      use Control Flow Guard</a>.
+    </li>
+
+    <li class="lilist">
+      All common browsers include a <a href="https://en.wikipedia.org/wiki/Just-in-time_compilation">JIT compiler</a> to improve performance.
+      There is an inherent security hole in JIT however and that is the requirement of memory that is both writable and executable (a
+      <a href="https://en.wikipedia.org/wiki/W%5EX">W^X</a> violation). Due to not wanting massive security issues while also wanting
+      better performance, browsers have adopted JIT hardening techniques in an attempt to make exploiting JIT security issues significantly more
+      difficult. In <a href="https://github.com/struct/research/blob/master/Attacking_Clientside_JIT_Compilers_Paper.pdf">this study</a>, it
+      shows that Chromium's (V8) JIT engine has far better mitigations than Firefox's.
+    </li>
+
+    <li class="lilist">
+      A very basic exploit technique is simply to find a way to execute the attacker's own malicious code, either by loading
+      a malicious library on disk or by dynamically modifying executable code in memory. <a
+      href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">Arbitrary Code Guard (ACG) and Code Integrity
+      Guard (CIG) mitigate both of these issues</a>. Chromium <a href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#Process-mitigation-policies">
+      enables these by default</a>, but Firefox lacks both <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1381050">ACG</a> and <a
+      href="https://bugzilla.mozilla.org/show_bug.cgi?id=1378417">
+      CIG</a>. Technically, this is only a issue on Windows but that's only because other operating systems lack these mitigations in the first place.
+    </li>
+
+    <li class="lilist">
+      There are many more issues than these but this is not an exhaustive list. You can look through <a href="https://bugzilla.mozilla.org/home">Mozilla's
+      own bug tracker</a> for more examples.
+    </li>
+  </ul>
 
   <h2 id="miscellaneous"><a href="#miscellaneous">Miscellaneous</a></h2>
 
   <p>
     Firefox <a href="https://wiki.mozilla.org/Oxidation">does have some parts written in Rust, a memory-safe language</a>,
-    but the majority of the browser is still written in memory-unsafe languages so this isn't anything substantial and
-    <a href="https://www.chromium.org/Home/chromium-security/memory-safety">Chromium is working on switching to memory-safe
-    languages too</a>. <br>
+    but the majority of the browser is still written in memory-unsafe languages and the parts that are memory-safe do not include important attack
+    surfaces so this isn't anything substantial and <a href="https://www.chromium.org/Home/chromium-security/memory-safety">Chromium is working on
+    switching to memory-safe languages too</a>. <br>
+    <br>
+    Additionally, writing parts in a memory-safe language does not necessarily improve security and may even <i>degrade</i> security by allowing for
+    bypasses of exploit mitigations. Some security features are geared towards a particular language and in an environment where different languages
+    are mixed, <a href="https://www.cs.ucy.ac.cy/~eliasathan/papers/tops20.pdf">those features may be bypassed by abusing the other language</a>. For
+    example, when mixing C and Rust code in the same binary with CFI enabled, the integrity of the control flow will be guaranteed in the C code but the
+    Rust code will remain unchanged because buffer overflows are impossible in Rust anyway. However, this allows an attacker to bypass CFI by exploiting
+    a buffer overflow in the C code and then abusing the lack of protection in the Rust code to hijack the control flow. Mixed binaries can be secure but
+    only if those security features are applied for all languages. Currently, <a href="https://opensrcsec.com/open_source_security_announces_rust_gcc_funding">
+    compilers generally don't support this</a>, excluding <a href="https://msrc-blog.microsoft.com/2020/08/17/control-flow-guard-for-clang-llvm-and-rust/">
+    Windows' Control Flow Guard support in Clang</a>. <br>
     <br>
     Firefox also uses <a href="https://hacks.mozilla.org/2020/02/securing-firefox-with-webassembly/">RLBox</a> but this
     is only used to sandbox a single library, Graphite and again, is not anything substantial.
@@ -162,9 +178,10 @@
     https://archive.fo/9aBLk">also share</a> <a
     href="https://news.ycombinator.com/item?id=13623735">these</a> <a href="
     https://marc.info/?l=openbsd-misc&m=152872551609819&w=2">views</a> <a
-    href="https://nitter.net/tqbf/status/930807512609296384">about</a> <a
-    href="https://nitter.net/tqbf/status/930860544927649792">Firefox</a>.
+    href="https://nitter.snopyta.org/tqbf/status/930807512609296384">about</a> <a
+    href="https://nitter.snopyta.org/tqbf/status/930860544927649792">Firefox</a>.
   </p>
+
   <p class="p-final">
     <a href="index.html" class="back">Go back</a>
   </p>

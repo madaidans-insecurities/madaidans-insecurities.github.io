@@ -11,31 +11,31 @@
 <body>
   <h1>Android</h1>
 
-  <p class="date"><i><time datetime="2020-09-25">Last edited: September 25, 2020</time></i></p>
+  <p class="date"><i><time datetime="2021-03-20">Last edited: March 20, 2021</time></i></p>
 
   <p>
-    Android by default has a strong security model with <a href="https://source.android.com/security/selinux/">
-    full system SELinux policies</a>, <a href="https://source.android.com/security/app-sandbox">strong app sandboxing</a>,
+    By default, Android has a <a href="https://arxiv.org/abs/1904.05572">strong security model</a> and incorporates
+    <a href="https://source.android.com/security/selinux/"> full system SELinux policies</a>, <a
+    href="https://source.android.com/security/app-sandbox">strong app sandboxing</a>,
     <a href="https://source.android.com/security/verifiedboot">full verified boot</a>, modern exploit mitigations like
     <a href="https://source.android.com/devices/tech/debug/cfi">fine-grained forward-edge Control-Flow Integrity</a> and
     <a href="https://source.android.com/devices/tech/debug/shadow-call-stack">ShadowCallStack</a>, widespread use of
-    memory-safe languages (Java) and more. This article talks about common ways people ruin the security model rather
-    than criticisms of the security model itself.
+    memory-safe languages (Java / Kotlin) and more. As such, this article explains common ways in which people worsen the
+    security model rather than criticisms of the security model itself.
   </p>
 
   <h2 id="unlocking-the-bootloader"><a href="#unlocking-the-bootloader">Unlocking the bootloader</a></h2>
 
   <p>
-    Unlocking the bootloader in Android is a massive security risk. It disables <a
-      href="https://source.android.com/security/verifiedboot/">verified boot</a>, a fundamental part of the security
-    model. Verified boot ensures the integrity of the base system and boot chain to prevent malware persistence. If an
-    attacker has managed to compromise the entire system and gain extremely high privileges, verified boot will revert
-    their changes upon reboot and ensure they cannot persist. <br>
+    Unlocking the bootloader in Android is a large security risk. It disables <a
+    href="https://source.android.com/security/verifiedboot/">verified boot</a>, a fundamental part of the security
+    model. Verified boot ensures the integrity of the base system and boot chain to prevent <a href="https://en.wikipedia.org/wiki/Evil_maid_attack">
+    evil maid attacks</a> and malware persistence. <br>
     <br>
-    Verified boot is not just for physical security as many people assume. Its main purpose is protection against remote
-    attackers and the physical security is a nice side-effect. <br>
-    <br>
-    Unlocking the bootloader is highly unrecommended.
+    Contrary to common assumptions, verified boot is not just important for physical security — it prevents the persistence
+    of <b>any</b> tampering with your system, be it from a physical attacker or a malicious application that has managed to
+    hook itself into the operating system. For example, if a remote attacker has managed to exploit the system and gain high
+    privileges, verified boot would revert their changes upon reboot and ensure that they cannot persist.
   </p>
 
   <h2 id="rooting"><a href="#rooting">Rooting your device</a></h2>
@@ -43,50 +43,83 @@
   <p>
     Rooting your device allows an attacker to easily gain extremely high privileges. Android's architecture is built
     upon <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>. By default,
-    unrestricted root is found nowhere in the system thanks to the <a href="https://source.android.com/security/selinux">
-    full system SELinux policy</a>. Even the init system is not unrestricted
-    root. Exposing privileges far greater than any other part of the OS to the application layer is very silly. <br>
+    unrestricted root is found nowhere in the system due to the <a href="https://source.android.com/security/selinux">
+    full system SELinux policy</a>. Even the init system does not have unrestricted root access. Exposing privileges far
+    greater than any other part of the OS to the application layer is not a good idea. <br>
     <br>
-    It does not matter if you have to whitelist apps that have root. An attacker can fake user input by for example,
-    clickjacking or they can exploit vulnerabilities in apps that you have granted root to. <br>
+    It does not matter if you have to whitelist apps that have root — an attacker can fake user input by for example,
+    <a href="https://en.wikipedia.org/wiki/Clickjacking">clickjacking</a> or they can exploit vulnerabilities in apps that
+    you have granted root to. Rooting turns huge portions of the operating system into root attack surface; vulnerabilities
+    in the UI layer — such as in the display server, among other things — can now be abused to gain complete root access. In
+    addition, root fundamentally breaks verified boot and other security features by placing excessive trust in persistent
+    state. By rooting your device, you are breaking Android's security model and adding further layers
+    of trust where it is inappropriate. <br>
     <br>
-    People often try to argue that if root was insecure then why does Linux allow root. Linux does not have a security
-    model like Android does. On the usual Linux system, <a href="linux.html">gaining root is extremely easy</a>.
+    A common argument for rooting is that Linux allows root but this does not account for the fact that the average
+    desktop Linux system does not have a security model like Android does. On the usual Linux system, <a
+    href="linux.html#root">gaining root is extremely easy</a>. This is why Linux hardening procedures often involve
+    restricting access to the root account.
   </p>
 
   <h2 id="custom-roms"><a href="#custom-roms">Custom ROMs</a></h2>
 
   <p>
-    The majority of custom ROMs ruin the security model by disabling verified boot, using userdebug builds,
-    disabling SELinux, not including firmware updates, and a lot more. A common ROM that does many of these
-    is LineageOS.
+    The majority of custom ROMs severely weaken the security model by disabling verified boot, using userdebug builds,
+    disabling SELinux and various other issues. Furthermore, you are also usually at the mercy of the maintainer to
+    apply security updates properly. Certain ROMs often apply security patches late or sometimes not apply them at all,
+    especially when it comes to firmware patches.
   </p>
 
   <h3 id="lineageos"><a href="#lineageos">LineageOS</a></h3>
 
   <p>
-    LineageOS uses <a href="https://github.com/LineageOS/hudson/blob/master/lineage-build-targets">userdebug builds</a>
-    which <a href="https://source.android.com/setup/build/building">adds tons of debugging tools as extra attack
-      surface</a>, weakens SELinux polices and exposes root access via adb. LineageOS requires an unlocked bootloader
-    and disables verified boot which is essential to verify the integrity of the OS. It does not implement rollback
-    protection so an attacker can downgrade the OS to an old version and exploit already patched vulnerabilities (you
-    can tell as the updater allows you to downgrade versions). It does not include firmware updates which prevents you
-    from getting new patches to fix vulnerabilities. And there are plenty more issues. <br>
-    <br>
-    LineageOS (and most other custom ROMs) are focused on customizing the device and not privacy/security.
+    A common ROM that has many of these issues is <a href="https://lineageos.org/">LineageOS</a>:
+  </p>
+
+  <ul>
+    <li class="lilist">
+      LineageOS <a href="https://github.com/LineageOS/hudson/blob/master/lineage-build-targets">uses
+      userdebug builds by default</a>. This <a href="https://source.android.com/setup/build/building#choose-a-target">
+      adds many debugging features as additional attack surface</a>. It also <a
+      href="https://github.com/LineageOS/android_system_sepolicy/search?q=userdebug&type=code">weakens various SELinux
+      polices</a> and exposes root access via adb which <a href="#root">as discussed above</a>, is not a good idea.
+    </li>
+
+    <li class="lilist">
+      LineageOS requires an unlocked bootloader, therefore disabling verified boot which <a href="#unlocking-the-bootloader">
+      is essential to verify the integrity of the operating system</a>.
+    </li>
+
+    <li class="lilist">
+      It does not implement <a href="https://source.android.com/security/verifiedboot/verified-boot#rollback-protection">
+      rollback protection</a>. This allows an attacker to downgrade the system to an older version and then exploit already
+      patched vulnerabilities. The default updater even allows you to downgrade versions yourself.
+    </li>
+
+    <li class="lilist">
+      Most LineageOS builds also do not include firmware updates which prevents users from getting new patches to fix
+      vulnerabilities. Instead, it gives a pop-up advising users to flash updates manually that most people will simply
+      ignore.
+    </li>
+  </ul>
+
+  <p>
+    This is a non-exhaustive list. There are more issues than just those listed above. LineageOS (and most other custom
+    ROMs) are focused on customizing the device and not privacy or security. Of course, you could build LineageOS yourself
+    to fix many of these issues but most users will not be capable of doing so.
   </p>
 
   <h2 id="microg-signature-spoofing"><a href="#microg-signature-spoofing">MicroG / Signature Spoofing</a></h2>
 
   <p>
-    <a href="https://microg.org/">MicroG</a> is a common alternative to Google Play Services. Many people use this to get
-    rid of Google tracking on their device but many people do not realise that this substantially worsens security as it
-    <a href="https://github.com/microg/android_packages_apps_GmsCore/wiki/Signature-Spoofing">requires signature spoofing</a>
-    which allows apps to request to bypass signature verification. <br>
+    <a href="https://microg.org/">MicroG</a> is a common alternative to Google Play Services. It is often used to get rid
+    of Google's tracking but most people do not realise that this can potentially worsen security as it
+    <a href="https://github.com/microg/android_packages_apps_GmsCore/wiki/Signature-Spoofing">requires signature spoofing
+    support</a> which allows apps to request to bypass signature verification. <br>
     <br>
-    Although, some signature spoofing implementations restrict it to make it less bad such as the one <a
-      href="https://gitlab.com/calyxos/platform_frameworks_base/commit/dccce9d969f11c1739d19855ade9ccfbacf8ef76">used by
-    CalyxOS</a>.
+    Although, some signature spoofing implementations restrict it to make it less bad such as <a
+    href="https://gitlab.com/calyxos/platform_frameworks_base/commit/dccce9d969f11c1739d19855ade9ccfbacf8ef76">CalyxOS'
+    implementation</a> which allows only microG to spoof the Play Services signature and nothing else.
   </p>
 
   <h2 id="firewalls"><a href="#firewalls">Firewalls</a></h2>
@@ -94,36 +127,40 @@
   <p>
     Firewalls such as <a href="https://github.com/ukanth/afwall/">AFWall+</a> or <a href="https://www.netguard.me/">
     Netguard</a> are regularly used on Android to attempt to block network access from a specific app but these
-    do not reliably work. Apps can use IPC to bypass the restrictions. If you cut off network access to an app, it
+    do not reliably work — apps can use IPC to bypass the restrictions. If you cut off network access to an app, it
     will not prevent the app from sending an <a href="https://developer.android.com/reference/android/content/Intent">
     intent</a> to another app (such as the browser) to make it make the same connection. <br>
     <br>
-    Many apps already do this unintentionally with things such as with the <a
+    Many apps already do this unintentionally whilst using APIs such as the <a
     href="https://developer.android.com/reference/android/app/DownloadManager">download manager</a>. <br>
     <br>
-    The most effective way to block network access is to run the app in its own profile so it cannot communicate
-    with apps outside of the profile and revoke the <code>INTERNET</code> permission from the app like <a
-      href="https://github.com/GrapheneOS/platform_frameworks_base/commit/5e2898e9d21dd6802bb0b0139e7e496c41e1cd80">
-    GrapheneOS allows you to do</a>.
+    The most effective way to block network access is to revoke the <code>INTERNET</code> permission from the app
+    like <a href="https://github.com/GrapheneOS/platform_frameworks_base/commit/5e2898e9d21dd6802bb0b0139e7e496c41e1cd80">
+    GrapheneOS allows you to do</a>. This prevents abusing OS APIs to initiate network connections as they contain checks
+    for that permission, one example of which is the aforementioned download manager. You should also run the app in its
+    own user or work profile to ensure that it cannot abuse third party apps either.
   </p>
 
   <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 
   <p>
-    The best option for privacy/security on Android is to get a Pixel >=3 and flash <a href="https://grapheneos.org/">
-    GrapheneOS</a>. GrapheneOS does not contain any tracking unlike the stock OS on most devices and includes many
-    hardening enhancements such as a <a href="https://github.com/GrapheneOS/hardened_malloc">hardened memory allocator</a>,
-    <a href="https://github.com/GrapheneOS/platform_bionic">hardened C library</a>, <a href="https://github.com/GrapheneOS/kernel_google_crosshatch">
+    The best option for privacy and security on Android is to get a Pixel 3 or greater and flash <a href="https://grapheneos.org/">
+    GrapheneOS</a>. <br>
+    <br>
+    GrapheneOS does not contain any tracking unlike the stock OS on most devices. Additionally, GrapheneOS retains the baseline
+    security model whilst improving upon it with substantial hardening enhancements — examples of which include a
+    <a href="https://github.com/GrapheneOS/hardened_malloc">hardened memory allocator</a>,
+    <a href="https://github.com/GrapheneOS/platform_bionic">hardened C library</a>, <a href="https://github.com/GrapheneOS/kernel_google_coral">
     hardened kernel</a>, <a href="https://github.com/GrapheneOS/platform_system_sepolicy">stricter SELinux policies</a>
     and more. <br>
     <br>
-    Pixels are also the best hardware to use as they have lots of hardening other devices lack such as full <a
-     href="https://source.android.com/security/verifiedboot/">verified boot</a> with support for custom keys,
-    <a href="https://www.blog.google/products/pixel/titan-m-makes-pixel-3-our-most-secure-phone-yet/">Titan M</a>, <a
-     href="https://media.defcon.org/DEF%20CON%2027/DEF%20CON%2027%20presentations/DEFCON-27-Xiling-Gong-Peter-Pi-Exploiting-Qualcomm-WLAN-and-Modem-Over-The-Air.pdf">
-    hardened basebands, a good IOMMU to isolate hardware devices</a>, <a href="https://android-developers.googleblog.com/2018/10/control-flow-integrity-in-android-kernel.html">
-    fine-grained forward-edge kernel Control-Flow Integrity</a>, <a href="https://security.googleblog.com/2019/10/protecting-against-code-reuse-in-linux_30.html">
-    kernel ShadowCallStack</a>, etc. <br>
+    Pixel devices are the best hardware to use as they have a lot of hardening that other devices lack such as <a
+    href="https://source.android.com/security/verifiedboot/">full verified boot</a> with support for custom keys,
+    <a href="https://www.blog.google/products/pixel/titan-m-makes-pixel-3-our-most-secure-phone-yet/">the Titan M chip</a>, <a
+    href="https://media.defcon.org/DEF%20CON%2027/DEF%20CON%2027%20presentations/DEFCON-27-Xiling-Gong-Peter-Pi-Exploiting-Qualcomm-WLAN-and-Modem-Over-The-Air.pdf">
+    decent SoC exploit mitigations and a strict IOMMU to isolate physical components</a>, <a href="https://android-developers.googleblog.com/2018/10/control-flow-integrity-in-android-kernel.html">
+    fine-grained forward-edge Control-Flow Integrity</a> and <a href="https://security.googleblog.com/2019/10/protecting-against-code-reuse-in-linux_30.html">
+    ShadowCallStack</a> for the kernel, etc. <br>
     <br>
     Remember that GrapheneOS cannot prevent you from ruining your privacy yourself. You still have to be
     careful regardless of the operating system.

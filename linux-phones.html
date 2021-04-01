@@ -11,7 +11,7 @@
 <body>
   <h1>Linux Phones</h1>
 
-  <p class="date"><i><time datetime="2020-11-21">Last edited: November 21, 2020</time></i></p>
+  <p class="date"><i><time datetime="2021-03-12">Last edited: March 12, 2021</time></i></p>
 
   <h2 id="comparison"><a href="#comparison">Comparison with Other Phones</a></h2>
 
@@ -26,45 +26,46 @@
     which modern Android phones already deploy. <br>
     <br>
     Distributions like PureOS are not particularly secure. They are mostly a reskinned Debian.
+  </p>
 
-    <ul class="ullist">
-      <li class="lilist">
-        AppArmor is enabled but the majority of processes still run unconfined so it's mostly negligible.
-      </li>
+  <ul>
+    <li class="lilist">
+      AppArmor is enabled but the majority of processes still run unconfined so it's mostly negligible.
+    </li>
 
-      <li class="lilist">
-        PureOS <a
-        href="https://source.puri.sm/pureos/packages/pureos-security-hardening">changes a few security-relevant
-        settings</a> but these are also mostly negligible:
-      </li>
+    <li class="lilist">
+      PureOS <a
+      href="https://source.puri.sm/pureos/packages/pureos-security-hardening">changes a few security-relevant
+      settings</a> but these are also mostly negligible:
+    </li>
 
-      <li class="lilist">
-        They don't apply the exec-shield patch so that sysctl
-        doesn't even exist in the first place;
-      </li>
+    <li class="lilist">
+      They don't apply the exec-shield patch so that sysctl doesn't even exist in the first place;
+    </li>
 
-      <li class="lilist">
-        The purpose of disabling kexec is to prevent root from booting a malicious kernel but root can do so many other
-        things to modify the kernel such as loading a kernel module;
-      </li>
+    <li class="lilist">
+      The purpose of disabling kexec is to prevent root from booting a malicious kernel but root can do so many other
+      things to modify the kernel such as loading a kernel module;
+    </li>
 
-      <li class="lilist">
-        Hiding kernel symbols from <code>/proc</code> ignores
-        the fact that they're clearly visible in System.map;
-      </li>
+    <li class="lilist">
+      Hiding kernel symbols from <code>/proc</code> ignores
+      the fact that they're clearly visible in System.map;
+    </li>
 
-      <li class="lilist">
-        And finally, disabling source routing is already a Debian default.
-      </li>
+    <li class="lilist">
+      And finally, disabling source routing is already a Debian default.
+    </li>
 
-      <li class="lilist">
-        PureOS also uses <a href="https://en.wikipedia.org/wiki/Linux-libre">linux-libre</a>. This will prevent you
-        from loading any proprietary firmware updates which just so happens to be almost all of them. <a
-        href="https://puri.sm/posts/librem5-solving-the-first-fsf-ryf-hurdle/">Librem 5 prevents you from even flashing
-        new firmware manually</a> which forces you to use outdated and insecure firmware with known vulnerabilities.
-      </li>
-    </ul>
+    <li class="lilist">
+      PureOS also uses <a href="https://en.wikipedia.org/wiki/Linux-libre">linux-libre</a>. This will prevent you
+      from loading any proprietary firmware updates which just so happens to be almost all of them. <a
+      href="https://puri.sm/posts/librem5-solving-the-first-fsf-ryf-hurdle/">Librem 5 prevents you from even flashing
+      new firmware manually</a> which forces you to use outdated and insecure firmware with known vulnerabilities.
+    </li>
+  </ul>
 
+  <p>
     The hardware itself lacks many modern security features too such as <a href="https://source.android.com/security/verifiedboot/">
     proper verified boot</a>, <a href="https://source.android.com/security/keystore/">a hardware-backed keystore</a>
     (some PGP smartcard is not equivalent) and more. <br>
@@ -89,12 +90,25 @@
     flipping all of the other switches, including the network switches which effectively turns your device into a brick
     just to prevent audio recording. <br>
     <br>
-    The network kill switch is useless since the attacker can just wait until you turn them back on again to exfiltrate
-    data. If you need to disable network access, you can use airplane mode. Airplane mode can be disabled via a software
-    vulnerability but if an attacker has those capabilities, then they can also simply sit and record any sensitive data
-    and eventually upload it once you re-enable the hardware network kill switch, making it no more effective than airplane
-    mode. <br>
-    <br>
+    The network kill switch has two primary threat models: preventing cell tower triangulation or preventing data exfiltration
+    after the device has been compromised. The switch is useless in either of these threat models:
+  </p>
+
+  <ul>
+    <li class="lilist">
+      To prevent cell tower triangulation, you can simply enable airplane mode and it is just as effective.
+    </li>
+
+    <li class="lilist">
+      The network kill switch is useless for preventing data exfiltration since the attacker can just wait until you toggle
+      the switch on again to exfiltrate data. If you need to temporarily disable network access, you can use airplane mode.
+      Airplane mode can be disabled via a software vulnerability but if an attacker has those capabilities already, then
+      they can also simply sit and record any sensitive data and eventually upload it once you re-enable the hardware network
+      kill switch, making it no more effective than airplane mode.
+    </li>
+  </ul>
+
+  <p>
     The camera kill switch can be useful as a small usability improvement but it is really no better than some tape.
   </p>
 
@@ -106,11 +120,12 @@
     the modem is via the Linux kernel USB stack which is not a strong barrier as shown in the <a href="linux.html">Linux
       article</a>. <br>
     <br>
-    There is also a lot of misinformation about how the modem being on a separate chip means it's isolated - this is
+    There is also a lot of misinformation about how the modem being on a separate chip means it's isolated — this is
     completely untrue. Just look at how FireWire for example can be <a
     href="https://en.wikipedia.org/wiki/IEEE_1394#Security_issues">abused for DMA</a> while being completely separate
     from the rest of the hardware. Whether or not the modem is on a separate chip is irrelevant to if it's isolated.
   </p>
+
   <p class="p-final">
     <a href="index.html" class="back">Go back</a>
   </p>
