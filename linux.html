@@ -64,7 +64,7 @@
   <h3 id="firejail"><a href="#firejail">Firejail</a></h3>
 
   <p>
-    Firejail also aims to sandbox applications but is, again, uneffective. If anything, it worsens security by acting as a
+    Firejail also aims to sandbox applications but is, again, ineffective. If anything, it worsens security by acting as a
     privilege escalation hole. Firejail requires being SUID root, meaning it executes with the privileges of the root user.
     This could be acceptable if Firejail followed good security practices but, unfortunately, they do not. Firejail has too
     large attack surface which has resulted in <a href="https://seclists.org/oss-sec/2017/q1/25">many</a> <a
@@ -160,7 +160,7 @@
     <a href="https://github.com/subgraph/oz/issues/11#issuecomment-163396758">vulnerabilities</a> which is why many distributions <a
     href="https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/patches/debian/add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by-default.patch">
     such as Debian</a> have started to restrict it by default. The endless stream of vulnerabilities
-    arising from this feature shows no sign of stopping either even after years since its introduction. <br>
+    arising from this feature shows no sign of stopping either, even after years since its introduction. <br>
     <br>
     The kernel is written entirely in a memory unsafe language and has hundreds of bugs, many being security vulnerabilities, <a
     href="https://events19.linuxfoundation.org/wp-content/uploads/2017/11/Syzbot-and-the-Tale-of-Thousand-Kernel-Bugs-Dmitry-Vyukov-Google.pdf">discovered
@@ -180,14 +180,15 @@
   <p>
     On ordinary desktops, <a
     href="https://www.whonix.org/wiki/Dev/Strong_Linux_User_Account_Isolation">a compromised non-root user account with access
-    to <code>sudo</code> is almost equal to full root compromise</a> as there are too many ways for an attacker to retrieve the
-    sudo password. Usually, the standard user is part of group <code>sudo</code> which makes this a massive issue and makes a
-    sudo password security theater. For example, the attacker can exploit the plethora of keylogging opportunities such as <a
-      href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">Xorg’s lack of GUI
-      isolation</a>, the <a href="https://www.openwall.com/lists/oss-security/2011/11/05/3">many infoleaks in
-      <code>/proc</code></a>, using <a href="https://github.com/Aishou/wayland-keylogger"><code>LD_PRELOAD</code> to hook
-      into every process</a> and so much more. Even if we mitigate every single way to log keystrokes, the attacker can
-    just setup their own fake sudo program to grab the user password.
+    to <code>sudo</code> is equal to full root compromise</a> as there are an abundance of ways for an attacker to retrieve the
+    sudo password. Usually, the standard user is part of the <code>sudo</code> group which makes a sudo password security theater.
+    For example, the attacker can exploit the plethora of keylogging opportunities such as <a
+    href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">Xorg’s lack of GUI
+    isolation</a>, <a href="https://www.openwall.com/lists/oss-security/2011/11/05/3">the many infoleaks in <code>/proc</code></a>,
+    <a href="https://github.com/Aishou/wayland-keylogger">use <code>LD_PRELOAD</code> to hook into every process</a> and so much
+    more. Even if we mitigate every single way to log keystrokes, <a href="https://nitter.snopyta.org/spendergrsec/status/1355681146273722372">
+    the attacker can simply setup their own fake sudo prompt</a> by manipulating <code>$PATH</code> or shell aliases/functions
+    to intercept the user password, completely unbeknownst to the user.
   </p>
 
   <h2 id="examples"><a href="#examples">Examples</a></h2>
