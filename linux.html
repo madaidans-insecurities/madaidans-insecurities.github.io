@@ -96,8 +96,8 @@
       href="https://techcommunity.microsoft.com/t5/windows-kernel-internals/understanding-hardware-enforced-stack-protection/ba-p/1247815">
       Intel CET shadow stacks for backward-edge protection</a>. While CFG is only coarse-grained, Microsoft are <a
       href="https://connormcgarr.github.io/examining-xfg/">working on making it more fine-grained</a>. <a
-      href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf">M1 Macs also use Pointer Authentication
-      Codes</a> (PAC) to ensure forward and backward-edge protection.
+      href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf#page=50">M1 Macs also use Pointer
+      Authentication Codes</a> (PAC) to ensure forward and backward-edge protection.
     </li>
 
     <li class="lilist">
@@ -106,8 +106,8 @@
       against this while Windows has <a href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">
       Arbitrary Code Guard and Code Integrity Guard</a> to enforce strict W^X and mitigate this avenue of attacks. macOS also has <a
       href="https://developer.apple.com/documentation/security/hardened_runtime">Hardened Runtime</a> for user space code and M1 Macs have
-      <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf">Kernel Integrity Protection</a> (KIP)
-      for kernel code. On Linux, SELinux does provide the <code>execmem</code> boolean however, this is rarely ever used. There is also the <a
+      <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf#page=50">Kernel Integrity Protection</a>
+      (KIP) for kernel code. On Linux, SELinux does provide the <code>execmem</code> boolean however, this is rarely ever used. There is also the <a
       href="https://lore.kernel.org/lkml/1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com/">S.A.R.A. LSM</a> but this is yet to
       be accepted upstream.
     </li>
