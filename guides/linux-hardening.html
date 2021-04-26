@@ -729,7 +729,7 @@ install btusb /bin/false</code></pre>
     <p>
       This disables the webcam to prevent it from being used to spy on you. <br>
       <br>
-      You can also blacklist the microphone module however this can differ from system to system. To find the name of the module, look in <code>/proc/asound/modules</code>
+      You can also blacklist the microphone module however, this can differ from system to system. To find the name of the module, look in <code>/proc/asound/modules</code>
       and blacklist it. For example, one such module is <code>snd_hda_intel</code>. <br>
       <br>
       Be aware though that sometimes the kernel module for the microphone is the same as the module for the speaker. This means that disabling the microphone like
@@ -1103,7 +1103,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
         <a href="https://en.wikipedia.org/wiki/Shadow_stack">Shadow stacks</a> protect a program's return address by replicating it in a different,
         hidden stack. The return addresses in the main stack and the shadow stack are then compared to see if either differ. If so, this would
         indicate an attack and the program will abort, therefore mitigating ROP attacks. Clang has a feature known as <a
-        href="https://clang.llvm.org/docs/ShadowCallStack.html">ShadowCallStack</a> which accomplishes this, however, it is only available on ARM64.
+        href="https://clang.llvm.org/docs/ShadowCallStack.html">ShadowCallStack</a> which accomplishes this however, it is only available on ARM64.
         To enable this, you must apply the following compilation flags:
 
         <pre><code>-fsanitize=shadow-call-stack</code></pre> <br>
@@ -1134,7 +1134,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <p>
       Programs written in <a href="https://en.wikipedia.org/wiki/Memory_safety">memory safe languages</a> are automatically protected from various
-      security vulnerabilities including <a href="https://en.wikipedia.org/wiki/Buffer_overflow">buffer overflows</a>, <a
+      security vulnerabilities, including <a href="https://en.wikipedia.org/wiki/Buffer_overflow">buffer overflows</a>, <a
       href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized variables</a>, <a href="https://cwe.mitre.org/data/definitions/416.html">
       use-after-free</a> and more. The majority of vulnerabilities that have been discovered were memory safety issues as proven by research conducted
       by security researchers at <a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">Microsoft</a> and <a
@@ -1833,7 +1833,7 @@ password_pbkdf2 $username $password</code></pre>
       gained. Verified boot is not just for physical security as many people assume. It can also be used to prevent remote malware persistence — if an attacker has managed to compromise the entire
       system and gain extremely high privileges, verified boot will revert their changes upon reboot and ensure they cannot persist. <br>
       <br>
-      The most common verified boot implementation is <a href="https://www.intel.com/content/www/us/en/support/articles/000006942/boards-and-kits/desktop-boards.html">UEFI Secure Boot</a> however
+      The most common verified boot implementation is <a href="https://www.intel.com/content/www/us/en/support/articles/000006942/boards-and-kits/desktop-boards.html">UEFI Secure Boot</a> however,
       this by itself is not a complete implementation as this only verifies the bootloader and kernel, meaning there are ways to bypass this:
     </p>
 
@@ -1974,7 +1974,7 @@ install thunderbolt /bin/false</code></pre>
       In the Linux kernel, "root privileges" are split up into various different <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities</a>. This
       is helpful in applying <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a> — instead of giving a process total root
       privileges, you can grant them only a specific subset instead. For example, if a program simply needs to set your system time, then it only needs <code>CAP_SYS_TIME</code>
-      rather than total root. This could limit the potential damage that can be done, however, you must still be cautious with granting capabilities as <a
+      rather than total root. This could limit the potential damage that can be done however, you must still be cautious with granting capabilities as <a
       href="https://forums.grsecurity.net/viewtopic.php?t=2522">many of them can be abused to gain full root privileges anyway</a>.
     </p>
 
