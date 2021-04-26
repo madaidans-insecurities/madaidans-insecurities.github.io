@@ -168,7 +168,7 @@
       </li>
 
       <li class="lilist">
-        Preferably use a distribution that utilizes <a href="https://www.libressl.org/">LibreSSL</a> by default rather than <a href="https://www.openssl.org/">
+        Preferably use a distribution that utilises <a href="https://www.libressl.org/">LibreSSL</a> by default rather than <a href="https://www.openssl.org/">
         OpenSSL</a>. <a href="https://arstechnica.com/information-technology/2014/04/openssl-code-beyond-repair-claims-creator-of-libressl-fork/">OpenSSL contains
         tremendous amounts of totally unnecessary attack surface and follows poor security practices</a>. For example, it still maintains OS/2 and VMS support —
         ancient operating systems that are multiple decades old. These abhorrent security practices are what led to the dreaded <a
@@ -315,7 +315,7 @@ net.core.bpf_jit_harden=2</code></pre>
       User namespaces are a feature in the kernel which aim to improve sandboxing and make it easily accessible for unprivileged users however, <a
       href="../linux.html#kernel">this feature exposes significant kernel attack surface for privilege escalation</a> so this sysctl restricts the
       usage of user namespaces to the <code>CAP_SYS_ADMIN</code> <a href="#capabilities">capability</a>. For unprivileged sandboxing,
-      it is instead recommended to use a setuid binary with little attack surface to minimize the potential for privilege escalation. This topic is
+      it is instead recommended to use a setuid binary with little attack surface to minimise the potential for privilege escalation. This topic is
       covered further in the <a href="#application-sandboxing">sandboxing section</a>. <br>
       <br>
       Be aware though that this sysctl only exists on certain Linux distributions as it requires a kernel patch. If your kernel does not include
@@ -370,7 +370,7 @@ net.ipv4.conf.default.send_redirects=0</code></pre>
 
     <p>
       These disable ICMP redirect acceptance and sending to <a href="https://askubuntu.com/questions/118273/what-are-icmp-redirects-and-should-they-be-blocked">
-      prevent man-in-the-middle attacks</a> and minimize information disclosure.
+      prevent man-in-the-middle attacks</a> and minimise information disclosure.
     </p>
 
     <pre><code>net.ipv4.icmp_echo_ignore_all=1</code></pre>
@@ -425,7 +425,7 @@ net.ipv4.tcp_fack=0</code></pre>
 vm.mmap_rnd_compat_bits=16</code></pre>
 
     <p>
-      <a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization">ASLR</a> is a common exploit mitigation which randomizes the
+      <a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization">ASLR</a> is a common exploit mitigation which randomises the
       position of critical parts of a process in memory. This can make a wide variety of exploits harder to pull off as they first require an
       information leak. The above settings increase the bits of entropy used for mmap ASLR, improving its effectiveness. <br>
       <br>
@@ -503,7 +503,7 @@ fs.protected_regular=2</code></pre>
 
     <p>
       This option <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e900a918b0984ec8f2eb150b8477a47b75d17692">
-      randomizes page allocator freelists</a>, improving security by making page allocations less predictable. This also <i>improves</i>
+      randomises page allocator freelists</a>, improving security by making page allocations less predictable. This also <i>improves</i>
       performance.
     </p>
 
@@ -610,7 +610,7 @@ SupplementaryGroups=proc</code></pre>
     <h3 id="kernel-attack-surface-reduction"><a href="#kernel-attack-surface-reduction">2.5 Kernel attack surface reduction</a></h3>
 
     <p>
-      It is best to disable any functionality that is not absolutely required as to minimize potential kernel attack surface. These features do not necessarily have to be dangerous,
+      It is best to disable any functionality that is not absolutely required as to minimise potential kernel attack surface. These features do not necessarily have to be dangerous,
       they could simply be benign code that is removed to reduce attack surface. Never disable random things that you don't understand. The following are some examples that may be of
       use, depending on your setup.
     </p>
@@ -856,7 +856,7 @@ SupplementaryGroups=sysfs</code></pre>
     <pre><code>selinux=1 security=selinux</code></pre>
 
     <p>
-      Keep in mind that simply enabling a MAC system won't by itself magically increase security. You must develop strict policies to fully utilize it. For example, to create
+      Keep in mind that simply enabling a MAC system won't by itself magically increase security. You must develop strict policies to fully utilise it. For example, to create
       AppArmor profiles, execute:
     </p>
 
@@ -1026,7 +1026,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <p>
       While not a traditional "sandbox", <a href="https://en.wikipedia.org/wiki/Virtual_machine">virtual machines</a> separate processes by virtualizing an entirely new system, thereby providing very strong isolation.
-      <a href="https://www.linux-kvm.org/page/Main_Page">KVM</a> is a kernel module that allows the kernel to function as a hypervisor and <a href="https://www.qemu.org/">QEMU</a> is an emulator that utilizes KVM.
+      <a href="https://www.linux-kvm.org/page/Main_Page">KVM</a> is a kernel module that allows the kernel to function as a hypervisor and <a href="https://www.qemu.org/">QEMU</a> is an emulator that utilises KVM.
       <a href="https://virt-manager.org">Virt-manager</a> and <a href="https://en.wikipedia.org/wiki/GNOME_Boxes">GNOME Boxes</a> are both good and easy-to-use GUIs to manage KVM/QEMU virtual machines. <a
       href="https://www.whonix.org/wiki/KVM#Why_Use_KVM_Over_VirtualBox.3F">Virtualbox is unrecommended for several reasons</a>.
     <p>
@@ -1052,7 +1052,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <p>
       hardened_malloc may break some applications, although the majority will work fine. It is recommended to compile hardened_malloc with the
-      following options to minimize breakage:
+      following options to minimise breakage:
     </p>
 
     <pre><code>CONFIG_SLAB_QUARANTINE_RANDOM_LENGTH=0 CONFIG_SLAB_QUARANTINE_QUEUE_LENGTH=0 CONFIG_GUARD_SLABS_INTERVAL=8</code></pre>
@@ -1072,7 +1072,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <h2 id="hardened-compilation-flags"><a href="#hardened-compilation-flags">6. Hardened compilation flags</a></h2>
 
     <p>
-      Compiling your own programs can offer numerous benefits as it gives you the ability to optimize your programs for security. However, it
+      Compiling your own programs can offer numerous benefits as it gives you the ability to optimise your programs for security. However, it
       is easy to do the exact opposite and worsen security — if you are unsure about what you are doing, skip this section. This will be easiest
       on a source-based distribution <a href="#choosing-the-right-distro">such as Gentoo</a> but it is possible to do this on others. <br>
       <br>
@@ -1309,7 +1309,7 @@ COMMIT</code></pre>
     <h2 id="identifiers"><a href="#identifiers">10. Identifiers</a></h2>
 
     <p>
-      For privacy, it is best to minimize the amount of information that can be traced back to you.
+      For privacy, it is best to minimise the amount of information that can be traced back to you.
     </p>
 
     <h3 id="hostnames"><a href="#hostnames">10.1 Hostnames and usernames</a></h3>
@@ -1339,7 +1339,7 @@ COMMIT</code></pre>
       <a href="https://en.wikipedia.org/wiki/MAC_address">MAC addresses</a> are unique identifiers assigned to network interface controllers (NICs). Every time you
       connect to a network (e.g. WiFi or ethernet), your MAC address is exposed. This allows people to use it to track you and uniquely identify you on the local network. <br>
       <br>
-      You should <b>not</b> completely randomize the MAC address. Having a completely random MAC address is obvious and will have the adverse effect of making you stand out.
+      You should <b>not</b> completely randomise the MAC address. Having a completely random MAC address is obvious and will have the adverse effect of making you stand out.
       The OUI (Organizationally Unique Identifier) part of the MAC address identifies the chipset's manufacturer. Randomizing this part of the MAC address may give you an OUI
       that has never been used before, hasn't been used in decades or is extremely rare in your area, therefore making you stand out and making it obvious that you are spoofing
       your MAC address. <br>
@@ -1359,7 +1359,7 @@ COMMIT</code></pre>
     <pre><code>macchanger -e $network_interface</code></pre>
 
     <p>
-      To randomize the MAC address upon each boot, you should create an init script for your particular init system. This is an example of one for systemd:
+      To randomise the MAC address upon each boot, you should create an init script for your particular init system. This is an example of one for systemd:
     </p>
 
     <pre><code>[Unit]
@@ -1468,7 +1468,7 @@ WantedBy=multi-user.target</code></pre>
     <h3 id="setuid"><a href="#setuid">11.1 setuid / setgid</a></h3>
 
     <p>
-      setuid / SUID allows a user to execute a binary with the privileges of the binary's owner. This is often used to allow unprivileged users to utilize certain functionality that is normally
+      setuid / SUID allows a user to execute a binary with the privileges of the binary's owner. This is often used to allow unprivileged users to utilise certain functionality that is normally
       only reserved for the root user. As such, many SUID binaries have a history of privilege escalation security vulnerabilities. setgid / SGID is similar but for groups rather than users. To
       find all binaries on the system with the setuid or setgid bit, execute:
     </p>
@@ -1923,7 +1923,7 @@ install thunderbolt /bin/false</code></pre>
     <p>
       Once you have hardened the system as much as you can, you should follow good privacy and security practices: <br>
       <br>
-      1. Disable or remove things you don't need to minimize attack surface. <br>
+      1. Disable or remove things you don't need to minimise attack surface. <br>
       2. Stay updated. Configure a cron job or init script to update your system daily. <br>
       3. Don't leak any information about you or your system, no matter how minor it may seem. <br>
       4. <a href="../security-privacy-advice.html">Follow general security and privacy advice</a>. <br>
