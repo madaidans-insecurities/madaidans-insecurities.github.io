@@ -90,7 +90,7 @@
       <a href="https://en.wikipedia.org/wiki/Control-flow_integrity">Control-Flow Integrity</a> is an exploit mitigation that <a
       href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">aims to prevent code reuse attacks like ROP or JOP</a>.
       A large portion of vulnerabilities are exploited using these techniques due to more widely adopted mitigations such as NX making older
-      exploit techniques obsolete. On Linux, CFI is practically non-existent outside of Chromium whereas Windows has their own coarse-grained,
+      exploit techniques obsolete. On Linux, CFI is practically non-existent outside of Chromium, whereas Windows has their own coarse-grained,
       forward-edge CFI implementation, <a href="https://docs.microsoft.com/en-us/windows/win32/secbp/control-flow-guard">Control Flow Guard</a>
       (CFG) as well as <a
       href="https://techcommunity.microsoft.com/t5/windows-kernel-internals/understanding-hardware-enforced-stack-protection/ba-p/1247815">
@@ -103,7 +103,7 @@
     <li class="lilist">
       A very basic exploit technique is simply to find a way to execute the attackers own malicious code either by loading
       a malicious library on disk or by dynamically modifying executable code in memory. Linux has yet to provide strong mitigations
-      against this while Windows has <a href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">
+      against this, while Windows has <a href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">
       Arbitrary Code Guard and Code Integrity Guard</a> to enforce strict W^X and mitigate this avenue of attacks. macOS also has <a
       href="https://developer.apple.com/documentation/security/hardened_runtime">Hardened Runtime</a> for user space code and M1 Macs have
       <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf#page=50">Kernel Integrity Protection</a>
@@ -116,7 +116,7 @@
       One of the most common memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">
       uninitialized memory</a>. Windows <a href="https://msrc-blog.microsoft.com/2020/05/13/solving-uninitialized-stack-memory-on-windows/">
       uses InitAll</a> to automatically initialize stack variables to zero for the kernel and some user space code, as well as <a
-      href="https://msrc-blog.microsoft.com/2020/07/02/solving-uninitialized-kernel-pool-memory-on-windows/">safer APIs for the kernel pool</a>
+      href="https://msrc-blog.microsoft.com/2020/07/02/solving-uninitialized-kernel-pool-memory-on-windows/">safer APIs for the kernel pool</a>,
       whereas on Linux, there are some mitigations for kernel memory specifically but this doesn't cover
       any user space code and good luck finding a mainstream distribution that actually enables them.
     </li>

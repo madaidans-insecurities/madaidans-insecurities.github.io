@@ -77,14 +77,14 @@
       One example of such sandbox escape flaws is X11 — <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">X11
       doesn't implement any GUI isolation</a> which makes it <a href="https://mjg59.dreamwidth.org/42320.html">very easy to escape sandboxes with it</a>. Chromium
       resolves this issue by only permitting access to X11 from within the GPU process so that the renderer process (the process in which websites are loaded) cannot
-      access it whereas on Firefox, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">it is exposed directly to the content process</a>.
+      access it, whereas on Firefox, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1129492">it is exposed directly to the content process</a>.
     </li>
 
     <li class="lilist">
       <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/">PulseAudio</a> is a common sound server on Linux however, <a
       href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/AccessControl/">it was not written with isolation in mind</a>, making it
       possible to escape sandboxes with it. Like X11, <a href="https://searchfox.org/mozilla-central/search?q=pulseaudio&path=security%2Fsandbox%2Flinux">Firefox
-      exposes this directly to the content process</a>, permitting another trivial sandbox escape while Chromium only exposes it to a broker process.
+      exposes this directly to the content process</a>, permitting another trivial sandbox escape, while Chromium only exposes it to a broker process.
     </li>
   </ul>
 
@@ -104,7 +104,7 @@
   <h3 id="android-sandbox"><a href="#android-sandbox">Android</a></h3>
 
   <p>
-    On Android, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1565196">Firefox does not have a sandbox at all beyond the OS app sandbox</a> while Chromium uses the
+    On Android, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1565196">Firefox does not have a sandbox at all beyond the OS app sandbox</a>, while Chromium uses the
     <a href="https://developer.android.com/guide/topics/manifest/service-element#isolated"><code>isolatedProcess</code> feature</a>, along with a more strict seccomp-bpf filter.
   </p>
 
@@ -120,7 +120,7 @@
 
   <p>
     Exploit mitigations eliminate entire classes of common vulnerabilities / exploit techniques to prevent or severely hinder exploitation.
-    Firefox lacks many important mitigations while Chromium generally excels in this area. <br>
+    Firefox lacks many important mitigations, while Chromium generally excels in this area. <br>
     <br>
     As with the sandboxing, there are many more issues than the ones listed below but this article does not attempt to be an exhaustive list.
     You can look through <a href="https://bugzilla.mozilla.org/home">Mozilla's own bug tracker</a> for further examples.
@@ -260,14 +260,14 @@
   <ul>
     <li class="lilist">
       Robust memory partitioning with strong isolation — <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1052575">mozjemalloc does have some support for partitions</a> however, <a
-      href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446046">memory is reused across partitions</a>, thus severely weakening this feature and allowing it to be bypassed whereas <a
+      href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446046">memory is reused across partitions</a>, thus severely weakening this feature and allowing it to be bypassed, whereas <a
       href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md#security">strong memory partitioning with no reused memory between partitions
       is one of PartitionAlloc's core goals</a>. In fact, a real-world exploit used by the FBI to unmask users of the Tor Browser <a href="https://nitter.snopyta.org/dguido/status/803838692645335040">
       was possible due to the lack of memory partitioning</a>.
     </li>
 
     <li class="lilist">
-      Out-of-line metadata — <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446045">mozjemalloc currently has heap metadata in-line</a> whereas <a
+      Out-of-line metadata — <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446045">mozjemalloc currently has heap metadata in-line</a>, whereas <a
       href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md#security">PartitionAlloc stores metadata out-of-line in a dedicated region</a>.
       PartitionAlloc also uses guard pages to ensure this feature's effectiveness; <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446040">another security feature that mozjemalloc lacks</a>.
     </li>
@@ -284,7 +284,7 @@
     One of the most common classes of memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized memory</a>. Clang has an option to
     <a href="https://reviews.llvm.org/D54604">automatically initialize stack variables</a> with either zero or a specific pattern, thus mitigating this class of vulnerabilities for the stack. <a
     href="https://chromium.googlesource.com/chromium/src.git/+/7d38bae3ef691d5091b6d4d7973a9b4d2cd85eb2/build/config/compiler/BUILD.gn#125">Chromium enables this by default on all platforms except
-    Android</a> whereas <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1546873">Firefox only enables it in debugging builds</a> for uncovering bugs and is not used in production to mitigate
+    Android</a>, whereas <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1546873">Firefox only enables it in debugging builds</a> for uncovering bugs and is not used in production to mitigate
     exploits. <br>
     <br>
     As for the heap, both PartitionAlloc and mozjemalloc zero-fill allocations so they are equivalent in that regard.

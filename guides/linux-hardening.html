@@ -159,7 +159,7 @@
 
       <li class="lilist">
         Use <a href="https://musl.libc.org/">musl</a> as the default C library. musl is heavily focused on minimality which <a
-        href="https://github.com/NixOS/nixpkgs/issues/90147#issuecomment-643473182">results in very small attack surface</a> whereas other C libraries
+        href="https://github.com/NixOS/nixpkgs/issues/90147#issuecomment-643473182">results in very small attack surface</a>, whereas other C libraries
         such as glibc are overly complex and prone to vulnerabilities. For example, <a href="https://www.cvedetails.com/vulnerability-list/vendor_id-72/product_id-767/GNU-Glibc.html">
         over a hundred vulnerabilities in glibc have been publicly disclosed</a> compared to the <a href="https://www.cvedetails.com/vulnerability-list/vendor_id-16859/product_id-39652/Musl-libc-Musl.html">
         very few in musl</a>. While counting CVEs by itself is often an inaccurate statistic, it can sometimes be used to represent an overaching issue such as
@@ -199,7 +199,7 @@
     <h3 id="stable-vs-lts"><a href="#stable-vs-lts">2.1 Stable vs. LTS kernels</a></h3>
 
     <p>
-      The Linux kernel is released under two main forms: stable and long-term support (LTS). Stable releases are more recent whereas LTS
+      The Linux kernel is released under two main forms: stable and long-term support (LTS). Stable releases are more recent, whereas LTS
       releases are an older stable release that is being supported for a long time. <a href="https://www.grsecurity.net/the_truth_about_linux_4_6">
       There are many consequences to choosing either of the aforementioned releases</a>. <br>
       <br>
@@ -539,7 +539,7 @@ fs.protected_regular=2</code></pre>
     <p>
       This only allows kernel modules that have been signed with a valid key to be loaded which increases security by making it much harder to load a malicious kernel module. This prevents
       all out-of-tree kernel modules, including DKMS modules from being loaded <a href="https://www.kernel.org/doc/html/latest/admin-guide/module-signing.html">unless you have signed them</a>,
-      meaning that modules such as the VirtualBox or Nvidia drivers may not be usable although that may not be important, depending on your setup.
+      meaning that modules such as the VirtualBox or Nvidia drivers may not be usable, although that may not be important, depending on your setup.
     </p>
 
     <pre><code>lockdown=confidentiality</code></pre>
@@ -733,7 +733,7 @@ install btusb /bin/false</code></pre>
       and blacklist it. For example, one such module is <code>snd_hda_intel</code>. <br>
       <br>
       Be aware though that sometimes the kernel module for the microphone is the same as the module for the speaker. This means that disabling the microphone like
-      this may also inadvertently disable any speakers. Although, <a href="https://arxiv.org/ftp/arxiv/papers/1611/1611.07350.pdf">speakers can potentially be
+      this may also inadvertently disable any speakers. Although <a href="https://arxiv.org/ftp/arxiv/papers/1611/1611.07350.pdf">speakers can potentially be
       turned into microphones too</a> so this isn't necessarily a negative outcome. <br>
       <br>
       It would be preferred to physically remove these devices or, at the very least, disable them in the BIOS / UEFI. Disabling the kernel modules is not as effective.
@@ -914,7 +914,7 @@ SupplementaryGroups=sysfs</code></pre>
       that can even record things such as the root password. You can sandbox Xorg windows with a nested X11 server such as <a href="https://www.xpra.org/">Xpra</a> or <a href="https://freedesktop.org/wiki/Software/Xephyr/">Xephyr</a>
       and bubblewrap. <br>
       <br>
-      <a href="https://wayland.freedesktop.org/">Wayland</a> isolates windows from each other by default and would be a much better choice than Xorg although Wayland may not be as generally usable as Xorg since it
+      <a href="https://wayland.freedesktop.org/">Wayland</a> isolates windows from each other by default and would be a much better choice than Xorg, although Wayland may not be as generally usable as Xorg since it
       is earlier in development.
     </p>
 
@@ -1051,7 +1051,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <pre><code>/usr/lib/libhardened_malloc.so</code></pre>
 
     <p>
-      hardened_malloc may break some applications although the majority will work fine. It is recommended to compile hardened_malloc with the
+      hardened_malloc may break some applications, although the majority will work fine. It is recommended to compile hardened_malloc with the
       following options to minimize breakage:
     </p>
 
@@ -1140,7 +1140,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       by security researchers at <a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">Microsoft</a> and <a
       href="https://www.chromium.org/Home/chromium-security/memory-safety">Google</a>. Examples of such memory <b>safe</b> languages include <a
       href="https://doc.rust-lang.org/nomicon/meet-safe-and-unsafe.html">Rust</a>, <a href="https://docs.swift.org/swift-book/LanguageGuide/MemorySafety.html">
-      Swift</a> and <a href="https://en.wikipedia.org/wiki/Java_(programming_language)">Java</a> whereas examples of memory <b>unsafe</b> languages include
+      Swift</a> and <a href="https://en.wikipedia.org/wiki/Java_(programming_language)">Java</a>, whereas examples of memory <b>unsafe</b> languages include
       <a href="https://en.wikipedia.org/wiki/C_(programming_language)">C</a> and <a href="https://en.wikipedia.org/wiki/C%2B%2B">C++</a>. If practical, you
       should replace as many programs as possible with memory safe alternatives.
     </p>
@@ -1196,7 +1196,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <p>
       You can increase the number of hashing rounds that shadow uses, thereby increasing the security of your hashed passwords by
       forcing an attacker to compute much more hashes to crack your password. By default, shadow uses 5000 rounds but you
-      can increase this to as many as you want. Although, the more rounds you configure, the slower it will be to login.
+      can increase this to as many as you want. Although the more rounds you configure, the slower it will be to login.
       Edit <code>/etc/pam.d/passwd</code> and add the rounds option. For example:
     </p>
 
@@ -1437,7 +1437,7 @@ WantedBy=multi-user.target</code></pre>
       href="https://www.keytrac.net/en/tryout">KeyTrac</a>. <br>
       <br>
       <a href="https://github.com/vmonaco/kloak">kloak</a> is a tool that aims to defeat this method of tracking by obfuscating the time intervals between key press and release events.
-      When a key is pressed, it introduces a random delay before it is picked up by the application. Although, this may be frustrating for certain individuals and unsuitable for them. <br>
+      When a key is pressed, it introduces a random delay before it is picked up by the application. Although this may be frustrating for certain individuals and unsuitable for them. <br>
       <br>
       This form of tracking must not be confused with <a href="https://en.wikipedia.org/wiki/Stylometry">stylometry</a>.
     </p>
@@ -1792,7 +1792,7 @@ password_pbkdf2 $username $password</code></pre>
     <h4 id="syslinux"><a href="#syslinux">21.3.2 Syslinux</a></h4>
 
     <p>
-      Syslinux can either set a master password or a menu password. A master password is required for booting any entry while a menu password is only required for booting a specific entry. <br>
+      Syslinux can either set a master password or a menu password. A master password is required for booting any entry, while a menu password is only required for booting a specific entry. <br>
       <br>
       To set a master password for Syslinux, edit <code>/boot/syslinux/syslinux.cfg</code> and add:
     </p>
@@ -1847,7 +1847,7 @@ password_pbkdf2 $username $password</code></pre>
         A remote attacker (or a physical attacker when not using <a href="#encryption">encryption</a>) can simply modify any other privileged part of the operating system. For example, if they have
         the privileges to modify the kernel, then they'd also be able to modify <code>/sbin/init</code> to achieve effectively the same result. Thus, only verifying the kernel and bootloader will not
         do anything against a remote attacker. To mitigate this, you must verify the base operating system with <a href="https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html">
-        dm-verity</a> although this is very difficult and cumbersome due to the layout of traditional Linux distributions.
+        dm-verity</a>, although this is very difficult and cumbersome due to the layout of traditional Linux distributions.
       </li>
     </ul>
 
@@ -1909,7 +1909,7 @@ install thunderbolt /bin/false</code></pre>
       href="#hardened-malloc">hardened memory allocator</a> can purge sensitive data within user space heap memory via the <a href="https://github.com/GrapheneOS/hardened_malloc#configuration">CONFIG_ZERO_ON_FREE
       configuration option</a>. Despite these though, some data may still remain in memory. <br>
       <br>
-      Additionally, modern kernels include a <a href="https://lwn.net/Articles/730006/">reset attack mitigation</a> which commands the firmware to erase data upon shutdown although this requires <a
+      Additionally, modern kernels include a <a href="https://lwn.net/Articles/730006/">reset attack mitigation</a> which commands the firmware to erase data upon shutdown, although this requires <a
       href="https://www.trustedcomputinggroup.org/wp-content/uploads/Platform-Reset-Attack-Mitigation-Specification.pdf">firmware support</a>. <br>
       <br>
       Make sure that you shutdown your computer normally so the mitigations explained above can kick in. <br>
