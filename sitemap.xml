@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="https://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="https://www.sitemaps.org/schemas/sitemap/0.9 https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+<url>
+  <loc>https://madaidans-insecurities.github.io/</loc>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/android.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/linux.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/linux-phones.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/firefox-chromium.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/openbsd.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/vpns.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/messengers.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/browser-tracking.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/encrypted-dns.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/security-privacy-advice.html</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://madaidans-insecurities.github.io/guides/linux-hardening.html</loc>
+  <priority>0.80</priority>
+</url>
+</urlset>
