@@ -11,70 +11,59 @@
 <body>
   <h1>Browser Tracking</h1>
 
-  <p class="date"><i><time datetime="2020-09-25">Last edited: September 25, 2020</time></i></p>
+  <p class="date"><i><time datetime="2021-06-14">Last edited: June 14th, 2021</time></i></p>
 
   <p>
-    Many common methods of preventing browser tracking are ineffective.
+    Many common methods of preventing browser tracking are ineffective. This article goes over misguided ways in
+    which people attempt to improve their privacy when browsing the web.
   </p>
 
   <h2 id="tracker-blockers"><a href="#tracker-blockers">Tracker Blockers</a></h2>
 
   <p>
     Blocking a few tracker domains does not actually prevent tracking. You cannot make a list of every single
-    tracker domain and block them all since there are far too many. Enumerating badness does not work. <br>
+    tracker domain and block them all since there are far too many. <a
+    href="https://www.ranum.com/security/computer_security/editorials/dumb/">Enumerating badness does not work</a>. <br>
     <br>
     Even if you did magically create a blacklist of every single tracker domain ever, the website does not need to
-    connect to a third-party domain to run tracking code. Blocking Google Analytics does not prevent the website
-    from simply running their own first-party tracking code. <br>
+    connect to a third party domain to run tracking code. For example, blocking Google Analytics does not prevent the
+    website from simply running their own first party tracking code or even <a
+    href="https://gist.github.com/paivaric/211ca15afd48c5686226f5f747539e8b">hosting third party tracking code from a
+    first party domain</a>. <br>
     <br>
     The website can then share this information to the people that made the trackers you've blocked so everyone
     gets the exact same information they would have gotten in the first place. <br>
     <br>
-    Blocking trackers can only remove some low hanging fruit and is not a proper approach to improving privacy.
-    This is the reason the Tor Browser <a href="https://2019.www.torproject.org/projects/torbrowser/design/#philosophy">
-    does not include any tracker blockers</a>.
+    Blocking trackers can only remove some low hanging fruit and is not a proper approach to systemically improving
+    privacy. This is the reason why <a href="https://2019.www.torproject.org/projects/torbrowser/design/#philosophy">
+    the Tor Browser does not include any tracker blockers</a>.
   </p>
 
-  <h3 id="privacy-badger"><a href="#privacy-badger">Privacy Badger</a></h3>
-
-  <p>
-    <a href="https://privacybadger.org/">Privacy Badger</a> is a tracker blocker. It suffers from all of the
-    same issues as described above and has more issues of its own. <br>
-    <br>
-    Privacy Badger works by detecting new trackers as you browse and adding them to a blacklist. It may sound
-    appealing at first, but what that does is give you a completely unique fingerprint based on your browsing
-    history. <br>
-    <br>
-    Privacy Badger also attempts to prevent canvas fingerprinting but <a
-      href="https://adtechmadness.wordpress.com/2020/03/27/detecting-privacy-badgers-canvas-fp-detection/">
-    this is not hard to bypass and can actually further add to your fingerprint</a>.
-  </p>
-
-  <h2 id="configuring-the-browser"><a href="#configuring-the-browser">Configuring / "hardening" the browser</a></h2>
+  <h2 id="configuring-the-browser"><a href="#configuring-the-browser">Configuring / "Hardening" the Browser</a></h2>
 
   <p>
     You cannot configure your browser to prevent tracking either. Everyone will configure their browser differently
-    so when you change a bunch of about:config settings such as <code>privacy.resistFingerprinting</code> and pile
+    so when you change a bunch of about:config settings, such as <code>privacy.resistFingerprinting</code>, and pile
     on browser extensions like Privacy Badger, you're making yourself stand out and are effectively <i>reducing</i>
     privacy. <br>
     <br>
     Additionally, just disabling JavaScript, while preventing large vectors for fingerprinting, does not prevent
     fingerprinting entirely. Fingerprinting can be done with only CSS and HTML. One example is <a
-      href="https://matt.traudt.xyz/posts/how-css-alone-YF4ciVY6.html">using @media rules to figure out your
+    href="https://matt.traudt.xyz/posts/how-css-alone-YF4ciVY6.html">using @media rules to figure out your
     browser resolution</a>. <br>
     <br>
     You also cannot substantially improve security by configuring the browser. Changing a few settings will not
-    fix deep architectural security issues. You can at <i>most</i> reduce some attack surface by disabling things
+    fix deep architectural security issues. You can at <i>most</i> reduce some attack surface by disabling things,
     but most people don't do this to an extent where it actually matters.
   </p>
 
   <h2 id="fingerprint-testing-websites"><a href="#fingerprint-testing-websites">Fingerprint Testing Websites</a></h2>
 
   <p>
-    Fingerprint testing websites such as <a href="https://panopticlick.eff.org/">Panopticlick</a> <a
-      href="https://matt.traudt.xyz/p/SkxEFK1m.html#testing-your-fingerprint">cannot</a>
+    Fingerprint testing websites, such as <a href="https://panopticlick.eff.org/">Panopticlick</a>, <a
+    href="https://matt.traudt.xyz/p/SkxEFK1m.html#testing-your-fingerprint">cannot</a>
     <a href="https://blog.torproject.org/effs-panopticlick-and-torbutton">reliably</a> <a
-      href="https://github.com/brave/brave-browser/wiki/Fingerprinting-Protections#why-does-panopticlickefforg-or-some-other-site-say-that-i-am-fingerprintable">
+    href="https://github.com/brave/brave-browser/wiki/Fingerprinting-Protections#why-does-panopticlickefforg-or-some-other-site-say-that-i-am-fingerprintable">
     test</a> your fingerprint. <br>
     <br>
     These websites determine the uniqueness of your fingerprint based off of their own userbase which will miss out on the
@@ -82,7 +71,7 @@
     off against fingerprinting in the real world. <br>
     <br>
     These websites also don't test for much. Do these websites fingerprint you by <a
-      href="https://nitter.snopyta.org/davywtf/status/1124146339259002881">where your cursor is
+    href="https://twitter.com/davywtf/status/1124146339259002881">where your cursor is
     on the screen</a>? By your <a href="https://trac.torproject.org/projects/tor/ticket/31324">clock skew</a>?
     By the <a href="https://lists.torproject.org/pipermail/tor-dev/2019-August/013989.html">performance of
     your device</a>? etc.
@@ -94,10 +83,9 @@
   <p>
     The only real approach to preventing browser tracking/fingerprinting is by using a browser that is designed
     to prevent this by default and the users do not change it. The most effective browser that does this is the
-    <a href="https://www.torproject.org/">Tor Browser</a>. <br>
-    <br>
-    Although the Tor Browser's <a href="https://2019.www.torproject.org/projects/torbrowser/design/">fingerprinting
-    protections</a> aren't perfect and its security <a href="firefox-chromium.html">is quite weak</a>.
+    <a href="https://www.torproject.org/">Tor Browser</a>. However, the Tor Browser's <a
+    href="https://2019.www.torproject.org/projects/torbrowser/design/">fingerprinting protections</a> aren't
+    perfect and its security <a href="firefox-chromium.html">is quite weak</a>.
   </p>
 
   <p class="p-final">

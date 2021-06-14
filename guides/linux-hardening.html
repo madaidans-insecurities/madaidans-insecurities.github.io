@@ -9,7 +9,7 @@
   <body>
     <h1>Linux Hardening Guide</h1>
 
-    <p class="date"><i><time datetime="2021-03-19">Last edited: March 19, 2021</time></i></p>
+    <p class="date"><i><time datetime="2021-06-14">Last edited: June 14th, 2021</time></i></p>
 
     <p>
       <a href="../linux.html">Linux is not a secure operating system</a>. However, there are steps you can take to improve it. This guide aims to explain
@@ -160,10 +160,10 @@
       <li class="lilist">
         Use <a href="https://musl.libc.org/">musl</a> as the default C library. musl is heavily focused on minimality which <a
         href="https://github.com/NixOS/nixpkgs/issues/90147#issuecomment-643473182">results in very small attack surface</a>, whereas other C libraries
-        such as glibc are overly complex and prone to vulnerabilities. For example, <a href="https://www.cvedetails.com/vulnerability-list/vendor_id-72/product_id-767/GNU-Glibc.html">
-        over a hundred vulnerabilities in glibc have been publicly disclosed</a> compared to the <a href="https://www.cvedetails.com/vulnerability-list/vendor_id-16859/product_id-39652/Musl-libc-Musl.html">
-        very few in musl</a>. While counting CVEs by itself is often an inaccurate statistic, it can sometimes be used to represent an overaching issue such as
-        in this case. musl also has <a href="https://www.dustri.org/b/security-features-of-musl.html"> decent exploit mitigations</a>, particularly its
+        such as glibc are overly complex and prone to vulnerabilities. For example, <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=glibc">
+        over a hundred vulnerabilities in glibc have been publicly disclosed</a> compared to the <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=musl">
+        very few in musl</a>. While counting CVEs by itself is often an inaccurate statistic, it can sometimes be used to represent an overaching issue, such as
+        in this case. musl also has <a href="https://www.dustri.org/b/security-features-of-musl.html">decent exploit mitigations</a>, particularly its
         <a href="https://www.openwall.com/lists/musl/2020/05/13/1">new hardened memory allocator</a>.
       </li>
 
@@ -185,7 +185,7 @@
       flags</a> later in the guide. <br>
       <br>
       However, Gentoo may not be feasible for many people due to its significant usability pitfalls. In this case, <a href="https://voidlinux.org/">Void Linux</a>'s musl
-      build is a good compromise.
+      build or <a href="https://www.alpinelinux.org/">Alpine Linux</a> is a good compromise.
     </p>
 
     <h2 id="kernel"><a href="#kernel">2. Kernels</a></h2>
@@ -207,7 +207,7 @@
       vulnerabilities properly</a>. This means that fixes for most security vulnerabilities are not able to be backported to LTS kernels;
       but stable releases contain all security fixes made so far. <br>
       <br>
-      With those fixes however, a stable kernel includes a lot more new features, therefore vastly increasing the attack surface of the
+      With those fixes, however, a stable kernel includes a lot more new features, therefore vastly increasing the attack surface of the
       kernel and introducing a large amount of new bugs. On the contrary, LTS kernels have less attack surface because these features are
       not being constantly added. <br>
       <br>
@@ -217,8 +217,8 @@
       <br>
       To conclude, there is a trade-off when choosing a stable or LTS kernel. LTS kernels have less hardening features and not all public bug fixes
       at that point have been backported, but it generally has less attack surface and potentially a smaller chance of introducing unknown bugs.
-      Stable kernels have more hardening features and all known bug fixes are included but it also has more attack surface and greater chances of
-      introducing more unknown bugs. In the end though, a more recent LTS branch such as the 4.19 kernel would be preferred due to the much smaller
+      Stable kernels have more hardening features and all known bug fixes are included, but it also has more attack surface and greater chances of
+      introducing more unknown bugs. In the end though, a more recent LTS branch, such as the 4.19 kernel, would be preferred due to the much smaller
       attack surface.
     </p>
 
@@ -244,7 +244,7 @@
 
     <p>
       A kernel pointer points to a specific location in kernel memory. <a href="https://kernsec.org/wiki/index.php/Bug_Classes/Kernel_pointer_leak">
-      These can be very useful in exploiting the kernel</a> but kernel pointers are not hidden by default — it is easy to uncover them by, for example,
+      These can be very useful in exploiting the kernel</a>, but kernel pointers are not hidden by default — it is easy to uncover them by, for example,
       reading the contents of <code>/proc/kallsyms</code>. This setting aims to mitigate kernel pointer leaks. Alternatively, you can set
       <code>kernel.kptr_restrict=1</code> to only hide kernel pointers from processes without the <code>CAP_SYSLOG</code> <a href="#capabilities">capability</a>.
     </p>
@@ -252,8 +252,8 @@
     <pre><code>kernel.dmesg_restrict=1</code></pre>
 
     <p>
-      <a href="https://en.wikipedia.org/wiki/Dmesg">dmesg</a> is the kernel log. It exposes a large amount of useful kernel debugging information but this
-      can often leak sensitive information such as kernel pointers. Changing the above sysctl restricts the kernel log to the <code>CAP_SYSLOG</code>
+      <a href="https://en.wikipedia.org/wiki/Dmesg">dmesg</a> is the kernel log. It exposes a large amount of useful kernel debugging information, but this
+      can often leak sensitive information, such as kernel pointers. Changing the above sysctl restricts the kernel log to the <code>CAP_SYSLOG</code>
       <a href="#capabilities">capability</a>.
     </p>
 
@@ -271,7 +271,7 @@ net.core.bpf_jit_harden=2</code></pre>
     <p>
       <a href="../linux.html#kernel">eBPF exposes quite large attack surface</a>. As such, it must be restricted. These sysctls restrict eBPF
       to the <code>CAP_BPF</code> <a href="#capabilities">capability</a> (<code>CAP_SYS_ADMIN</code> on kernel versions prior to 5.8) and enable
-      JIT hardening techniques such as <a
+      JIT hardening techniques, such as <a
       href="https://github.com/torvalds/linux/blob/9e4b0d55d84a66dbfede56890501dc96e696059c/include/linux/filter.h#L1039-L1070">constant blinding</a>.
     </p>
 
@@ -339,7 +339,7 @@ net.core.bpf_jit_harden=2</code></pre>
     <pre><code>net.ipv4.tcp_syncookies=1</code></pre>
 
     <p>
-      This helps protect against <a href="https://en.wikipedia.org/wiki/SYN_flood">SYN flood attacks</a> which are a form of denial of service attack
+      This helps protect against <a href="https://en.wikipedia.org/wiki/SYN_flood">SYN flood attacks</a> which are a form of denial of service attack,
       in which an attacker sends a large amount of bogus SYN requests in an attempt to consume enough resources to make the system unresponsive to
       legitimate traffic.
     </p>
@@ -356,7 +356,7 @@ net.ipv4.conf.default.rp_filter=1</code></pre>
 
     <p>
       These enable source validation of packets received from all interfaces of the machine. This protects against <a
-      href="https://en.wikipedia.org/wiki/IP_address_spoofing">IP spoofing</a> in which an attacker sends a packet with a fraudulent IP address.
+      href="https://en.wikipedia.org/wiki/IP_address_spoofing">IP spoofing</a>, in which an attacker sends a packet with a fraudulent IP address.
     </p>
 
     <pre><code>net.ipv4.conf.all.accept_redirects=0
@@ -387,7 +387,7 @@ net.ipv6.conf.default.accept_source_route=0</code></pre>
 
     <p>
       <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security_guide/sect-security_guide-server_security-disable-source-routing">
-      Source routing is a mechanism that allows users to redirect network traffic</a>. As this can be used to perform man-in-the-middle attacks in which the traffic
+      Source routing is a mechanism that allows users to redirect network traffic</a>. As this can be used to perform man-in-the-middle attacks, in which the traffic
       is redirected for nefarious purposes, the above settings disable this functionality.
     </p>
 
@@ -429,7 +429,7 @@ vm.mmap_rnd_compat_bits=16</code></pre>
       position of critical parts of a process in memory. This can make a wide variety of exploits harder to pull off as they first require an
       information leak. The above settings increase the bits of entropy used for mmap ASLR, improving its effectiveness. <br>
       <br>
-      The values of these sysctls must be set in relation to the CPU architecture. The above values are compatible with x86 but other architectures
+      The values of these sysctls must be set in relation to the CPU architecture. The above values are compatible with x86, but other architectures
       may differ.
     </p>
 
@@ -448,14 +448,14 @@ fs.protected_regular=2</code></pre>
 
     <p>
       These <a href="https://github.com/torvalds/linux/commit/30aba6656f61ed44cba445a3c0d38b296fa9e8f5">prevent creating files in potentially
-      attacker-controlled environments</a> such as world-writable directories to make data spoofing attacks more difficult.
+      attacker-controlled environments</a>, such as world-writable directories, to make data spoofing attacks more difficult.
     </p>
 
     <h3 id="boot-parameters"><a href="#boot-parameters">2.3 Boot parameters</a></h3>
 
     <p>
       Boot parameters pass settings to the kernel at boot using your bootloader. Some settings can be used to increase security,
-      similar to sysctl. Bootloaders often differ in how boot parameters are set. A few examples are listed below but you should
+      similar to sysctl. Bootloaders often differ in how boot parameters are set. A few examples are listed below, but you should
       research the required steps for your specific bootloader. <br>
       <br>
       If using GRUB as your bootloader, edit <code>/etc/default/grub</code> and add your parameters to the <code>
@@ -761,13 +761,13 @@ install btusb /bin/false</code></pre>
     <h3 id="other-kernel-pointer-leaks"><a href="#other-kernel-pointer-leaks">2.6 Other kernel pointer leaks</a></h3>
 
     <p>
-      Previous sections have prevented some kernel pointer leaks but <a href="https://github.com/jonoberheide/ksymhunter">there are still a few more</a>. <br>
+      Previous sections have prevented some kernel pointer leaks, but <a href="https://github.com/jonoberheide/ksymhunter">there are still a few more</a>. <br>
       <br>
       On the filesystem, there exists the kernel images and System.map files in <code>/boot</code>. There is also other sensitive kernel information in the <code>/usr/src</code> and
       <code>/{,usr/}lib/modules</code> directories. <a href="#file-permissions">You should restrict the file permissions of these directories to make them only readable by the
       root user</a>. You should also delete the System.map files as they are not required for anything except advanced debugging. <br>
       <br>
-      Additionally, certain logging daemons such as systemd's <code>journalctl</code> include the kernel logs which can be used to bypass the above <code>dmesg_restrict</code> protection.
+      Additionally, certain logging daemons, such as systemd's <code>journalctl</code>, include the kernel logs which can be used to bypass the above <code>dmesg_restrict</code> protection.
       Removing the user from the <code>adm</code> group is often sufficient to revoke access to these logs:
     </p>
 
@@ -799,14 +799,14 @@ SupplementaryGroups=sysfs</code></pre>
     <h3 id="linux-hardened"><a href="#linux-hardened">2.8 linux-hardened</a></h3>
 
     <p>
-      Certain distributions such as Arch Linux include a <a href="https://www.archlinux.org/packages/extra/x86_64/linux-hardened/">hardened kernel package</a>. This contains
+      Certain distributions, such as Arch Linux, include a <a href="https://www.archlinux.org/packages/extra/x86_64/linux-hardened/">hardened kernel package</a>. This contains
       many hardening patches and a more security-conscious kernel configuration. It is recommended to install this if possible.
     </p>
 
     <h3 id="grsecurity"><a href="#grsecurity">2.9 Grsecurity</a></h3>
 
     <p>
-      <a href="https://grsecurity.net/">Grsecurity</a> is a set of kernel patches that can massively increase kernel security. These patches used to be freely available but <a
+      <a href="https://grsecurity.net/">Grsecurity</a> is a set of kernel patches that can massively increase kernel security. These patches used to be freely available, but <a
       href="https://grsecurity.net/passing_the_baton">are now commercial and must be purchased</a>. If it is available, then it is highly recommended that you get it. Grsecurity
       offers state-of-the-art kernel and user space protections.
     </p>
@@ -825,7 +825,7 @@ SupplementaryGroups=sysfs</code></pre>
       It is recommended to compile your own kernel whilst enabling as little kernel modules as possible and as many security features as possible to keep the attack surface of the kernel
       at an absolute minimum. <br>
       <br>
-      In addition, apply kernel hardening patches such as <a href="https://github.com/anthraxx/linux-hardened">linux-hardened</a> or <a href="https://grsecurity.net/">grsecurity</a> as
+      In addition, apply kernel hardening patches, such as <a href="https://github.com/anthraxx/linux-hardened">linux-hardened</a> or <a href="https://grsecurity.net/">grsecurity</a>, as
       mentioned above. <br>
       <br>
       Distribution-compiled kernels also have public kernel pointers / symbols which are very useful for exploits. Compiling your own kernel will give you unique kernel symbols which,
@@ -885,7 +885,7 @@ SupplementaryGroups=sysfs</code></pre>
       Either of these can be used to create a very powerful sandbox with minimal attack surface exposed. If you do not wish to create sandboxes yourself, consider using Whonix's <a
       href="https://www.whonix.org/wiki/Sandbox-app-launcher">sandbox-app-launcher</a> once it is complete. <a href="../linux.html#firejail">You should not use Firejail</a>. <br>
       <br>
-      Container solutions such as <a href="https://www.docker.com/">Docker</a> and <a href="https://linuxcontainers.org/">LXC</a> are often used as a misguided form of sandboxing. These are too permissive as to support a
+      Container solutions, such as <a href="https://www.docker.com/">Docker</a> and <a href="https://linuxcontainers.org/">LXC</a>, are often used as a misguided form of sandboxing. These are too permissive as to support a
       wide variety of applications so they cannot be considered a strong application sandbox.
     </p>
 
@@ -894,7 +894,7 @@ SupplementaryGroups=sysfs</code></pre>
     <h4 id="pulseaudio"><a href="#pulseaudio">4.2.1 PulseAudio</a></h4>
 
     <p>
-      <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/">PulseAudio</a> is a common sound server but it <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/AccessControl/">
+      <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/">PulseAudio</a> is a common sound server, but it <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/AccessControl/">
       was not written with isolation or sandboxing in mind</a>, making it a recurring sandbox escape vulnerability. To prevent this, it is recommended to block access to PulseAudio from within your sandbox or uninstall
       it from your system entirely. You can use the <a href="https://alsa-project.org/wiki/Main_Page">standard ALSA utilities</a> instead.
     </p>
@@ -902,7 +902,7 @@ SupplementaryGroups=sysfs</code></pre>
     <h4 id="d-bus"><a href="#d-bus">4.2.2 D-Bus</a></h4>
 
     <p>
-      <a href="https://www.freedesktop.org/wiki/Software/dbus/">D-Bus</a> is the most prevalent form of inter-process communication on desktop Linux but it is also another common avenue for sandbox escapes since it allows
+      <a href="https://www.freedesktop.org/wiki/Software/dbus/">D-Bus</a> is the most prevalent form of inter-process communication on desktop Linux, but it is also another common avenue for sandbox escapes since it allows
       freely interacting with services. One such example of these vulnerabilities <a href="https://github.com/netblue30/firejail/issues/796">was in Firejail</a>. You should either block access to D-Bus from within the sandbox
       or <a href="https://manpages.debian.org/buster/apparmor/apparmor.d.5.en.html#DBus_rules">mediate it via MAC with fine-grained rules</a>.
     </p>
@@ -911,7 +911,7 @@ SupplementaryGroups=sysfs</code></pre>
 
     <p>
       <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">Any Xorg window can access another window</a>. This allows trivial keylogging or screenshot programs
-      that can even record things such as the root password. You can sandbox Xorg windows with a nested X11 server such as <a href="https://www.xpra.org/">Xpra</a> or <a href="https://freedesktop.org/wiki/Software/Xephyr/">Xephyr</a>
+      that can even record things such as the root password. You can sandbox Xorg windows with a nested X11 server, such as <a href="https://www.xpra.org/">Xpra</a> or <a href="https://freedesktop.org/wiki/Software/Xephyr/">Xephyr</a>
       and bubblewrap. <br>
       <br>
       <a href="https://wayland.freedesktop.org/">Wayland</a> isolates windows from each other by default and would be a much better choice than Xorg, although Wayland may not be as generally usable as Xorg since it
@@ -936,7 +936,7 @@ SupplementaryGroups=sysfs</code></pre>
     <h3 id="systemd-sandboxing"><a href="#systemd-sandboxing">4.3 Systemd sandboxing</a></h3>
 
     <p>
-      <a href="#choosing-the-right-distro">systemd is unrecommended</a> but some may be unable to switch. These people can at the very least, sandbox services so they can only access what they need. Here is
+      <a href="#choosing-the-right-distro">systemd is unrecommended</a>, but some may be unable to switch. These people can at the very least, sandbox services so they can only access what they need. Here is
       an example of a sandboxed systemd service:
     </p>
 
@@ -976,7 +976,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <ul>
       <li><code>CapabilityBoundingSet=</code> — Specifies the <a href="#capabilities">capabilities</a> the process is given.</li>
       <li><code>ProtectHome=true</code> — Makes all home directories inaccessible.</li>
-      <li><code>ProtectKernelTunables=true</code> — Mounts kernel tunables such as those modified through <code>sysctl</code> as read-only.</li>
+      <li><code>ProtectKernelTunables=true</code> — Mounts kernel tunables, such as those modified through <code>sysctl</code>, as read-only.</li>
       <li><code>ProtectKernelModules=true</code> — Denies module loading and unloading.</li>
       <li><code>ProtectControlGroups=true</code> — Mounts all control group hierarchies as read-only.</li>
       <li><code>ProtectKernelLogs=true</code> — Prevents accessing the kernel logs.</li>
@@ -1074,12 +1074,12 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <p>
       Compiling your own programs can offer numerous benefits as it gives you the ability to optimise your programs for security. However, it
       is easy to do the exact opposite and worsen security — if you are unsure about what you are doing, skip this section. This will be easiest
-      on a source-based distribution <a href="#choosing-the-right-distro">such as Gentoo</a> but it is possible to do this on others. <br>
+      on a source-based distribution, <a href="#choosing-the-right-distro">such as Gentoo</a>, but it is possible to do this on others. <br>
       <br>
       Certain compilation options can be used to add additional exploit mitigations that eliminate entire classes of common vulnerabilities.
-      You have likely heard of regular protections such as <a href="https://wiki.gentoo.org/wiki/Hardened/Toolchain">Position Independent
-      Executables, Stack Smashing Protector, immediate binding, read-only relocations and FORTIFY_SOURCE</a> but this section will not
-      go over those as they have already been widely adopted. Instead, it will discuss <i>modern</i> exploit mitigations like Control-Flow
+      You have likely heard of regular protections, such as <a href="https://wiki.gentoo.org/wiki/Hardened/Toolchain">Position Independent
+      Executables, Stack Smashing Protector, immediate binding, read-only relocations and FORTIFY_SOURCE</a>, but this section will not
+      go over those as they have already been widely adopted. Instead, it will discuss <i>modern</i> exploit mitigations like Control Flow
       Integrity and shadow stacks. <br>
       <br>
       This section refers to native programs, written primarily in C or C++. You must be using the <a href="https://clang.llvm.org/">Clang
@@ -1089,10 +1089,10 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <ul>
       <li class="lilist">
-        <a href="https://clang.llvm.org/docs/ControlFlowIntegrity.html">Control-Flow Integrity</a> (CFI) is an exploit mitigation that <a
+        <a href="https://clang.llvm.org/docs/ControlFlowIntegrity.html">Control Flow Integrity</a> (CFI) is an exploit mitigation that <a
         href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">aims to prevent code reuse attacks like ROP or JOP</a>.
-        A large portion of vulnerabilities are exploited using these techniques due to more widely adopted mitigations such as NX making older
-        exploit techniques obsolete. Clang supports fine-grained forward-edge CFI, meaning that it effectively mitigates <i>JOP</i> attacks. Clang's
+        A large portion of vulnerabilities are exploited using these techniques due to more widely adopted mitigations, such as NX, making older
+        exploit techniques obsolete. Clang supports fine-grained, forward-edge CFI, meaning that it effectively mitigates <i>JOP</i> attacks. Clang's
         CFI does not mitigate <i>ROP</i> by itself; you must also use a separate mechanism as documented below. To enable this, you must apply
         the following compilation flags:
 
@@ -1195,7 +1195,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <p>
       You can increase the number of hashing rounds that shadow uses, thereby increasing the security of your hashed passwords by
-      forcing an attacker to compute much more hashes to crack your password. By default, shadow uses 5000 rounds but you
+      forcing an attacker to compute much more hashes to crack your password. By default, shadow uses 5000 rounds, but you
       can increase this to as many as you want. Although the more rounds you configure, the slower it will be to login.
       Edit <code>/etc/pam.d/passwd</code> and add the rounds option. For example:
     </p>
@@ -1228,7 +1228,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <p>
       There are a <a href="../linux.html#root">wide range of methods that malware can use to sniff the password of the root account</a>. As such,
-      traditional ways of accessing the root account are insecure. Preferably, root would not be accessed at all but this isn't really feasible.
+      traditional ways of accessing the root account are insecure. Preferably, root would not be accessed at all, but this isn't really feasible.
       This section details the safest way possible of accessing the root account. These instructions should be applied as soon as the OS is
       installed to make sure it is free of malware. <br>
       <br>
@@ -1315,7 +1315,7 @@ COMMIT</code></pre>
     <h3 id="hostnames"><a href="#hostnames">10.1 Hostnames and usernames</a></h3>
 
     <p>
-      Do not put anything uniquely indentifying in your hostname or username. Keep them as generic names such as "host" and "user" so you cannot be identified by them.
+      Do not put anything uniquely indentifying in your hostname or username. Keep them as generic names, such as "host" and "user", so you cannot be identified by them.
     </p>
 
     <h3 id="timezones-locales-keymaps"><a href="#timezones-locales-keymaps">10.2 Timezones / Locales / Keymaps</a></h3>
@@ -1328,7 +1328,7 @@ COMMIT</code></pre>
 
     <p>
       A <a href="https://www.man7.org/linux/man-pages/man5/machine-id.5.html">unique Machine ID</a> is stored in <code>/var/lib/dbus/machine-id</code> and on systemd systems,
-      <code>/etc/machine-id</code> also. These should be edited to something generic such as <a href="https://github.com/Whonix/dist-base-files/blob/master/etc/machine-id">the Whonix ID</a>:
+      <code>/etc/machine-id</code> also. These should be edited to something generic, such as <a href="https://github.com/Whonix/dist-base-files/blob/master/etc/machine-id">the Whonix ID</a>:
     </p>
 
     <pre><code>b08dfa6083e7567a1921a715000001fb</code></pre>
@@ -1398,7 +1398,7 @@ WantedBy=multi-user.target</code></pre>
 
     <p>
       <a href="https://web.archive.org/web/20170201160732/https://mailman.boum.org/pipermail/tails-dev/2013-December/004520.html">TCP timestamps also leak the system time</a>.
-      The kernel attempted to fix this by <a href="https://github.com/torvalds/linux/commit/95a22caee396cef0bb2ca8fafdd82966a49367bb">using a random offset for each connection</a>
+      The kernel attempted to fix this by <a href="https://github.com/torvalds/linux/commit/95a22caee396cef0bb2ca8fafdd82966a49367bb">using a random offset for each connection</a>,
       but this is <a href="https://forums.whonix.org/t/do-ntp-and-tcp-timestamps-really-leak-your-local-time/7824/10">not enough to fix the issue</a>. Thus, TCP timestamps should be
       disabled. This can be done by setting the following with <a href="#sysctl">sysctl</a>:
     </p>
@@ -1446,7 +1446,7 @@ WantedBy=multi-user.target</code></pre>
 
     <p>
       By default, the permissions of files are quite permissive. You should search across your system for files and directories with improper permissions and restrict them. For example,
-      on some distributions such as Debian, users' home directories are world-readable. This can be restricted by executing:
+      on some distributions, such as Debian, users' home directories are world-readable. This can be restricted by executing:
     </p>
 
     <pre><code>chmod 700 /home/$user</code></pre>
@@ -1514,7 +1514,7 @@ WantedBy=multi-user.target</code></pre>
 
     <p>
       <a href="https://en.wikipedia.org/wiki/Core_dump">Core dumps</a> contain the recorded memory of a program at a specific time, usually when that program has crashed.
-      These can contain sensitive information such as passwords and encryption keys so these must be disabled. <br>
+      These can contain sensitive information, such as passwords and encryption keys, so these must be disabled. <br>
       <br>
       There are three main ways to disable them: sysctl, systemd and ulimit.
     </p>
@@ -1589,8 +1589,8 @@ password required pam_unix.so use_authtok sha512 shadow</code></pre>
     <h2 id="microcode"><a href="#microcode">15. Microcode updates</a></h2>
 
     <p>
-      Microcode updates are essential to fix critical CPU vulnerabilities such as <a href="https://meltdownattack.com">Meltdown and Spectre</a>, among numerous others.
-      Most distributions include these in their software repositories such as <a href="https://wiki.archlinux.org/index.php/Microcode">Arch Linux</a> and <a href="https://wiki.debian.org/Microcode">Debian</a>.
+      Microcode updates are essential to fix critical CPU vulnerabilities, such as <a href="https://meltdownattack.com">Meltdown and Spectre</a>, among numerous others.
+      Most distributions include these in their software repositories, such as <a href="https://wiki.archlinux.org/index.php/Microcode">Arch Linux</a> and <a href="https://wiki.debian.org/Microcode">Debian</a>.
     </p>
 
     <h2 id="ipv6-privacy"><a href="#ipv6-privacy">16. IPv6 privacy extensions</a></h2>
@@ -1670,7 +1670,7 @@ IPv6PrivacyExtensions=kernel</code></pre>
       <a href="https://www.felixcloutier.com/x86/rdrand">RDRAND</a> is a CPU instruction for providing random numbers. It is automatically used by the kernel as an entropy source if it is available;
       but since it is proprietary and part of the CPU itself, it is impossible to audit and verify its security properties. You are not even able to reverse engineer the code if you wish. This RNG
       has <a href="https://en.wikipedia.org/wiki/RDRAND#Reception">suffered</a> <a href="https://arstechnica.com/gadgets/2019/10/how-a-months-old-amd-microcode-bug-destroyed-my-weekend/">from</a>
-      <a href="https://nitter.snopyta.org/RichFelker/status/1125794261839032320">vulnerabilities</a> <a href="https://nitter.snopyta.org/pid_eins/status/1149649806056280069">before</a>, some of which may have been <a
+      <a href="https://twitter.com/RichFelker/status/1125794261839032320">vulnerabilities</a> <a href="https://twitter.com/pid_eins/status/1149649806056280069">before</a>, some of which may have been <a
       href="https://archive.nytimes.com/www.nytimes.com/interactive/2013/09/05/us/documents-reveal-nsa-campaign-against-encryption.html">backdoors</a>. It is possible to distrust this feature by <a
       href="#boot-parameters">setting the following boot parameter</a>:
     </p>
@@ -1690,7 +1690,7 @@ IPv6PrivacyExtensions=kernel</code></pre>
     <pre><code>sudoedit $path_to_file</code></pre>
 
     <p>
-      By default, it uses <code>vi</code> but the default editor can be switched via the <code>EDITOR</code> or <code>SUDO_EDITOR</code> environment variables. For example, to use <code>nano</code>, execute:
+      By default, it uses <code>vi</code>, but the default editor can be switched via the <code>EDITOR</code> or <code>SUDO_EDITOR</code> environment variables. For example, to use <code>nano</code>, execute:
     </p>
 
     <pre><code>EDITOR=nano sudoedit $path_to_file</code></pre>
@@ -1741,7 +1741,7 @@ IPv6PrivacyExtensions=kernel</code></pre>
       Most BIOS or UEFI implementations support setting a password. It is best to enable this and set a very strong password. This is a weak protection though as it is trivial to reset the password. It is
       often stored in volatile memory so an attacker just needs to be able to remove the CMOS battery for a few seconds or they can reset it with a jumper on certain motherboards. <br>
       <br>
-      You should also disable all unused devices and boot options such as USB booting to reduce attack surface. <br>
+      You should also disable all unused devices and boot options, such as USB booting, to reduce attack surface. <br>
       <br>
       Updating the BIOS or UEFI is often neglected — make sure you keep them updated. Treat it as important as regular operating system updates. <br>
       <br>
@@ -1821,7 +1821,7 @@ password_pbkdf2 $username $password</code></pre>
     <pre><code>editor no</code></pre>
 
     <p>
-      systemd-boot does not officially support password protecting the kernel parameters editor but you can achieve this with <a
+      systemd-boot does not officially support password protecting the kernel parameters editor, but you can achieve this with <a
       href="https://github.com/kitsunyan/systemd-boot-password">systemd-boot-password</a>.
     </p>
 
@@ -1878,7 +1878,7 @@ password_pbkdf2 $username $password</code></pre>
     <pre><code>intel_iommu=on amd_iommu=on</code></pre>
 
     <p>
-      You only need to enable the option for your specific CPU manufacturer but there are no issues with enabling both options.
+      You only need to enable the option for your specific CPU manufacturer, but there are no issues with enabling both options.
     </p>
 
     <pre><code>efi=disable_early_pci_dma</code></pre>
@@ -1898,7 +1898,7 @@ install thunderbolt /bin/false</code></pre>
 
     <p>
       A <a href="https://en.wikipedia.org/wiki/Cold_boot_attack">cold boot attack</a> occurs when an attacker analyses the data in RAM before it is erased. When using modern RAM, cold boot attacks aren't
-      very practical as RAM usually clears within a few seconds or minutes unless it has been placed inside a cooling solution such as liquid nitrogen or a freezer. An attacker would have to rip out the RAM
+      very practical as RAM usually clears within a few seconds or minutes unless it has been placed inside a cooling solution, such as liquid nitrogen or a freezer. An attacker would have to rip out the RAM
       sticks from your device and expose it to liquid nitrogen all within a few seconds and without the user noticing. <br>
       <br>
       If cold boot attacks are part of your threat model, then guard your computer for a few minutes after shutdown to ensure that nobody has access to your RAM sticks. You could also solder the RAM sticks into your
@@ -1960,7 +1960,7 @@ install thunderbolt /bin/false</code></pre>
     <pre><code>grub-mkconfig -o $path_to_grub_config</code></pre>
 
     <p>
-      "$path_to_grub_config" depends on how you have setup your system. It is often either <code>/boot/grub/grub.cfg</code> or <code>/boot/EFI/grub/grub.cfg</code>
+      "$path_to_grub_config" depends on how you have setup your system. It is often either <code>/boot/grub/grub.cfg</code> or <code>/boot/EFI/grub/grub.cfg</code>,
       but you should make sure before executing this command. <br>
       <br>
       Alternatively, on distributions like Debian or Ubuntu, you should execute:

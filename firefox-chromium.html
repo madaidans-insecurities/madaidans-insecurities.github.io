@@ -11,64 +11,115 @@
 <body>
   <h1>Firefox and Chromium</h1>
 
-  <p class="date"><i><time datetime="2021-04-26">Last edited: April 26, 2021</time></i></p>
+  <p class="date"><i><time datetime="2021-06-14">Last edited: June 14th, 2021</time></i></p>
 
   <p>
-    Chromium is vastly more secure than Firefox. Firefox's sandboxing and exploit mitigations are much weaker than Chromium's.
-    This article is not blindly hating on Firefox but is a factual analysis of its weaknesses.
+    Firefox is sometimes recommended as a supposedly more secure browser because of its parent company's privacy practices.
+    This article explains why this notion is not true and enumerates a number of security weaknesses in Firefox's security model
+    when compared to Chromium. In particular, it covers the less granular process model, weaker sandboxing and lack of modern
+    exploit mitigations. It is important to decouple privacy from security — this article does not attempt to compare the
+    privacy practices of each browser but rather their resistance to exploitation. <br>
+    <br>
+    Section 1 explains the weaker process model and sandboxing architecture. Section 2 examines and compares a number of
+    important exploit mitigations. Section 3 discusses some miscellaneous topics. Finally, section 4 provides links to what
+    other security researchers have said about this topic.
   </p>
 
-  <h2 id="sandboxing"><a href="#sandboxing">Sandboxing</a></h2>
+  <h2>Contents</h2>
+
+  <div class="headers">
+    <a href="#sandboxing">1. Sandboxing</a> <br>
+    <a href="#site-isolation" class="subheaders">1.1 Site Isolation</a> <br>
+    <a href="#windows-sandbox" class="subheaders">1.2 Windows</a> <br>
+    <a href="#linux-sandbox" class="subheaders">1.3 Linux</a> <br>
+    <a href="#linux-sandbox-escapes" class="subheaders2">1.3.1 Linux Sandbox Escapes</a> <br>
+    <a href="#seccomp-bpf" class="subheaders2">1.3.2 seccomp-bpf</a> <br>
+    <a href="#android-sandbox" class="subheaders">1.4 Android</a> <br>
+    <a href="#missing-processes" class="subheaders">1.5 Missing Processes</a> <br>
+    <br>
+    <a href="#exploit-mitigations">2. Exploit Mitigations</a> <br>
+    <a href="#acg-cig" class="subheaders">2.1 Arbitrary Code Guard and Code Integrity Guard</a> <br>
+    <a href="#cfi" class="subheaders">2.2 Control Flow Integrity</a> <br>
+    <a href="#untrusted-fonts-blocking" class="subheaders">2.3 Untrusted Fonts Blocking</a> <br>
+    <a href="#jit-hardening" class="subheaders">2.4 JIT Hardening</a> <br>
+    <a href="#memory-allocator-hardening" class="subheaders">2.5 Memory Allocator Hardening</a> <br>
+    <a href="#memory-partitioning" class="subheaders2">2.5.1 Memory Partitioning</a> <br>
+    <a href="#out-of-line-metadata" class="subheaders2">2.5.2 Out-of-line Metadata</a> <br>
+    <a href="#partitionalloc-other" class="subheaders2">2.5.3 Other</a> <br>
+    <a href="#auto-var-init" class="subheaders">2.6 Automatic Variable Initialization</a> <br>
+    <br>
+    <a href="#miscellaneous">3. Miscellaneous</a> <br>
+    <br>
+    <a href="#security-researcher-views">4. Other Security Researcher Views on Firefox</a> <br>
+  </div>
+
+  <h2 id="sandboxing"><a href="#sandboxing">1. Sandboxing</a></h2>
 
   <p>
     Sandboxing is a technique used to isolate certain programs to prevent a vulnerability in them from compromising
-    the rest of the system. All common browsers nowadays include a sandbox. The browser splits itself up into different
-    processes (e.g. the content process, GPU process, RDD process, etc.) and sandboxes them individually. It is very important
-    that a browser uses a sandbox. Otherwise, any exploit in the browser can be used to take over the rest of the system.
-    With a sandbox, they would need to chain their exploit with an additional sandbox escape vulnerability. <br>
+    the rest of the system by restricting access to unnecessary resources. All common browsers nowadays include a sandbox
+    and utilise a multi-process architecture. The browser splits itself up into different processes (e.g. the content
+    process, GPU process, RDD process, etc.) and sandboxes them individually, strictly adhering to <a
+    href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>. It is very important
+    that a browser uses a sandbox as it processes untrusted input by design, poses enormous attack surface and is one of the
+    most used applications on the system. Without a sandbox, any exploit in the browser can be used to take over the rest of
+    the system. Whereas with a sandbox, the attacker would need to chain their exploit with an additional sandbox escape
+    vulnerability. <br>
     <br>
-    However, sandboxes are not black and white. Just having a sandbox doesn't do much if it's full of holes. Firefox's
-    sandbox is quite weak for the following reasons. Note that this is a non-exhaustive list and the issues below are only a
-    few examples of such weaknesses.
+    However, sandboxes are not black and white. Just having a sandbox doesn't do much if it's full of holes.
+    <a href="https://wiki.mozilla.org/Security/Sandbox">Firefox's sandbox</a> is quite weak for the reasons documented below. Note
+    that this is a non-exhaustive list and the issues below are only a few examples of such weaknesses.
   </p>
 
-  <h3 id="site-isolation"><a href="#site-isolation">Site Isolation</a></h3>
+  <h3 id="site-isolation"><a href="#site-isolation">1.1 Site Isolation</a></h3>
 
   <p>
-    <a href="https://wiki.mozilla.org/Security/Sandbox">Firefox's sandboxing</a> lacks any <a
-    href="https://www.chromium.org/Home/chromium-security/site-isolation">site isolation</a>. Site isolation runs
-    every website inside its own sandbox so that an exploit in one website cannot access the data from another. In addition,
-    <a href="https://security.googleblog.com/2018/07/mitigating-spectre-with-site-isolation.html">site isolation is necessary
-    for complete protection against side-channel attacks like Spectre</a>. Mozilla is working on site isolation with <a
-    href="https://wiki.mozilla.org/Project_Fission">Project Fission</a> but it is still a work in progress and is not yet fit
-    for actual use. The sandbox is currently only focused on isolating the browser as a whole from the rest of the operating
-    system and even that is still not great.
+    <a href="https://www.chromium.org/Home/chromium-security/site-isolation">Site isolation</a> is a security feature which was
+    <a href="https://security.googleblog.com/2018/07/mitigating-spectre-with-site-isolation.html">introduced in Chromium in 2018</a>.
+    This involved an overhaul in Chromium's multi-process architecture — rather than all websites running within the same process,
+    this feature now separated each website into its own sandboxed renderer process. <a
+    href="https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/security/compromised-renderers.md">This ensures that
+    a renderer exploit from one website still cannot access the data from another</a>. In addition,
+    <a href="https://www.usenix.org/conference/usenixsecurity19/presentation/reis">site isolation is necessary for complete protection
+    against side-channel attacks like Spectre</a>. Operating system mitigations against such attacks only guarantee isolation at the
+    process boundary; therefore, separating websites into different processes is the only way to fully make use of them. Furthermore,
+    current browser mitigations, such as <a href="https://developers.google.com/web/updates/2018/02/meltdown-spectre#high-resolution_timers">
+    reducing JavaScript timer accuracy</a>, are insufficient and do not address the root issue. As such, <a
+    href="https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/security/side-channel-threat-model.md">the only proper
+    mitigation is through site isolation</a>. <br>
+    <br>
+    Firefox currently lacks any form of site isolation. Mozilla is working on implementing this with <a
+    href="https://wiki.mozilla.org/Project_Fission">Project Fission</a> and is <a
+    href="https://blog.mozilla.org/security/2021/05/18/introducing-site-isolation-in-firefox/">rolling it out on the Nightly and Beta release
+    channels</a>, but it is still a work in progress and is not yet fit for serious use. The sandbox is currently only focused on
+    isolating the browser as a whole from the rest of the operating system and even that is still not great, as explained below.
   </p>
 
-  <h3 id="windows-sandbox"><a href="#windows-sandbox">Windows</a></h3>
+  <h3 id="windows-sandbox"><a href="#windows-sandbox">1.2 Windows</a></h3>
 
   <p>
     Excluding the issue
-    of site isolation, only the Firefox sandbox on Windows is comparable to the <a
-    href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md">Chromium sandbox</a> but even then,
+    of site isolation, only the Firefox sandbox on Windows is even comparable to the <a
+    href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md">Chromium sandbox</a> however,
     <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=win32k">it still lacks</a> <a
     href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#win32k_sys-lockdown">win32k lockdown</a>. Win32k is a set of
     dangerous system calls in the NT kernel that expose a lot of attack surface and <a
     href="https://github.com/microsoft/MSRC-Security-Research/blob/master/presentations/2018_10_DerbyCon/2018_10_DerbyCon_State_of%20_Win32k_Security.pdf">
-    has historically been the result of numerous vulnerabilities</a>. Microsoft aimed to lessen this risk by introducing a feature that <a
-    href="https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-process_mitigation_system_call_disable_policy"> allows a process to block access
-    to these syscalls</a>, therefore massively reducing attack surface. <a href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">Chromium
-    implemented this in 2016</a> to strengthen the sandbox but Firefox has yet to follow suit — <a
-    href="https://searchfox.org/mozilla-central/rev/a5bf5d0720f9454687f500513ac82b0c8abce5a4/modules/libpref/init/StaticPrefList.yaml#10133">
-    Firefox currently only enables this in the socket process</a>.
+    has historically been the result of numerous vulnerabilities</a>, making it a frequent target for sandbox escapes. Microsoft aimed to lessen this risk
+    by introducing a feature that <a href="https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-process_mitigation_system_call_disable_policy">
+    allows a process to block access to these syscalls</a>, therefore massively reducing attack surface. <a
+    href="https://googleprojectzero.blogspot.com/2016/11/breaking-chain.html">Chromium implemented this feature in 2016</a> to strengthen the sandbox, but
+    Firefox has yet to follow suit — <a
+    href="https://searchfox.org/mozilla-central/rev/a5bf5d0720f9454687f500513ac82b0c8abce5a4/modules/libpref/init/StaticPrefList.yaml#10133">Firefox currently
+    only enables this in the socket process</a> (<a href="#missing-processes">which isn't enabled yet</a>).
   </p>
 
-  <h3 id="linux-sandbox"><a href="#linux-sandbox">Linux</a></h3>
+  <h3 id="linux-sandbox"><a href="#linux-sandbox">1.3 Linux</a></h3>
 
-  <h4 id="linux-sandbox-escapes"><a href="#linux-sandbox-escapes">Sandbox Escapes</a></h4>
+  <h4 id="linux-sandbox-escapes"><a href="#linux-sandbox-escapes">1.3.1 Sandbox Escapes</a></h4>
 
   <p>
-    Firefox's sandboxing on other platforms such as Linux is significantly worse. The restrictions are generally quite permissive and it is even susceptible to various
+    Firefox's sandboxing on other platforms, such as Linux, is significantly worse. The restrictions are generally quite permissive and it is even susceptible to various
     trivial sandbox escape vulnerabilities that span back years, as well as exposing sizable attack surface from within the sandbox.
   </p>
 
@@ -84,55 +135,91 @@
       <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/">PulseAudio</a> is a common sound server on Linux however, <a
       href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/AccessControl/">it was not written with isolation in mind</a>, making it
       possible to escape sandboxes with it. Like X11, <a href="https://searchfox.org/mozilla-central/search?q=pulseaudio&path=security%2Fsandbox%2Flinux">Firefox
-      exposes this directly to the content process</a>, permitting another trivial sandbox escape, while Chromium only exposes it to a broker process.
+      exposes this directly to the content process</a>, permitting another trivial sandbox escape, while <a
+      href="https://github.com/chromium/chromium/blob/master/services/audio/audio_sandbox_hook_linux.cc">Chromium only exposes it to a dedicated audio service</a>.
     </li>
   </ul>
 
-  <h4 id="seccomp-bpf"><a href="#seccomp-bpf">seccomp-bpf</a></h4>
+  <h4 id="seccomp-bpf"><a href="#seccomp-bpf">1.3.2 seccomp-bpf</a></h4>
 
   <p>
     <a href="https://www.kernel.org/doc/html/latest/userspace-api/seccomp_filter.html">seccomp-bpf</a> is a sandboxing technology on Linux that allows one to restrict
     the syscalls accessible by a process which can greatly reduce kernel attack surface and is a core part of most Linux sandboxes. However, Firefox's seccomp filter
-    is far less restrictive than Chromium's. An example of this is that there is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1302711">very little ioctl
-    filtering</a> — <a href="https://searchfox.org/mozilla-central/rev/9ae77e4ce3378bd683ac9a86b729ea6b6bd22cb8/security/sandbox/linux/SandboxFilter.cpp#1291">
-    only TTY-related ioctls are blocked</a>. This is problematic as ioctl is a massive kernel attack surface that comprises of hundreds of different syscalls,
-    somewhat similar to NT's Win32k. Android <a href="https://kernsec.org/files/lss2015/vanderstoep.pdf">implemented ioctl filtering in its application sandbox</a>
-    for this exact reason. Unlike Firefox, Chromium permits only the few ioctls that are necessary in its sandbox which reduces kernel attack surface by a considerable
-    amount.
+    is substantially less restrictive than the one imposed by Chromium's sandbox and does not restrict anywhere near the same amount of syscalls and their arguments.
+    One example of this is that there is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1302711">very little filtering of ioctl calls</a> — <a
+    href="https://searchfox.org/mozilla-central/rev/9ae77e4ce3378bd683ac9a86b729ea6b6bd22cb8/security/sandbox/linux/SandboxFilter.cpp#1291">only TTY-related ioctls
+    are blocked in the content process</a>. This is problematic because ioctl is a particularly powerful syscall that presents a massive kernel attack surface as it
+    comprises of hundreds of different syscalls, somewhat similar to NT's Win32k. Unlike Firefox, <a
+    href="https://github.com/chromium/chromium/search?q=path%3A%2Fsandbox+RestrictIoctl">Chromium permits only the few ioctls that are necessary in its sandbox</a>
+    which reduces kernel attack surface by a considerable amount. In a similar fashion, Android <a href="https://kernsec.org/files/lss2015/vanderstoep.pdf">implemented
+    ioctl filtering in its application sandbox</a> for the same reasons, alongside various other projects with a focus on sandboxing.
   </p>
 
-  <h3 id="android-sandbox"><a href="#android-sandbox">Android</a></h3>
+  <h3 id="android-sandbox"><a href="#android-sandbox">1.4 Android</a></h3>
 
   <p>
-    On Android, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1565196">Firefox does not have a sandbox at all beyond the OS app sandbox</a>, while Chromium uses the
-    <a href="https://developer.android.com/guide/topics/manifest/service-element#isolated"><code>isolatedProcess</code> feature</a>, along with a more strict seccomp-bpf filter.
+    On Android, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1565196">Firefox does not have a multi-process architecture or a sandbox at all beyond the OS app
+    sandbox</a>, while Chromium uses the <a href="https://developer.android.com/guide/topics/manifest/service-element#isolated"><code>isolatedProcess</code> feature</a>,
+    along with <a href="https://github.com/chromium/chromium/blob/master/sandbox/linux/seccomp-bpf-helpers/baseline_policy_android.cc">a more restrictive seccomp-bpf
+    filter</a>.
   </p>
 
-  <h3 id="gpu-process"><a href="#gpu-process">GPU Process Sandboxing</a></h3>
+  <h3 id="missing-processes"><a href="#missing-processes">1.5 Missing Processes</a></h3>
 
   <p>
-    On Linux, there is also <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1653444">no separate GPU process</a>, meaning it cannot be independently sandboxed.
-    <a href="https://wiki.mozilla.org/Security/Sandbox/Process_model#GPU_Process">This process exists on Windows</a> however, <a
-    href="https://bugzilla.mozilla.org/show_bug.cgi?id=1347710">the sandboxing for it is still not enabled</a>.
+    In general, Chromium's multi-process architecture is significantly more mature and granular than that of Firefox, allowing it to impose tighter restrictions
+    upon each part of the browser. Examples of processes that are missing from Firefox are listed below. On Firefox, such functionality will be merged into another
+    process, such as the parent or content process, making it considerably harder to enforce strong restrictions.
   </p>
 
-  <h2 id="exploit-mitigations"><a href="#exploit-mitigations">Exploit Mitigations</a></h2>
+  <ul>
+    <li class="lilist">
+      On Linux, Firefox has <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1653444">no separate GPU process</a>, meaning it cannot be independently sandboxed.
+      <a href="https://wiki.mozilla.org/Security/Sandbox/Process_model#GPU_Process">This process exists on Windows</a> however, <a
+      href="https://bugzilla.mozilla.org/show_bug.cgi?id=1347710">the sandboxing for it is still not enabled</a>.
+    </li>
+
+    <li class="lilist">
+      Firefox does <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1322426">not yet have a separate socket process for network operations</a> — this process <a
+      href="https://wiki.mozilla.org/Security/Sandbox#Socket_Process">only exists in Nightly and doesn't include anything other than WebRTC code</a>, unlike <a
+      href="https://chromium.googlesource.com/chromium/src/+/refs/heads/main/services/network/README.md">Chromium's dedicated network service</a>.
+    </li>
+
+    <li class="lilist">
+      Firefox also does not have an audio process, whereas <a href="https://docs.google.com/document/d/1s_Fd1WRDdpb5n6C2MSJjeC3fis6hULZwfKMeDd4K5tI/">Chromium has a
+      dedicated audio service</a>. The lack of such a process in Firefox means that audio functionality is merged into the content process which is the cause of the
+      <a href="#linux-sandbox-escapes">PulseAudio sandbox escape vector on Linux systems</a>.
+    </li>
+
+    <li class="lilist">
+      Further examples include text-to-speech, printing backend and compositor, speech recognition, proxy resolver and <a
+      href="https://github.com/chromium/chromium/blob/master/sandbox/policy/sandbox_type.cc">more</a>.
+    </li>
+  </ul>
+
+  <p>
+    Later in this article, tables are presented which directly compare some of the mitigations used in Chromium processes to their Firefox equivalents however, they
+    do not list every single process because they would become huge and Firefox would only have a small fraction of processes to be compared with. Instead, only a subset
+    of particularly important processes are included.
+  </p>
+
+  <h2 id="exploit-mitigations"><a href="#exploit-mitigations">2. Exploit Mitigations</a></h2>
 
   <p>
     Exploit mitigations eliminate entire classes of common vulnerabilities / exploit techniques to prevent or severely hinder exploitation.
     Firefox lacks many important mitigations, while Chromium generally excels in this area. <br>
     <br>
-    As with the sandboxing, there are many more issues than the ones listed below but this article does not attempt to be an exhaustive list.
+    As with the sandboxing, there are many more issues than the ones listed below, but this article does not attempt to be an exhaustive list.
     You can look through <a href="https://bugzilla.mozilla.org/home">Mozilla's own bug tracker</a> for further examples.
   </p>
 
-  <h3 id="acg-cig"><a href="#acg-cig">Arbitrary Code Guard and Code Integrity Guard</a></h3>
+  <h3 id="acg-cig"><a href="#acg-cig">2.1 Arbitrary Code Guard and Code Integrity Guard</a></h3>
 
   <p>
     A very common exploit technique is that during exploitation of a <a href="https://en.wikipedia.org/wiki/Buffer_overflow">buffer overflow</a>
     vulnerability, an attacker injects their own malicious code (known as <a href="https://en.wikipedia.org/wiki/Shellcode">shellcode</a>) into a
-    part of memory and causes the program to execute it by overwriting critical data such as <a href="https://en.wikipedia.org/wiki/Return_statement">
-    return addresses</a> and <a href="https://en.wikipedia.org/wiki/Function_pointer">function pointers</a> to hijack the control flow and point to the
+    part of memory and causes the program to execute it by overwriting critical data, such as <a href="https://en.wikipedia.org/wiki/Return_statement">
+    return addresses</a> and <a href="https://en.wikipedia.org/wiki/Function_pointer">function pointers</a>, to hijack the control flow and point to the
     aforementioned shellcode, thereby gaining control over the program. <br>
     <br>
     The industry eventually evolved to mitigate this style of attacks by <a href="https://en.wikipedia.org/wiki/Executable_space_protection">marking
@@ -150,19 +237,126 @@
     <br>
     Another mitigation known as <a
     href="https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/exploit-protection-reference?view=o365-worldwide#code-integrity-guard">Code
-    Integrity Guard</a> (CIG) is similar to ACG but it applies to the filesystem instead of memory, ensuring that an attacker cannot execute a malicious program
+    Integrity Guard</a> (CIG) is similar to ACG, but it applies to the filesystem instead of memory, ensuring that an attacker cannot execute a malicious program
     or library on disk by guaranteeing that all binaries loaded into a process must be signed. Together, ACG and CIG enforce a strict W^X policy in both memory
     and the filesystem. <br>
     <br>
     In 2017, <a href="https://github.com/chromium/chromium/commit/21a5ba4cfdbafc3b0908f9af75c0de30b03d47ec">Chromium implemented support for ACG and CIG</a>
-    as <code>MITIGATION_DYNAMIC_CODE_DISABLE</code> and <code>MITIGATION_FORCE_MS_SIGNED_BINS</code> but Firefox has yet to implement comparable support for
+    as <code>MITIGATION_DYNAMIC_CODE_DISABLE</code> and <code>MITIGATION_FORCE_MS_SIGNED_BINS</code>, but Firefox has yet to implement comparable support for
     either <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1381050">ACG</a> or <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1378417">CIG</a>.
     Currently, <a
     href="https://searchfox.org/mozilla-central/rev/a5bf5d0720f9454687f500513ac82b0c8abce5a4/security/sandbox/win/src/sandboxbroker/sandboxBroker.cpp#1146">
-    Firefox only enables ACG and CIG in the socket process</a> and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1620114">CIG in the RDD process</a>.
+    Firefox only enables ACG and CIG in the socket process</a> (<a href="#missing-processes">which isn't enabled yet</a>) and <a
+    href="https://bugzilla.mozilla.org/show_bug.cgi?id=1620114">CIG in the RDD process</a>. <br>
+    <br>
+    However, Chromium's application of ACG is still currently limited due to the inherent incompatibility with JIT engines which require memory that is
+    simultaneously writable and executable (<a href="#jit-hardening">JIT is explained in further detail below</a>). <a
+    href="https://github.com/chromium/chromium/search?q=MITIGATION_DYNAMIC_CODE_DISABLE">ACG is primarily enabled in relatively minor processes, such as the
+    audio, proxy resolver and icon reader processes</a>. If V8's <a href="https://v8.dev/blog/jitless">JITless mode</a> is enabled, then Chromium also
+    <a href="https://github.com/chromium/chromium/commit/9475a21dd27b4a487f410e62a167ff86b4d35287">enables ACG in the renderer process</a>.
   </p>
 
-  <h3 id="cfi"><a href="#cfi">Control Flow Integrity</a></h3>
+  <table>
+    <thead>
+      <tr>
+        <th colspan="3">ACG</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td></td>
+          <td class="identifier-row">Chromium</td>
+          <td class="identifier-row">Firefox</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Renderer/Content</td>
+          <td>&nbsp;N*</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">GPU</td>
+          <td>N</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">RDD</td>
+          <td>N</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Extensions</td>
+          <td>N</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Network/Socket</td>
+          <td>N</td>
+          <td><a href="#missing-processes">N/A</a></td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Audio</td>
+          <td>Y</td>
+          <td><a href="#missing-processes">N/A</a></td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p style="font-style: italic;">
+    * <a href="https://github.com/chromium/chromium/commit/9475a21dd27b4a487f410e62a167ff86b4d35287">Chromium enables ACG in the renderer process
+    when running in JITless mode</a>.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th colspan="3">CIG</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td></td>
+          <td class="identifier-row">Chromium</td>
+          <td class="identifier-row">Firefox</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Renderer/Content</td>
+          <td>Y</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">GPU</td>
+          <td>Y</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">RDD</td>
+          <td>Y</td>
+          <td>Y</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Extensions</td>
+          <td>Y</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Network/Socket</td>
+          <td>&nbsp;N*</td>
+          <td><a href="#missing-processes">N/A</a></td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Audio</td>
+          <td>Y</td>
+          <td><a href="#missing-processes">N/A</a></td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p style="font-style: italic;">
+    * <a href="https://github.com/chromium/chromium/commit/3249aa3c8dce41fdbcf3093bdd08a1793113c0fd">Chromium can optionally enable CIG in the network
+    process if the <code>NetworkServiceCodeIntegrity</code> feature is enabled</a>.
+  </p>
+
+  <h3 id="cfi"><a href="#cfi">2.2 Control Flow Integrity</a></h3>
 
   <p>
     As briefly mentioned before, code reuse attacks can be used to achieve near-arbitrary code execution by chaining together snippets of code that already
@@ -178,13 +372,68 @@
     <br>
     Mozilla has been <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=510629">planning to implement CFI for a while</a>
     but has yet to make much progress. On Linux, Android and ChromeOS, <a href="https://www.chromium.org/developers/testing/control-flow-integrity">Chromium enables
-    Clang's fine-grained forward-edge CFI</a> and on Windows, it <a
-    href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#Process-mitigation-policies">enables the coarse-grained forward-edge Control
+    Clang's fine-grained, forward-edge CFI</a> and on Windows, it <a
+    href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#Process-mitigation-policies">enables the coarse-grained, forward-edge Control
     Flow Guard</a> (CFG). <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1438868">Firefox only enables CFG on Windows</a> which is not as effective as Clang's
     CFI due to it being coarse-grained rather than fine-grained and does not apply to other platforms.
   </p>
 
-  <h3 id="jit-hardening"><a href="#jit-hardening">JIT Hardening</a></h3>
+  <h3 id="untrusted-fonts-blocking"><a href="#untrusted-fonts-blocking">2.3 Untrusted Fonts Blocking</a></h3>
+
+  <p>
+    Untrusted fonts have historically been a common source of vulnerabilities within Windows. As such, Windows includes a mitigation to <a
+    href="https://docs.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/feature-to-block-untrusted-fonts">block untrusted fonts from specific processes
+    to reduce attack surface</a>. <a href="https://github.com/chromium/chromium/commit/441d852dbcb7b9b31328393c7e31562b1e268399">Chromium added support for this in 2016</a>
+    in the form of <code>MITIGATION_NONSYSTEM_FONT_DISABLE</code> and enabled it for most child processes however, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1689128">
+    Firefox has yet to enable this in any</a>.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th colspan="3">Untrusted Font Blocking</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td></td>
+          <td class="identifier-row">Chromium</td>
+          <td class="identifier-row">Firefox</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Renderer/Content</td>
+          <td>Y</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">GPU</td>
+          <td>Y</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">RDD</td>
+          <td>Y</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Extensions</td>
+          <td>Y</td>
+          <td>N</td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Network/Socket</td>
+          <td>N</td>
+          <td><a href="#missing-processes">N/A</a></td>
+        </tr>
+        <tr>
+          <td class="identifier-column">Audio</td>
+          <td>Y</td>
+          <td><a href="#missing-processes">N/A</a></td>
+        </tr>
+    </tbody>
+  </table>
+
+  <h3 id="jit-hardening"><a href="#jit-hardening">2.4 JIT Hardening</a></h3>
 
   <p>
     All common browsers include a <a href="https://en.wikipedia.org/wiki/Just-in-time_compilation">JIT compiler</a> to improve performance. There is an inherent security
@@ -211,9 +460,9 @@
     Examples of such include <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1376819"> constant blinding</a> and <a
     href="https://bugzilla.mozilla.org/show_bug.cgi?id=729824">NOP insertion</a>. <br>
     <br>
-    Firefox attempted to harden the JIT engine by adding a so-called "W^X JIT" but this fails to hinder actual exploits as it is vulnerable to a race window in which an attacker can
+    Firefox attempted to harden the JIT engine by adding a so-called "W^X JIT", but this fails to hinder actual exploits as it is vulnerable to a race window in which an attacker can
     write their shellcode to the memory mapping when it's writable and wait for the engine to transition it to executable. Additionally, due to the lack of CFI in Firefox, there are
-    also many gadgets available for an attacker to force transition the mapping to executable such as <code>ExecutableAllocator::makeExecutable</code> or <code>mprotect</code> /
+    also many gadgets available for an attacker to force transition the mapping to executable, such as <code>ExecutableAllocator::makeExecutable</code> or <code>mprotect</code> /
     <code>VirtualAlloc</code> in the C library. Something similar to Safari's <a href="https://googleprojectzero.blogspot.com/2020/09/jitsploitation-three.html">"Bulletproof JIT"</a>
     would have been a better approach, utilising two separate mappings — one writable and one executable with the writable mapping being placed at a secret location in memory, concealed
     via execute-only memory. <br>
@@ -239,46 +488,63 @@
     in summary, this is a half-baked security measure that is DOA.
   </p>
 
-  <h3 id="memory-allocator-hardening"><a href="#memory-allocator-hardening">Memory Allocator Hardening</a></h3>
+  <h3 id="memory-allocator-hardening"><a href="#memory-allocator-hardening">2.5 Memory Allocator Hardening</a></h3>
 
   <p>
     Furthermore, Firefox lacks a hardened memory allocator. Firefox currently uses <a href="https://searchfox.org/mozilla-central/source/memory/build/mozjemalloc.cpp">
     mozjemalloc</a> which is a fork of <a href="https://github.com/jemalloc/jemalloc">jemalloc</a>. Jemalloc is a performance-oriented
     memory allocator — it does not have a focus on security which makes it <a
     href="https://media.blackhat.com/bh-us-12/Briefings/Argyoudis/BH_US_12_Argyroudis_Exploiting_the_%20jemalloc_Memory_%20Allocator_Slides.pdf">
-    very prone to exploitation</a>. Mozjemalloc does add on a few security features to jemalloc which is useful but <a
+    very prone to exploitation</a>. Mozjemalloc does add on a few security features to jemalloc which are useful, but <a
     href="https://lists.torproject.org/pipermail/tor-dev/2019-August/013990.html">they are not enough to
     fix the issues present in the overall architecture of the allocator</a>. Chromium instead uses <a
     href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md">
     PartitionAlloc</a> (throughout the entire codebase due to <a href="https://blog.chromium.org/2021/04/efficient-and-safe-allocations-everywhere.html">PartitionAlloc-Everywhere</a>) which is
     substantially more hardened than mozjemalloc is. <br>
     <br>
-    In comparison to mozjemalloc, <a href="https://struct.github.io/partition_alloc.html">examples of the security features present in PartitionAlloc</a> which do not exist in mozjemalloc,
-    include but are not limited to:
+    In comparison to mozjemalloc, a few examples of <a href="https://struct.github.io/partition_alloc.html">the security features present in PartitionAlloc</a> which do not exist in mozjemalloc
+    are detailed below.
   </p>
 
-  <ul>
-    <li class="lilist">
-      Robust memory partitioning with strong isolation — <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1052575">mozjemalloc does have some support for partitions</a> however, <a
-      href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446046">memory is reused across partitions</a>, thus severely weakening this feature and allowing it to be bypassed, whereas <a
-      href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md#security">strong memory partitioning with no reused memory between partitions
-      is one of PartitionAlloc's core goals</a>. In fact, a real-world exploit used by the FBI to unmask users of the Tor Browser <a href="https://nitter.snopyta.org/dguido/status/803838692645335040">
-      was possible due to the lack of memory partitioning</a>.
-    </li>
-
-    <li class="lilist">
-      Out-of-line metadata — <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446045">mozjemalloc currently has heap metadata in-line</a>, whereas <a
-      href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md#security">PartitionAlloc stores metadata out-of-line in a dedicated region</a>.
-      PartitionAlloc also uses guard pages to ensure this feature's effectiveness; <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446040">another security feature that mozjemalloc lacks</a>.
-    </li>
-  </ul>
+  <h4 id="memory-partitioning"><a href="#memory-partitioning">2.5.1 Memory Partitioning</a></h4>
 
   <p>
-    In addition, PartitionAlloc is working on many promising upcoming security features such as their <a href="https://docs.google.com/presentation/d/1QvfZXx5HdUl0IdkBcrx-NM0ua-PVcTi2jNx0Sf-n8Fo/">
+    <a href="https://labs.f-secure.com/archive/isolated-heap-friends-object-allocation-hardening-in-web-browsers/">Memory partitioning</a> is an exploit mitigation in which the memory allocator
+    segregates different types of objects into their own separate, isolated heap so that, for example, a heap overflow would not be able corrupt an object from another heap. <br>
+    <br>
+    Chromium's PartitionAlloc was explicitly designed with this mitigation in mind (hence the name); <a
+    href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md#security">strong memory partitioning with no reused memory between partitions
+    is one of PartitionAlloc's core goals</a>. <br>
+    <br>
+    <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1052575">Firefox's mozjemalloc also eventually implemented some support for partitioning</a> however, <a
+    href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446046">memory is reused across partitions</a>, thus severely weakening this feature and allowing it to be bypassed. Therefore, mozjemalloc's
+    implementation of memory partitioning does not guarantee strong isolation to the same extent as PartitionAlloc. In fact, a real-world exploit used by the FBI to unmask users of the Tor Browser
+    <a href="https://twitter.com/dguido/status/803838692645335040">was possible due to the lack of memory partitioning</a>.
+  </p>
+
+  <h4 id="out-of-line-metadata"><a href="#out-of-line-metadata">2.5.2 Out-of-line Metadata</a></h4>
+
+  <p>
+    <a href="https://scarybeastsecurity.blogspot.com/2017/05/further-hardening-glibc-malloc-against.html">Traditional heap exploitation techniques often rely on corrupting the memory allocator
+    metadata</a>. <a href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md#security">PartitionAlloc stores most metadata out-of-line
+    in a dedicated region</a> (with the exception of freelist pointers however, they have other protections) rather than having it adjacent to the allocations, thereby significantly
+    increasing the difficulty of performing such techniques. <br>
+    <br>
+    Unlike PartitionAlloc, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446045">mozjemalloc currently places heap metadata in-line with allocations</a>. As such, the aforementioned
+    techniques are still possible and allocator metadata is easier to corrupt. <br>
+    <br>
+    Moreover, PartitionAlloc also makes use of guard pages — inaccessible areas of memory that cause an error upon any attempts at accessing it — to surround the metadata, as well as various
+    other allocations to protect them from linear overflows; <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446040">this is another security feature that mozjemalloc lacks</a>.
+  </p>
+
+  <h4 id="partitionalloc-other"><a href="#partitionalloc-other">2.5.3 Other</a></h4>
+
+  <p>
+    In addition, PartitionAlloc is working on many promising upcoming security features, such as their <a href="https://docs.google.com/presentation/d/1QvfZXx5HdUl0IdkBcrx-NM0ua-PVcTi2jNx0Sf-n8Fo/">
     MiraclePtr and *Scan</a> projects to effectively mitigate most use-after-free exploits.
   </p>
 
-  <h3 id="auto-var-init"><a href="#auto-var-init">Automatic Variable Initialization</a></h3>
+  <h3 id="auto-var-init"><a href="#auto-var-init">2.6 Automatic Variable Initialization</a></h3>
 
   <p>
     One of the most common classes of memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized memory</a>. Clang has an option to
@@ -290,7 +556,7 @@
     As for the heap, both PartitionAlloc and mozjemalloc zero-fill allocations so they are equivalent in that regard.
   </p>
 
-  <h2 id="miscellaneous"><a href="#miscellaneous">Miscellaneous</a></h2>
+  <h2 id="miscellaneous"><a href="#miscellaneous">3. Miscellaneous</a></h2>
 
   <p>
     Firefox <a href="https://wiki.mozilla.org/Oxidation">does have some parts written in Rust, a memory safe language</a>,
@@ -301,29 +567,29 @@
     Additionally, writing parts in a memory safe language does not necessarily improve security and may even <i>degrade</i> security by allowing for
     bypasses of exploit mitigations. Some security features are geared towards a particular language and in an environment where different languages
     are mixed, <a href="https://www.cs.ucy.ac.cy/~eliasathan/papers/tops20.pdf">those features may be bypassed by abusing the other language</a>. For
-    example, when mixing C and Rust code in the same binary with CFI enabled, the integrity of the control flow will be guaranteed in the C code but the
+    example, when mixing C and Rust code in the same binary with CFI enabled, the integrity of the control flow will be guaranteed in the C code, but the
     Rust code will remain unchanged because buffer overflows are impossible in Rust anyway. However, this allows an attacker to bypass CFI by exploiting
     a buffer overflow in the C code and then abusing the lack of protection in the Rust code to hijack the control flow. Mixed binaries can be secure but
     only if those security features are applied for all languages. Currently, <a href="https://opensrcsec.com/open_source_security_announces_rust_gcc_funding">
     compilers generally don't support this</a>, excluding <a href="https://msrc-blog.microsoft.com/2020/08/17/control-flow-guard-for-clang-llvm-and-rust/">
     Windows' Control Flow Guard support in Clang</a>. <br>
     <br>
-    Firefox also uses <a href="https://hacks.mozilla.org/2020/02/securing-firefox-with-webassembly/">RLBox</a> but <a
+    Firefox also uses <a href="https://hacks.mozilla.org/2020/02/securing-firefox-with-webassembly/">RLBox</a>, but <a
     href="https://bugzilla.mozilla.org/show_bug.cgi?id=1673529">this is only used to sandbox two libraries</a> (<a
     href="https://bugzilla.mozilla.org/show_bug.cgi?id=1566288">Graphite</a> and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1625876">Ogg</a>) which
     again, is not anything substantial.
   </p>
 
-  <h2 id="security-researcher-views"><a href="#security-researcher-views">Other Security Researcher Views on Firefox</a></h2>
+  <h2 id="security-researcher-views"><a href="#security-researcher-views">4. Other Security Researcher Views on Firefox</a></h2>
 
   <p>
     Many <a href="https://medium.com/@thegrugq/tor-and-its-discontents-ef5164845908">security</a> <a
     href="https://grapheneos.org/usage#web-browsing">experts</a> <a href="
-    https://archive.fo/9aBLk">also share</a> <a
+    https://archive.fo/9aBLk">also</a> <a href="https://news.ycombinator.com/item?id=13800323">share</a> <a
     href="https://news.ycombinator.com/item?id=13623735">these</a> <a href="
     https://marc.info/?l=openbsd-misc&m=152872551609819&w=2">views</a> <a
-    href="https://nitter.snopyta.org/tqbf/status/930807512609296384">about</a> <a
-    href="https://nitter.snopyta.org/tqbf/status/930860544927649792">Firefox</a>.
+    href="https://twitter.com/tqbf/status/930807512609296384">about</a> <a
+    href="https://twitter.com/tqbf/status/930860544927649792">Firefox</a>.
   </p>
 
   <p class="p-final">

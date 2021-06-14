@@ -79,6 +79,29 @@ pre {
 code {
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     font-size: 0.85em;
+    background-color: transparent;
+}
+
+table, td {
+    border: 1px solid #333;
+}
+
+td {
+    padding: 5px 10px;
+    text-align: center;
+}
+
+thead, tfoot {
+    background-color: #333;
+    color: #fff;
+}
+
+.identifier-column, .identifier-row {
+    text-align: left;
+}
+
+.identifier-row {
+    font-weight: bold;
 }
 
 .quote {
@@ -88,15 +111,24 @@ code {
     font-style: italic;
 }
 
-.lilist {
-    padding-bottom: 1em;
+.index-column {
+    float: left;
+    width: 50%;
+    margin-bottom: 1rem;
 }
 
-.link {
-    font-size: 1.3rem;
-    line-height: 1.125;
-    max-width: 800px;
-    margin: 5% auto;
+.index-row {
+    margin-top: 1rem;
+}
+
+.index-row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.lilist {
+    padding-bottom: 1em;
 }
 
 .back {
@@ -155,6 +187,13 @@ code {
     font-size: 16px;
 }
 
+/* Makes the index columns stack on top of each other at low screen width */
+@media screen and (max-width: 360px) {
+    .index-column {
+        width: 100%;
+    }
+}
+
 @media screen and (max-width: 45em) {
     body {
         padding: 25px;
@@ -164,7 +203,6 @@ code {
     }
     h1 {
         margin-left: 0;
-        margin-top: 0;
         max-width: 75%;
     }
     code {

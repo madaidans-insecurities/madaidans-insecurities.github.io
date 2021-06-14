@@ -16,7 +16,7 @@
   <p>
     Encrypted DNS (<a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS">DoH</a>, <a
     href="https://en.wikipedia.org/wiki/DNS_over_TLS">DoT</a>, <a href="https://en.wikipedia.org/wiki/DNSCrypt">
-    DNScrypt</a>, etc.) may seem useful at first glance but it is clear upon further inspection that this is not
+    DNScrypt</a>, etc.) may seem useful at first glance, but it is clear upon further inspection that this is not
     the case as it doesn't have any real privacy or security benefits.
   </p>
 
@@ -24,19 +24,19 @@
 
   <p>
     Normal DNS queries are unencrypted and unauthenticated so they can be modified and examined by an attacker.
-    This may sound like a big issue but HTTPS has already solved this. If I visit madaidans-insecurities.github.io,
+    This may sound like a big issue, but HTTPS has already solved this. If I visit madaidans-insecurities.github.io,
     my browser expects a valid TLS certificate for that website regardless if an attacker has messed with the DNS
     query. If the certificate is incorrect, your browser will show a big scary warning. <br>
     <br>
-    If you're not using HTTPS then encrypted DNS still doesn't make a difference. The attacker can just modify
+    If you're not using HTTPS, then encrypted DNS still doesn't make a difference. The attacker can just modify
     anything other than the DNS query and get essentially the same result.
   </p>
 
   <h2 id="privacy"><a href="#privacy">Privacy</a></h2>
 
   <p>
-    Encrypted DNS does prevent someone monitoring your traffic from seeing what domain you looked up via DNS but
-    this doesn't really matter since <a href="https://nitter.snopyta.org/PowerDNS_Bert/status/1175744071673028608">
+    Encrypted DNS does prevent someone monitoring your traffic from seeing what domain you looked up via DNS, but
+    this doesn't really matter since <a href="https://twitter.com/PowerDNS_Bert/status/1175744071673028608">
     there</a> <a href="https://blog.powerdns.com/2019/09/25/centralised-doh-is-bad-for-privacy-in-2019-and-beyond/">
     are</a> <a href="https://grapheneos.org/faq#private-dns-visited">so</a> <a href="https://arxiv.org/pdf/1911.00563.pdf">
     many</a> <a
@@ -56,7 +56,7 @@
     <br>
     <br>
     There have been <a href="https://blog.cloudflare.com/encrypted-client-hello/">efforts to encrypt SNI</a>
-    which solves this issue but currently, it's not very widespread.
+    which solves this issue, but currently, it's not very widespread.
   </p>
 
   <h3 id="ocsp"><a href="#ocsp">OCSP</a></h3>
@@ -72,7 +72,7 @@
     <br>
     <br>
     There is also a way to prevent this via <a href="https://en.wikipedia.org/wiki/OCSP_stapling">OCSP stapling</a>,
-    but again it's not very widespread.
+    but again, it's not very widespread.
   </p>
 
   <h3 id="ip-addresses"><a href="#ip-addresses">IP Addresses</a></h3>
@@ -80,7 +80,7 @@
   <p>
     Even if you are using some form of encrypted DNS, eSNI and OCSP stapling, the IP addresses of the websites you visit are
     still leaked and they can be used to identify <a href="https://blog.apnic.net/2019/08/23/what-can-you-learn-from-an-ip-address/">
-    over 95% of websites</a>. Some IP addresses host multiple domains that can obscure this a small bit but that's not
+    over 95% of websites</a>. Some IP addresses host multiple domains that can obscure this a small bit, but that's not
     very reliable.
   </p>
 
@@ -88,7 +88,7 @@
 
   <p>
     Encrypting your DNS queries alone is not enough to hide the domains you visit and gives no security advantage.
-    It will only help against some very basic censorship systems that rely entirely on DNS blocking but it isn't
+    It will only help against some very rudimentary censorship systems that rely entirely on DNS blocking, but it isn't
     hard for those systems to develop workarounds. If you do want to effectively hide the websites you browse, use
     a VPN or, preferably, Tor.
   </p>

@@ -11,26 +11,25 @@
 <body>
   <h1>Messengers</h1>
 
-  <p class="date"><i><time datetime="2020-10-16">Last edited: October 16, 2020</time></i></p>
+  <p class="date"><i><time datetime="2021-06-14">Last edited: June 14th, 2021</time></i></p>
 
   <h2 id="telegram"><a href="#telegram">Telegram</a></h2>
 
   <p>
-    <a href="https://telegram.org/">Telegram</a> is <a href="https://telegram.org/faq#q-why-not-just-make-all-chats-secret">not end-to-end encrypted by default</a>, allowing the
-    Telegram server to see all of your data unless you use a "Secret Chat". Telegram uses <a href="https://core.telegram.org/mtproto">custom, unaudited encryption</a>. The first
-    version of MTProto had <a href="https://eprint.iacr.org/2015/1177.pdf">severe security issues</a> but these were fixed with MTProto 2.0. Telegram uses odd cryptographic
-    primitives such as AES-IGE for "performance", although they use it in a way that they <a href="https://core.telegram.org/techfaq#q-do-you-use-ige-ige-is-broken">aren't affected
-    by its security issues</a>. Telegram has also been criticised by well known cryptographers such as <a href="https://news.ycombinator.com/item?id=6913456">Moxie Marlinspike</a>
-    and <a href="https://nitter.snopyta.org/matthew_d_green/status/726428912968982529">Matthew Green</a>. <br>
+    <a href="https://telegram.org/">Telegram</a> is <a href="https://telegram.org/faq#q-why-not-just-make-all-chats-secret">not end-to-end encrypted by default</a> which allows the
+    Telegram server to see all of your messages unless you use a "Secret Chat". Telegram uses <a href="https://core.telegram.org/mtproto">custom, unaudited encryption</a> and the first
+    version of MTProto had <a href="https://eprint.iacr.org/2015/1177.pdf">severe security issues</a>, but these were fixed with MTProto 2.0. However, Telegram still uses strange
+    cryptographic primitives, such as AES-IGE, for "performance", although they use it in a way that they <a href="https://core.telegram.org/techfaq#q-do-you-use-ige-ige-is-broken">aren't
+    affected by its known security issues</a>. Telegram has also been criticised by well-known cryptographers, such as <a href="https://news.ycombinator.com/item?id=6913456">Moxie
+    Marlinspike</a>, <a href="https://twitter.com/matthew_d_green/status/726428912968982529">Matthew Green</a> and <a
+    href="https://buttondown.email/cryptography-dispatches/archive/cryptography-dispatches-the-most-backdoor-looking/">Filippo Valsorda</a>. <br>
     <br>
-    Telegram has <a href="https://telegram.org/crypto_contest">held crypto cracking contests</a> but these <a href="https://www.schneier.com/crypto-gram/archives/1998/1215.html#contests">
-    were</a> <a href="https://archive.vn/SIl9M">rigged</a>. <br>
+    Telegram has <a href="https://telegram.org/crypto_contest">held crypto cracking contests</a>, but these <a href="https://www.schneier.com/crypto-gram/archives/1998/1215.html#contests">
+    were</a> <a href="https://archive.vn/SIl9M">rigged</a>. Although the <a href="https://telegram.org/apps#source-code">clients are open source</a>, the server is not so self-hosting
+    is not a possibility. The creators of Telegram have also <a href="https://twitter.com/durov/status/872891017418113024">spread unfounded misinformation</a> about competing
+    apps before. <br>
     <br>
-    Although the <a href="https://telegram.org/apps#source-code">clients are open source</a>, the server is not. <br>
-    <br>
-    The creators of Telegram have <a href="https://nitter.snopyta.org/durov/status/872891017418113024">spread baseless misinformation</a> about competing apps before. <br>
-    <br>
-    Telegram, along with most other messengers, leak <a href="https://en.wikipedia.org/wiki/Metadata">metadata</a> about your messages, even if the message itself was end-to-end
+    Telegram, along with most other messengers, leak significant <a href="https://en.wikipedia.org/wiki/Metadata">metadata</a> about your messages, even if the message itself was end-to-end
     encrypted.
   </p>
 
@@ -54,8 +53,9 @@
   <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 
   <p>
-    Use <a href="https://www.signal.org/">Signal</a>. It <a href="https://www.signal.org/docs/">uses solid encryption</a>, has <a href="https://signal.org/bigbrother/eastern-virginia-grand-jury/">a
-    great track record</a>, is recommended by many experts in the field and a lot more. Most other messengers are subpar.
+    Use <a href="https://www.signal.org/">Signal</a>. It <a href="https://www.signal.org/docs/">uses the gold standard of encryption</a>, <a href="https://signal.org/blog/sealed-sender/">conceals
+    metadata well</a>, <a href="https://signal.org/bigbrother/eastern-virginia-grand-jury/">has a great track record</a>, is recommended by countless experts in the field and more. Most other
+    messengers are subpar.
   </p>
 
   <p class="p-final">
