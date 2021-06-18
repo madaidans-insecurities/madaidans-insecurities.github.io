@@ -610,7 +610,7 @@ SupplementaryGroups=proc</code></pre>
     <h3 id="kernel-attack-surface-reduction"><a href="#kernel-attack-surface-reduction">2.5 Kernel attack surface reduction</a></h3>
 
     <p>
-      It is best to disable any functionality that is not absolutely required as to minimise potential kernel attack surface. These features do not necessarily have to be dangerous,
+      It is best to disable any functionality that is not absolutely required as to minimise potential kernel attack surface. These features do not necessarily have to be dangerous;
       they could simply be benign code that is removed to reduce attack surface. Never disable random things that you don't understand. The following are some examples that may be of
       use, depending on your setup.
     </p>
@@ -781,7 +781,7 @@ install btusb /bin/false</code></pre>
       of kernel pointers</a>. Whonix's <a href="https://github.com/Whonix/security-misc">security-misc package</a> includes the <a
       href="https://github.com/Whonix/security-misc/blob/master/usr/lib/security-misc/hide-hardware-info">hide-hardware-info script</a> which restricts access to this directory as well
       as a few in <code>/proc</code> in an attempt to hide potential hardware identifiers and prevent kernel pointer leaks. This script is configurable and allows <a
-      href="https://www.whonix.org/wiki/Whonix-Workstation_Security_Hardening#Restrict_Hardware_Information_to_Root">whitelisting specific applications based on groups</a>. It is recommended
+      href="https://www.whonix.org/wiki/Security-misc#Whitelisting_Applications">whitelisting specific applications based on groups</a>. It is recommended
       to apply this and make it execute on boot with an init script. For example, <a href="https://github.com/Whonix/security-misc/blob/master/lib/systemd/system/hide-hardware-info.service">this
       is a systemd service to do so</a>. <br>
       <br>
@@ -841,7 +841,7 @@ SupplementaryGroups=sysfs</code></pre>
       Mandatory access control (MAC) systems give fine-grained control over what programs can access. This means that your browser won't have access to your entire home directory or similarly. <br>
       <br>
       The most used MAC systems are SELinux and AppArmor. SELinux is a lot more secure than AppArmor as it is more fine-grained. For example, it's inode-based rather than path-based, allows enforcing
-      <a href="https://selinuxproject.org/page/ObjectClassesPerms">significantly stronger restrictions</a>, can <a href="https://kernsec.org/files/lss2015/vanderstoep.pdf">filter kernel ioctls</a>,
+      <a href="https://selinuxproject.org/page/ObjectClassesPerms">significantly stronger restrictions</a>, can <a href="https://kernsec.org/files/lss2015/vanderstoep.pdf">filter kernel ioctls</a>
       and much more. Unfortunately, this comes at the cost of being much more difficult to use and harder to learn so AppArmor may be preferred by some. <br>
       <br>
       To enable AppArmor in the kernel, you must set the following <a href="#boot-parameters">boot parameters</a>:
@@ -1340,11 +1340,11 @@ COMMIT</code></pre>
       connect to a network (e.g. WiFi or ethernet), your MAC address is exposed. This allows people to use it to track you and uniquely identify you on the local network. <br>
       <br>
       You should <b>not</b> completely randomise the MAC address. Having a completely random MAC address is obvious and will have the adverse effect of making you stand out.
-      The OUI (Organizationally Unique Identifier) part of the MAC address identifies the chipset's manufacturer. Randomizing this part of the MAC address may give you an OUI
+      The OUI (Organizationally Unique Identifier) part of the MAC address identifies the chipset's manufacturer. Randomising this part of the MAC address may give you an OUI
       that has never been used before, hasn't been used in decades or is extremely rare in your area, therefore making you stand out and making it obvious that you are spoofing
       your MAC address. <br>
       <br>
-      The end of the MAC address identifies your specific device and is what can be used to track you. Randomizing only this part of the MAC address prevents you from being tracked
+      The end of the MAC address identifies your specific device and is what can be used to track you. Randomising only this part of the MAC address prevents you from being tracked
       whilst still making the MAC address seem believable. <br>
       <br>
       To spoof these addresses, first find out your network interface name by executing:
