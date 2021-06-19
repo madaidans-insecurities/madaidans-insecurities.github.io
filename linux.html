@@ -280,7 +280,7 @@
       Code Integrity</a> (HVCI) makes it significantly harder to inject malicious code into the kernel by using the hypervisor to strengthen code integrity guarantees and
       ensuring that all code must be validly signed. Even if an attacker <a href="https://connormcgarr.github.io/pte-overwrites/">has arbitrary write capabilities and can
       corrupt page table entries</a> (PTEs) to manipulate page permissions, they will still be unable to execute their shellcode because the hypervisor that runs at a higher
-      privilege level won't permit it. This can be thought of as similar to <a href="file:///home/madaidan/madaidans-insecurities.github.io/linux.html#acg-cig">ACG</a> but
+      privilege level won't permit it. This can be thought of as similar to <a href="linux.html#acg-cig">ACG</a> but
       much stronger and for the kernel.
     </li>
 
