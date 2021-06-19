@@ -11,7 +11,7 @@
 <body>
   <h1>Firefox and Chromium</h1>
 
-  <p class="date"><i><time datetime="2021-06-14">Last edited: June 14th, 2021</time></i></p>
+  <p class="date"><i><time datetime="2021-06-18">Last edited: June 18th, 2021</time></i></p>
 
   <p>
     Firefox is sometimes recommended as a supposedly more secure browser because of its parent company's privacy practices.
@@ -91,8 +91,16 @@
     Firefox currently lacks any form of site isolation. Mozilla is working on implementing this with <a
     href="https://wiki.mozilla.org/Project_Fission">Project Fission</a> and is <a
     href="https://blog.mozilla.org/security/2021/05/18/introducing-site-isolation-in-firefox/">rolling it out on the Nightly and Beta release
-    channels</a>, but it is still a work in progress and is not yet fit for serious use. The sandbox is currently only focused on
-    isolating the browser as a whole from the rest of the operating system and even that is still not great, as explained below.
+    channels</a>, but it is still a work in progress and is not yet fit for serious use. Fission in its current state and even once it is
+    initially released will not be anywhere near the level of maturity of Chromium's site isolation and it will take many more years for it to
+    reach that point. Fission still suffers from all the security issues of the baseline content process sandbox, as documented below — it is
+    not a panacea for all sandboxing issues. However, more specific to Fission itself, there are <a
+    href="https://bugzilla.mozilla.org/show_bug.cgi?id=1505832">numerous</a> <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1484019">
+    cross-site</a> <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1707955">leaks</a>, allowing a compromised content process to access
+    the data of another and bypass site isolation. <br>
+    <br>
+    The sandbox is currently only focused on isolating the browser as a whole from the rest of the operating system and even that is still not
+    great, as explained below.
   </p>
 
   <h3 id="windows-sandbox"><a href="#windows-sandbox">1.2 Windows</a></h3>
