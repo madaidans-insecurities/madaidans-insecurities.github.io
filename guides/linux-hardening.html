@@ -10,7 +10,7 @@
   <body>
     <h1>Linux Hardening Guide</h1>
 
-    <p class="date"><i><time datetime="2021-06-14">Last edited: June 14th, 2021</time></i></p>
+    <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
 
     <p>
       <a href="../linux.html">Linux is not a secure operating system</a>. However, there are steps you can take to improve it. This guide aims to explain
@@ -504,7 +504,7 @@ fs.protected_regular=2</code></pre>
 
     <p>
       This option <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e900a918b0984ec8f2eb150b8477a47b75d17692">
-      randomises page allocator freelists</a>, improving security by making page allocations less predictable. This also <i>improves</i>
+      randomises page allocator freelists</a>, improving security by making page allocations less predictable. This also <em>improves</em>
       performance.
     </p>
 
@@ -1080,7 +1080,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       Certain compilation options can be used to add additional exploit mitigations that eliminate entire classes of common vulnerabilities.
       You have likely heard of regular protections, such as <a href="https://wiki.gentoo.org/wiki/Hardened/Toolchain">Position Independent
       Executables, Stack Smashing Protector, immediate binding, read-only relocations and FORTIFY_SOURCE</a>, but this section will not
-      go over those as they have already been widely adopted. Instead, it will discuss <i>modern</i> exploit mitigations like Control Flow
+      go over those as they have already been widely adopted. Instead, it will discuss <em>modern</em> exploit mitigations like Control Flow
       Integrity and shadow stacks. <br>
       <br>
       This section refers to native programs, written primarily in C or C++. You must be using the <a href="https://clang.llvm.org/">Clang
@@ -1093,8 +1093,8 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
         <a href="https://clang.llvm.org/docs/ControlFlowIntegrity.html">Control Flow Integrity</a> (CFI) is an exploit mitigation that <a
         href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">aims to prevent code reuse attacks like ROP or JOP</a>.
         A large portion of vulnerabilities are exploited using these techniques due to more widely adopted mitigations, such as NX, making older
-        exploit techniques obsolete. Clang supports fine-grained, forward-edge CFI, meaning that it effectively mitigates <i>JOP</i> attacks. Clang's
-        CFI does not mitigate <i>ROP</i> by itself; you must also use a separate mechanism as documented below. To enable this, you must apply
+        exploit techniques obsolete. Clang supports fine-grained, forward-edge CFI, meaning that it effectively mitigates <em>JOP</em> attacks. Clang's
+        CFI does not mitigate <em>ROP</em> by itself; you must also use a separate mechanism as documented below. To enable this, you must apply
         the following compilation flags:
 
         <pre><code>-flto -fvisibility=hidden -fsanitize=cfi</code></pre> <br>
@@ -1246,7 +1246,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <pre><code>passwd admin</code></pre>
 
     <p>
-      Allow <i>only</i> this account to use your preferred mechanism of escalating privileges. For example, if using <code>sudo</code>, add
+      Allow <em>only</em> this account to use your preferred mechanism of escalating privileges. For example, if using <code>sudo</code>, add
       a sudoers exception by executing:
     </p>
 
