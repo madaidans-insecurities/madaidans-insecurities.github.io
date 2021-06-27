@@ -3,13 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="../styles.css">
     <title>Linux Hardening Guide | Madaidan's Insecurities</title>
   </head>
   <body>
     <h1>Linux Hardening Guide</h1>
 
-    <p class="date"><i><time datetime="2021-06-14">Last edited: June 14th, 2021</time></i></p>
+    <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
 
     <p>
       <a href="../linux.html">Linux is not a secure operating system</a>. However, there are steps you can take to improve it. This guide aims to explain
@@ -503,7 +504,7 @@ fs.protected_regular=2</code></pre>
 
     <p>
       This option <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e900a918b0984ec8f2eb150b8477a47b75d17692">
-      randomises page allocator freelists</a>, improving security by making page allocations less predictable. This also <i>improves</i>
+      randomises page allocator freelists</a>, improving security by making page allocations less predictable. This also <em>improves</em>
       performance.
     </p>
 
@@ -1079,7 +1080,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       Certain compilation options can be used to add additional exploit mitigations that eliminate entire classes of common vulnerabilities.
       You have likely heard of regular protections, such as <a href="https://wiki.gentoo.org/wiki/Hardened/Toolchain">Position Independent
       Executables, Stack Smashing Protector, immediate binding, read-only relocations and FORTIFY_SOURCE</a>, but this section will not
-      go over those as they have already been widely adopted. Instead, it will discuss <i>modern</i> exploit mitigations like Control Flow
+      go over those as they have already been widely adopted. Instead, it will discuss <em>modern</em> exploit mitigations like Control Flow
       Integrity and shadow stacks. <br>
       <br>
       This section refers to native programs, written primarily in C or C++. You must be using the <a href="https://clang.llvm.org/">Clang
@@ -1092,8 +1093,8 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
         <a href="https://clang.llvm.org/docs/ControlFlowIntegrity.html">Control Flow Integrity</a> (CFI) is an exploit mitigation that <a
         href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">aims to prevent code reuse attacks like ROP or JOP</a>.
         A large portion of vulnerabilities are exploited using these techniques due to more widely adopted mitigations, such as NX, making older
-        exploit techniques obsolete. Clang supports fine-grained, forward-edge CFI, meaning that it effectively mitigates <i>JOP</i> attacks. Clang's
-        CFI does not mitigate <i>ROP</i> by itself; you must also use a separate mechanism as documented below. To enable this, you must apply
+        exploit techniques obsolete. Clang supports fine-grained, forward-edge CFI, meaning that it effectively mitigates <em>JOP</em> attacks. Clang's
+        CFI does not mitigate <em>ROP</em> by itself; you must also use a separate mechanism as documented below. To enable this, you must apply
         the following compilation flags:
 
         <pre><code>-flto -fvisibility=hidden -fsanitize=cfi</code></pre> <br>
@@ -1138,9 +1139,9 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized variables</a>, <a href="https://cwe.mitre.org/data/definitions/416.html">
       use-after-free</a> and more. The majority of vulnerabilities that have been discovered were memory safety issues as proven by research conducted
       by security researchers at <a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">Microsoft</a> and <a
-      href="https://www.chromium.org/Home/chromium-security/memory-safety">Google</a>. Examples of such memory <b>safe</b> languages include <a
+      href="https://www.chromium.org/Home/chromium-security/memory-safety">Google</a>. Examples of such memory <strong>safe</strong> languages include <a
       href="https://doc.rust-lang.org/nomicon/meet-safe-and-unsafe.html">Rust</a>, <a href="https://docs.swift.org/swift-book/LanguageGuide/MemorySafety.html">
-      Swift</a> and <a href="https://en.wikipedia.org/wiki/Java_(programming_language)">Java</a>, whereas examples of memory <b>unsafe</b> languages include
+      Swift</a> and <a href="https://en.wikipedia.org/wiki/Java_(programming_language)">Java</a>, whereas examples of memory <strong>unsafe</strong> languages include
       <a href="https://en.wikipedia.org/wiki/C_(programming_language)">C</a> and <a href="https://en.wikipedia.org/wiki/C%2B%2B">C++</a>. If practical, you
       should replace as many programs as possible with memory safe alternatives.
     </p>
@@ -1245,7 +1246,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <pre><code>passwd admin</code></pre>
 
     <p>
-      Allow <i>only</i> this account to use your preferred mechanism of escalating privileges. For example, if using <code>sudo</code>, add
+      Allow <em>only</em> this account to use your preferred mechanism of escalating privileges. For example, if using <code>sudo</code>, add
       a sudoers exception by executing:
     </p>
 
@@ -1339,7 +1340,7 @@ COMMIT</code></pre>
       <a href="https://en.wikipedia.org/wiki/MAC_address">MAC addresses</a> are unique identifiers assigned to network interface controllers (NICs). Every time you
       connect to a network (e.g. WiFi or ethernet), your MAC address is exposed. This allows people to use it to track you and uniquely identify you on the local network. <br>
       <br>
-      You should <b>not</b> completely randomise the MAC address. Having a completely random MAC address is obvious and will have the adverse effect of making you stand out.
+      You should <strong>not</strong> completely randomise the MAC address. Having a completely random MAC address is obvious and will have the adverse effect of making you stand out.
       The OUI (Organizationally Unique Identifier) part of the MAC address identifies the chipset's manufacturer. Randomising this part of the MAC address may give you an OUI
       that has never been used before, hasn't been used in decades or is extremely rare in your area, therefore making you stand out and making it obvious that you are spoofing
       your MAC address. <br>
