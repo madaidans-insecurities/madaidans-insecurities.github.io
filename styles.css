@@ -117,6 +117,14 @@ thead, tfoot {
     margin-bottom: 1rem;
 }
 
+.index-column-list {
+    margin-left: -1rem;
+}
+
+#right-index-column {
+    margin-top: 0rem;
+}
+
 .index-row {
     margin-top: 1rem;
 }
