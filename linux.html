@@ -366,7 +366,8 @@
     User Account Control</a> (UAC) provides the <a
     href="https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/user-account-control-switch-to-the-secure-desktop-when-prompting-for-elevation">
     secure desktop functionality</a> which can make spoofing it significantly harder, provided one is using a standard user account. Moreover, Windows better prevents
-    keylogging by isolating processes that run at lower integrity levels from those that run at higher integrity levels, therefore mitigating Xorg-style attacks. Windows also <a
+    keylogging by <a href="https://docs.microsoft.com/en-us/previous-versions/dotnet/articles/bb625963(v=msdn.10)#user-interface-privilege-isolation-uipi-and-integrity">
+    isolating processes that run at lower integrity levels from those that run at higher integrity levels</a>, therefore mitigating Xorg-style attacks. Windows also <a
     href="https://docs.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-security">restricts DLL preloading</a> by <a
     href="https://docs.microsoft.com/en-us/windows/win32/dlls/secure-boot-and-appinit-dlls">disabling the AppInit_DLLs functionality when secure boot is enabled</a> and
     providing a way to <a href="https://docs.microsoft.com/en-gb/windows/win32/api/libloaderapi/nf-libloaderapi-setdefaultdlldirectories"> restrict DLL search paths</a>,
