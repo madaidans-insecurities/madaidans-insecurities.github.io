@@ -11,3 +11,9 @@ function setDarkMode() {
 if (localStorage.getItem('mode') === 'dark') {
   document.body.classList.add('dark-mode');
 }
+
+const button = document.querySelector('button');
+
+button.addEventListener('click', event => {
+  setDarkMode();
+});
