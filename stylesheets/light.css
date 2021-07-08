@@ -1,0 +1,6 @@
+@import "styles.css";
+
+body {
+    background-color: var(--background-color-light);
+    color: var(--color-light);
+}

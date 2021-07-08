@@ -1,106 +1,102 @@
 <!DOCTYPE html>
 <html lang=en>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+    <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+    <script type="module" src="js/theme.min.js"></script>
+    <title>Encrypted DNS | Madaidan's Insecurities</title>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
-  <meta name="referrer" content="no-referrer">
-  <link rel="stylesheet" type="text/css" href="styles.css">
-  <title>Encrypted DNS | Madaidan's Insecurities</title>
-</head>
+  <body>
+    <button class="theme-toggle">🌓</button>
+    <h1>Why encrypted DNS is ineffective</h1>
 
-<body>
-  <h1>Why encrypted DNS is ineffective</h1>
+    <p class="date"><em><time datetime="2021-03-27">Last edited: March 27, 2021</time></em></p>
 
-  <p class="date"><em><time datetime="2021-03-27">Last edited: March 27, 2021</time></em></p>
+    <p>
+      Encrypted DNS (<a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS">DoH</a>, <a
+      href="https://en.wikipedia.org/wiki/DNS_over_TLS">DoT</a>, <a href="https://en.wikipedia.org/wiki/DNSCrypt">
+      DNScrypt</a>, etc.) may seem useful at first glance, but it is clear upon further inspection that this is not
+      the case as it doesn't have any real privacy or security benefits.
+    </p>
 
-  <p>
-    Encrypted DNS (<a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS">DoH</a>, <a
-    href="https://en.wikipedia.org/wiki/DNS_over_TLS">DoT</a>, <a href="https://en.wikipedia.org/wiki/DNSCrypt">
-    DNScrypt</a>, etc.) may seem useful at first glance, but it is clear upon further inspection that this is not
-    the case as it doesn't have any real privacy or security benefits.
-  </p>
+    <h2 id="security"><a href="#security">Security</a></h2>
 
-  <h2 id="security"><a href="#security">Security</a></h2>
+    <p>
+      Normal DNS queries are unencrypted and unauthenticated so they can be modified and examined by an attacker.
+      This may sound like a big issue, but HTTPS has already solved this. If I visit madaidans-insecurities.github.io,
+      my browser expects a valid TLS certificate for that website regardless if an attacker has messed with the DNS
+      query. If the certificate is incorrect, your browser will show a big scary warning. <br>
+      <br>
+      If you're not using HTTPS, then encrypted DNS still doesn't make a difference. The attacker can just modify
+      anything other than the DNS query and get essentially the same result.
+    </p>
 
-  <p>
-    Normal DNS queries are unencrypted and unauthenticated so they can be modified and examined by an attacker.
-    This may sound like a big issue, but HTTPS has already solved this. If I visit madaidans-insecurities.github.io,
-    my browser expects a valid TLS certificate for that website regardless if an attacker has messed with the DNS
-    query. If the certificate is incorrect, your browser will show a big scary warning. <br>
-    <br>
-    If you're not using HTTPS, then encrypted DNS still doesn't make a difference. The attacker can just modify
-    anything other than the DNS query and get essentially the same result.
-  </p>
+    <h2 id="privacy"><a href="#privacy">Privacy</a></h2>
 
-  <h2 id="privacy"><a href="#privacy">Privacy</a></h2>
+    <p>
+      Encrypted DNS does prevent someone monitoring your traffic from seeing what domain you looked up via DNS, but
+      this doesn't really matter since <a href="https://twitter.com/PowerDNS_Bert/status/1175744071673028608">
+      there</a> <a href="https://blog.powerdns.com/2019/09/25/centralised-doh-is-bad-for-privacy-in-2019-and-beyond/">
+      are</a> <a href="https://grapheneos.org/faq#private-dns-visited">so</a> <a href="https://arxiv.org/pdf/1911.00563.pdf">
+      many</a> <a
+      href="https://old.reddit.com/r/GrapheneOS/comments/fajx43/verizon_pixel_how_dangerous_to_install_graphene/fiz0klm/?context=3">
+      other</a> <a href="https://www.ndss-symposium.org/wp-content/uploads/2020/02/24301-paper.pdf">ways</a> to get that
+      exact same information anyway.
+    </p>
 
-  <p>
-    Encrypted DNS does prevent someone monitoring your traffic from seeing what domain you looked up via DNS, but
-    this doesn't really matter since <a href="https://twitter.com/PowerDNS_Bert/status/1175744071673028608">
-    there</a> <a href="https://blog.powerdns.com/2019/09/25/centralised-doh-is-bad-for-privacy-in-2019-and-beyond/">
-    are</a> <a href="https://grapheneos.org/faq#private-dns-visited">so</a> <a href="https://arxiv.org/pdf/1911.00563.pdf">
-    many</a> <a
-    href="https://old.reddit.com/r/GrapheneOS/comments/fajx43/verizon_pixel_how_dangerous_to_install_graphene/fiz0klm/?context=3">
-    other</a> <a href="https://www.ndss-symposium.org/wp-content/uploads/2020/02/24301-paper.pdf">ways</a> to get that
-    exact same information anyway.
-  </p>
+    <h3 id="sni"><a href="#sni">SNI</a></h3>
 
-  <h3 id="sni"><a href="#sni">SNI</a></h3>
+    <p>
+      <a href="https://en.wikipedia.org/wiki/Server_Name_Indication">Server Name Indication</a> (SNI) is an
+      extension to TLS which leaks the hostname that the client is attemping to connect to. <br>
+      <br>
+      For example, if you connect to this website, someone monitoring the connection can see this: <br>
+      <img src="images/wireshark-sni.jpg" alt="SNI in Wireshark">
+      <br>
+      <br>
+      There have been <a href="https://blog.cloudflare.com/encrypted-client-hello/">efforts to encrypt SNI</a>
+      which solves this issue, but currently, it's not very widespread.
+    </p>
 
-  <p>
-    <a href="https://en.wikipedia.org/wiki/Server_Name_Indication">Server Name Indication</a> (SNI) is an
-    extension to TLS which leaks the hostname that the client is attemping to connect to. <br>
-    <br>
-    For example, if you connect to this website, someone monitoring the connection can see this: <br>
-    <img src="images/wireshark-sni.jpg" alt="SNI in Wireshark">
-    <br>
-    <br>
-    There have been <a href="https://blog.cloudflare.com/encrypted-client-hello/">efforts to encrypt SNI</a>
-    which solves this issue, but currently, it's not very widespread.
-  </p>
+    <h3 id="ocsp"><a href="#ocsp">OCSP</a></h3>
 
-  <h3 id="ocsp"><a href="#ocsp">OCSP</a></h3>
+    <p>
+      <a href="https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol">Online Certificate Status Protocol</a>
+      (OCSP) is used to validate TLS certificates and <a
+      href="https://blog.seanmcelroy.com/2019/01/05/ocsp-web-activity-is-not-private/">is another way to determine the
+      website that you're visiting</a>. OCSP responses contain the serial number of the website's TLS certificate which
+      can easily be used to lookup what certificate it belongs to. <br>
+      <img src="images/wireshark-ocsp.jpg" alt="OCSP in Wireshark">
+      <img src="images/github-serial-number.jpg" alt="Github serial number">
+      <br>
+      <br>
+      There is also a way to prevent this via <a href="https://en.wikipedia.org/wiki/OCSP_stapling">OCSP stapling</a>,
+      but again, it's not very widespread.
+    </p>
 
-  <p>
-    <a href="https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol">Online Certificate Status Protocol</a>
-    (OCSP) is used to validate TLS certificates and <a
-    href="https://blog.seanmcelroy.com/2019/01/05/ocsp-web-activity-is-not-private/">is another way to determine the
-    website that you're visiting</a>. OCSP responses contain the serial number of the website's TLS certificate which
-    can easily be used to lookup what certificate it belongs to. <br>
-    <img src="images/wireshark-ocsp.jpg" alt="OCSP in Wireshark">
-    <img src="images/github-serial-number.jpg" alt="Github serial number">
-    <br>
-    <br>
-    There is also a way to prevent this via <a href="https://en.wikipedia.org/wiki/OCSP_stapling">OCSP stapling</a>,
-    but again, it's not very widespread.
-  </p>
+    <h3 id="ip-addresses"><a href="#ip-addresses">IP Addresses</a></h3>
 
-  <h3 id="ip-addresses"><a href="#ip-addresses">IP Addresses</a></h3>
+    <p>
+      Even if you are using some form of encrypted DNS, eSNI and OCSP stapling, the IP addresses of the websites you visit are
+      still leaked and they can be used to identify <a href="https://blog.apnic.net/2019/08/23/what-can-you-learn-from-an-ip-address/">
+      over 95% of websites</a>. Some IP addresses host multiple domains that can obscure this a small bit, but that's not
+      very reliable.
+    </p>
 
-  <p>
-    Even if you are using some form of encrypted DNS, eSNI and OCSP stapling, the IP addresses of the websites you visit are
-    still leaked and they can be used to identify <a href="https://blog.apnic.net/2019/08/23/what-can-you-learn-from-an-ip-address/">
-    over 95% of websites</a>. Some IP addresses host multiple domains that can obscure this a small bit, but that's not
-    very reliable.
-  </p>
+    <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 
-  <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+    <p>
+      Encrypting your DNS queries alone is not enough to hide the domains you visit and gives no security advantage.
+      It will only help against some very rudimentary censorship systems that rely entirely on DNS blocking, but it isn't
+      hard for those systems to develop workarounds. If you do want to effectively hide the websites you browse, use
+      a VPN or, preferably, Tor.
+    </p>
 
-  <p>
-    Encrypting your DNS queries alone is not enough to hide the domains you visit and gives no security advantage.
-    It will only help against some very rudimentary censorship systems that rely entirely on DNS blocking, but it isn't
-    hard for those systems to develop workarounds. If you do want to effectively hide the websites you browse, use
-    a VPN or, preferably, Tor.
-  </p>
-
-  <p class="p-final">
-    <a href="index.html" class="back">Go back</a>
-  </p>
-
-  <button class="dark-mode-toggle">🌓</button>
-  <script type="text/javascript" src="toggle.js"></script>
-</body>
+    <button class="back"><a href="index.html">Go back</a></button>
+  </body>
 </html>

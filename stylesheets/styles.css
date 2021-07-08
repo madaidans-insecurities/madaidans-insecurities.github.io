@@ -1,0 +1,263 @@
+:root {
+    --background-color-dark: #252627;
+    --background-color-light: #fefefe;
+    --color-dark: #a9a9b3;
+    --color-light: #222;
+}
+
+* {
+    box-sizing: border-box;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: calc(1em + 0.33vw);
+}
+
+body {
+    background-color: var(--background-color-light);
+    color: var(--color-light);
+    font-family: Arial, "Helvetica Neue", sans-serif;
+    line-height: 1.5;
+    /* need to add top margin */
+    margin: 0 auto;
+    max-width: 700px;
+}
+
+h1,
+h2,
+h3, 
+h4 {
+    line-height: 1.125;
+}
+
+h1, 
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0 auto 1rem;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.66rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+h2 a, 
+h3 a, 
+h4 a,
+h5 a,
+h6 a {
+    text-decoration: none;
+}
+
+h2 a:hover, 
+h3 a:hover, 
+h4 a:hover,
+h5 a:hover,
+h6 a:hover {
+    text-decoration: underline solid #007b9c 1px;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+a {
+    color: inherit;
+    text-decoration: underline solid #007b9c 1px;
+    text-underline-position: under;
+}
+
+pre {
+    overflow-x: auto;
+    padding: 1rem;
+    border: 1px solid;
+    margin-bottom: 1rem;
+}
+
+code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 0.85em;
+    background-color: transparent;
+}
+
+ul {
+    overflow: hidden;
+    padding-left: 2em;
+    margin-bottom: 1rem;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+table,
+td {
+    border: 1px solid #333;
+}
+
+table {
+    margin-bottom: 1rem;
+}
+
+td {
+    padding: 5px 10px;
+    text-align: center;
+}
+
+thead,
+tfoot {
+    background-color: #333;
+    color: #fff;
+}
+
+ol {
+    counter-reset: item;
+    list-style-type: none;
+    margin-top: .6em;
+    margin-bottom: 1rem;
+}
+
+ol > li {
+  counter-increment: item;
+  margin-bottom: 0.6em;
+  margin-left: 1em;
+}
+
+ol > li:before {
+  content: counters(item, ".") ". ";
+  padding-right: 0.2em;    
+}
+
+li > ol {
+    margin-bottom: 0;
+}
+
+.anchor {
+    border-bottom: initial;
+}
+
+.anchor:hover {
+    border-bottom: 1px solid #007b9c;
+}
+
+.identifier-column, .identifier-row {
+    text-align: left;
+}
+
+.identifier-row {
+    font-weight: bold;
+}
+
+blockquote {
+    border: 1px solid;
+    font-style: italic;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding: 1rem;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.index-column {
+    margin-bottom: 1rem;
+}
+
+.index-column-list {
+    margin-left: -1rem;
+}
+
+.index-row {
+    columns: 2;
+    margin-bottom: 5%;
+}
+
+.back {
+    background: #111;
+    border-radius: 0.33em;
+    color: #fefefe;
+    font-size: 1.25rem;
+    margin: 2rem 0 5rem;
+    padding: .75rem;
+    border: 0;
+}
+
+.back a {
+    text-decoration: none;
+}
+
+.theme-toggle {
+    background: transparent;
+    border: none;
+    display: block;
+    font-size: 2rem;
+    margin: 30px 0 0 auto;
+    outline: none;
+    padding-right: 32px;
+    padding-bottom: 5px;
+    text-align: right;
+    text-decoration: none;
+    visibility: hidden;
+}
+
+.date {
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+}
+
+/* Makes the index columns stack on top of each other at low screen width */
+@media screen and (max-width: 360px) {
+    .index-row {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 45em) {
+    body {
+        padding: 25px;
+    }
+    body a {
+        hyphens: auto;
+    }
+    h1 {
+        margin-left: 0;
+        max-width: 75%;
+    }
+    code {
+        word-break: break-all;
+    }
+    .theme-toggle {
+        margin-top: 5px;
+    }
+}
+
+@media print {
+    a {
+        border: 0;
+    }
+    pre code {
+        white-space: pre-wrap !important;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--background-color-dark);
+        color: var(--color-dark);
+    }
+}

@@ -6,10 +6,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
     <meta name="referrer" content="no-referrer">
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/styles.css">
+    <script type="module" src="../js/theme.min.js"></script>
     <title>Linux Hardening Guide | Madaidan's Insecurities</title>
   </head>
   <body>
+    <button class="theme-toggle">🌓</button>
     <h1>Linux Hardening Guide</h1>
 
     <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
@@ -27,121 +29,195 @@
 
     <h2>Contents</h2>
 
-    <div class="headers">
-      <a href="#choosing-the-right-distro">1. Choosing the right Linux distribution</a> <br>
-      <br>
-      <a href="#kernel">2. Kernel hardening</a> <br>
-      <a href="#stable-vs-lts" class="subheaders">2.1 Stable vs. LTS</a> <br>
-      <a href="#sysctl" class="subheaders">2.2 Sysctl</a> <br>
-      <a href="#sysctl-kernel" class="subheaders2">2.2.1 Kernel self-protection</a> <br>
-      <a href="#sysctl-network" class="subheaders2">2.2.2 Network</a> <br>
-      <a href="#sysctl-userspace" class="subheaders2">2.2.3 User space</a> <br>
-      <a href="#boot-parameters" class="subheaders">2.3 Boot parameters</a> <br>
-      <a href="#boot-kernel" class="subheaders2">2.3.1 Kernel self-protection</a> <br>
-      <a href="#cpu-mitigations" class="subheaders2">2.3.2 CPU mitigations</a><br>
-      <a href="#result" class="subheaders2">2.3.3 Result</a><br>
-      <a href="#hidepid" class="subheaders">2.4 hidepid</a> <br>
-      <a href="#kernel-attack-surface-reduction" class="subheaders">2.5 Kernel attack surface reduction</a> <br>
-      <a href="#kasr-boot-parameters" class="subheaders2">2.5.1 Boot parameters</a> <br>
-      <a href="#kasr-kernel-modules" class="subheaders2">2.5.2 Blacklisting kernel modules</a> <br>
-      <a href="#kasr-rfkill" class="subheaders2">2.5.3 rfkill</a> <br>
-      <a href="#other-kernel-pointer-leaks" class="subheaders">2.6 Other kernel pointer leaks</a> <br>
-      <a href="#restricting-sysfs" class="subheaders">2.7 Restricting access to sysfs</a> <br>
-      <a href="#linux-hardened" class="subheaders">2.8 linux-hardened</a> <br>
-      <a href="#grsecurity" class="subheaders">2.9 Grsecurity</a> <br>
-      <a href="#lkrg" class="subheaders">2.10 Linux Kernel Runtime Guard</a> <br>
-      <a href="#kernel-self-compilation" class="subheaders">2.11 Kernel self-compilation</a> <br>
-      <br>
-      <a href="#mac">3. Mandatory access control</a> <br>
-      <br>
-      <a href="#sandboxing">4. Sandboxing</a> <br>
-      <a href="#application-sandboxing" class="subheaders">4.1 Application sandboxing</a> <br>
-      <a href="#common-sandbox-escapes" class="subheaders">4.2 Common sandbox escapes</a> <br>
-      <a href="#pulseaudio" class="subheaders2">4.2.1 PulseAudio</a> <br>
-      <a href="#d-bus" class="subheaders2">4.2.2 D-Bus</a> <br>
-      <a href="#gui-isolation" class="subheaders2">4.2.3 GUI isolation</a> <br>
-      <a href="#ptrace" class="subheaders2">4.2.4 ptrace</a> <br>
-      <a href="#tiocsti" class="subheaders2">4.2.5 TIOCSTI</a> <br>
-      <a href="#systemd-sandboxing" class="subheaders">4.3 Systemd service sandboxing</a> <br>
-      <a href="#gvisor" class="subheaders">4.4 gVisor</a> <br>
-      <a href="#virtual-machines" class="subheaders">4.5 Virtual machines</a> <br>
-      <br>
-      <a href="#hardened-malloc">5. Hardened memory allocator</a> <br>
-      <br>
-      <a href="#hardened-compilation-flags">6. Hardened compilation flags</a> <br>
-      <br>
-      <a href="#memory-safe-languages">7. Memory safe languages</a> <br>
-      <br>
-      <a href="#root">8. The root account</a> <br>
-      <a href="#securetty" class="subheaders">8.1 /etc/securetty</a> <br>
-      <a href="#restricting-su" class="subheaders">8.2 Restricting su</a> <br>
-      <a href="#locking-root" class="subheaders">8.3 Locking the root account</a> <br>
-      <a href="#denying-ssh-root-login" class="subheaders">8.4 Denying root login via SSH</a> <br>
-      <a href="#increase-hashing-rounds" class="subheaders">8.5 Increasing the number of hashing rounds</a> <br>
-      <a href="#restricting-xorg" class="subheaders">8.6 Restricting Xorg root access</a> <br>
-      <a href="#accessing-root-securely" class="subheaders">8.7 Accessing root securely</a> <br>
-      <br>
-      <a href="#firewalls">9. Firewalls</a> <br>
-      <br>
-      <a href="#identifiers">10. Identifiers</a> <br>
-      <br>
-      <a href="#hostnames" class="subheaders">10.1 Hostnames and usernames</a> <br>
-      <a href="#timezones-locales-keymaps" class="subheaders">10.2 Timezones / Locales / Keymaps</a> <br>
-      <a href="#machine-id" class="subheaders">10.3 Machine ID</a> <br>
-      <a href="#mac-address-spoofing" class="subheaders">10.4 MAC address spoofing</a> <br>
-      <a href="#time-attacks" class="subheaders">10.5 Time attacks</a> <br>
-      <a href="#icmp-timestamps" class="subheaders2">10.5.1 ICMP timestamps</a> <br>
-      <a href="#tcp-timestamps" class="subheaders2">10.5.2 TCP timestamps</a> <br>
-      <a href="#tcp-isns" class="subheaders2">10.5.3 TCP initial sequence numbers</a> <br>
-      <a href="#time-synchronization" class="subheaders2">10.5.4 Time synchronization</a> <br>
-      <a href="#keystroke-fingerprinting" class="subheaders">10.6 Keystroke fingerprinting</a> <br>
-      <br>
-      <a href="#file-permissions">11. File permissions</a> <br>
-      <a href="#setuid" class="subheaders">11.1 setuid / setgid</a> <br>
-      <a href="#umask" class="subheaders">11.2 umask</a> <br>
-      <br>
-      <a href="#core-dumps">12. Core dumps</a> <br>
-      <a href="#core-dumps-sysctl" class="subheaders">12.1 sysctl</a> <br>
-      <a href="#core-dumps-systemd" class="subheaders">12.2 systemd</a> <br>
-      <a href="#core-dumps-ulimit" class="subheaders">12.3 ulimit</a> <br>
-      <a href="#core-dumps-setuid" class="subheaders">12.4 setuid processes</a> <br>
-      <br>
-      <a href="#swap">13. Swap</a> <br>
-      <br>
-      <a href="#pam">14. PAM</a> <br>
-      <br>
-      <a href="#microcode">15. Microcode updates</a> <br>
-      <br>
-      <a href="#ipv6-privacy">16. IPv6 privacy extensions</a> <br>
-      <a href="#ipv6-networkmanager" class="subheaders">16.1 NetworkManager</a> <br>
-      <a href="#ipv6-systemd-networkd" class="subheaders">16.2 systemd-networkd</a> <br>
-      <br>
-      <a href="#partitioning">17. Partitioning and mount options</a> <br>
-      <br>
-      <a href="#entropy">18. Entropy</a> <br>
-      <a href="#additional-entropy-sources" class="subheaders">18.1 Additional entropy sources</a> <br>
-      <a href="#rdrand" class="subheaders">18.2 RDRAND</a> <br>
-      <br>
-      <a href="#editing-as-root">19. Editing files as root</a> <br>
-      <br>
-      <a href="#distro-specific">20. Distribution-specific hardening</a> <br>
-      <a href="#https-mirrors" class="subheaders">20.1 HTTPS package manager mirrors</a> <br>
-      <a href="#apt-seccomp-bpf" class="subheaders">20.2 APT seccomp-bpf</a> <br>
-      <br>
-      <a href="#physical-security">21. Physical security</a> <br>
-      <a href="#encryption" class="subheaders">21.1 Encryption</a> <br>
-      <a href="#bios-uefi" class="subheaders">21.2 BIOS / UEFI hardening</a> <br>
-      <a href="#bootloader-passwords" class="subheaders">21.3 Bootloader passwords</a> <br>
-      <a href="#grub" class="subheaders2">21.3.1 GRUB</a> <br>
-      <a href="#syslinux" class="subheaders2">21.3.2 Syslinux</a> <br>
-      <a href="#systemd-boot" class="subheaders2">21.3.3 systemd-boot</a> <br>
-      <a href="#verified-boot" class="subheaders">21.4 Verified boot</a> <br>
-      <a href="#usbs" class="subheaders">21.5 USBs</a> <br>
-      <a href="#dma-attacks" class="subheaders">21.6 DMA attacks</a> <br>
-      <a href="#cold-boot-attacks" class="subheaders">21.7 Cold boot attacks</a> <br>
-      <br>
-      <a href="#best-practices">22. Best practices</a> <br>
-    </div>
+    <ol>
+      <li><a href="#choosing-the-right-distro">Choosing the right Linux distribution</a></li>
+      <li>
+        <a href="#kernel">Kernel hardening</a>
+
+        <ol>
+          <li><a href="#stable-vs-lts">Stable vs. LTS</a></li>
+        
+          <li>
+            <a href="#sysctl">Sysctl</a>
+
+            <ol>
+              <li><a href="#sysctl-kernel">Kernel self-protection</a></li>
+              <li><a href="#sysctl-network">Network</a></li>
+              <li><a href="#sysctl-userspace">User space</a></li>
+            </ol>
+          </li>
+          
+          <li>
+            <a href="#boot-parameters">Boot parameters</a>
+
+            <ol>
+              <li><a href="#boot-kernel">Kernel self-protection</a></li>
+              <li><a href="#cpu-mitigations">CPU mitigations</a>
+              <li><a href="#result"> Result</a></li>
+            </ol>
+          </li>
+  
+          <li><a href="#hidepid">hidepid</a></li>
+          
+          <li>
+            <a href="#kernel-attack-surface-reduction">Kernel attack surface reduction</a>
+
+            <ol>
+              <li><a href="#kasr-boot-parameters">Boot parameters</a></li>
+              <li><a href="#kasr-kernel-modules">Blacklisting kernel modules</a></li>
+              <li><a href="#kasr-rfkill">rfkill</a></li>
+            </ol>
+          </li>
+
+          <li><a href="#other-kernel-pointer-leaks">Other kernel pointer leaks</a></li>
+          <li><a href="#restricting-sysfs">Restricting access to sysfs</a></li>
+          <li><a href="#linux-hardened">linux-hardened</a></li>
+          <li><a href="#grsecurity">Grsecurity</a></li>
+          <li><a href="#lkrg">Linux Kernel Runtime Guard</a></li>
+          <li><a href="#kernel-self-compilation">Kernel self-compilation</a></li>
+
+        </ol>
+      </li>
+
+      <li><a href="#mac">Mandatory access control</a></li>
+      
+      <li>
+        <a href="#sandboxing">Sandboxing</a>
+        <ol>
+          <li><a href="#application-sandboxing">Application sandboxing</a></li>
+          <li>
+            <a href="#common-sandbox-escapes">Common sandbox escapes</a>
+
+            <ol>
+              <li><a href="#pulseaudio">PulseAudio</a></li>
+              <li><a href="#d-bus">D-Bus</a></li>
+              <li><a href="#gui-isolation">GUI isolation</a></li>
+              <li><a href="#ptrace">ptrace</a></li>
+              <li><a href="#tiocsti">TIOCSTI</a></li>
+            </ol>
+          </li>
+                  
+          <li><a href="#systemd-sandboxing">Systemd service sandboxing</a></li>
+          <li><a href="#gvisor">gVisor</a></li>
+          <li><a href="#virtual-machines">Virtual machines</a></li>
+        </ol>
+      </li>
+
+      <li><a href="#hardened-malloc">Hardened memory allocator</a></li>
+      <li><a href="#hardened-compilation-flags">Hardened compilation flags</a></li>
+      <li><a href="#memory-safe-languages">Memory safe languages</a></li>
+      <li>
+        <a href="#root">The root account</a>
+        
+        <ol>
+          <li><a href="#securetty">/etc/securetty</a></li>
+          <li><a href="#restricting-su">Restricting su</a></li>
+          <li><a href="#locking-root">Locking the root account</a></li>
+          <li><a href="#denying-ssh-root-login">Denying root login via SSH</a></li>
+          <li><a href="#increase-hashing-rounds">Increasing the number of hashing rounds</a></li>
+          <li><a href="#restricting-xorg">Restricting Xorg root access</a></li>
+          <li><a href="#accessing-root-securely">Accessing root securely</a></li>
+        </ol>
+      </li>
+
+      <li><a href="#firewalls">Firewalls</a></li>
+
+      <li>
+        <a href="#identifiers">Identifiers</a>
+        <ol>
+          <li><a href="#hostnames">Hostnames and usernames</a></li>
+          <li><a href="#timezones-locales-keymaps">Timezones / Locales / Keymaps</a></li>
+          <li><a href="#machine-id">Machine ID</a></li>
+          <li><a href="#mac-address-spoofing">MAC address spoofing</a></li>
+          <li>
+            <a href="#time-attacks">Time attacks</a>
+            <ol>
+              <li><a href="#icmp-timestamps">ICMP timestamps</a></li>
+              <li><a href="#tcp-timestamps">TCP timestamps</a></li>
+              <li><a href="#tcp-isns">TCP initial sequence numbers</a></li>
+              <li><a href="#time-synchronization">Time synchronization</a></li>
+            </ol>
+          </li>
+    
+          <li><a href="#keystroke-fingerprinting">Keystroke fingerprinting</a></li>
+        </ol>
+      </li>
+
+
+
+      <li>
+        <a href="#file-permissions">File permissions</a>
+        <ol>
+          <li><a href="#setuid">setuid / setgid</a></li>
+          <li><a href="#umask">umask</a></li>
+        </ol>
+      </li>
+      
+
+      <li>
+        <a href="#core-dumps">Core dumps</a>
+        <ol>
+          <li><a href="#core-dumps-sysctl">sysctl</a></li>
+          <li><a href="#core-dumps-systemd">systemd</a></li>
+          <li><a href="#core-dumps-ulimit">ulimit</a></li>
+          <li><a href="#core-dumps-setuid">setuid processes</a></li>
+        </ol>
+      </li>
+
+      <li><a href="#swap">Swap</a></li>
+      <li><a href="#pam">PAM</a></li>
+      <li><a href="#microcode">Microcode updates</a></li>
+
+      <li>
+        <a href="#ipv6-privacy">IPv6 privacy extensions</a>
+        <ol>
+          <li><a href="#ipv6-networkmanager">NetworkManager</a></li>
+          <li><a href="#ipv6-systemd-networkd">systemd-networkd</a></li>
+        </ol>
+      </li>
+
+      <li><a href="#partitioning">Partitioning and mount options</a></li>
+
+      <li>
+        <a href="#entropy">Entropy</a>
+        <ol>
+          <li><a href="#additional-entropy-sources">Additional entropy sources</a></li>
+          <li><a href="#rdrand">RDRAND</a></li>
+        </ol>
+      </li>
+
+      <li><a href="#editing-as-root">Editing files as root</a></li>
+
+      <li>
+        <a href="#distro-specific">Distribution-specific hardening</a>
+        <ol>
+          <li><a href="#https-mirrors">HTTPS package manager mirrors</a></li>
+          <li><a href="#apt-seccomp-bpf">APT seccomp-bpf</a></li>
+        </ol>
+      </li>
+
+      <li>
+        <a href="#physical-security">Physical security</a>
+        <ol>
+          <li><a href="#encryption">Encryption</a></li>
+          <li><a href="#bios-uefi">BIOS / UEFI hardening</a></li>
+          <li>
+            <a href="#bootloader-passwords">Bootloader passwords</a>
+            <ol>
+              <li><a href="#grub">GRUB</a></li>
+              <li><a href="#syslinux">Syslinux</a></li>
+              <li><a href="#systemd-boot">systemd-boot</a></li>
+            </ol>
+          </li>
+          <li><a href="#verified-boot">Verified boot</a></li>
+          <li><a href="#usbs">USBs</a></li>
+          <li><a href="#dma-attacks">DMA attacks</a></li>
+          <li><a href="#cold-boot-attacks">Cold boot attacks</a></li>
+        </ol>
+      </li>
+
+      <li><a href="#best-practices">Best practices</a></li>
+    </ol>
 
     <h2 id="choosing-the-right-distro"><a href="#choosing-the-right-distro">1. Choosing the right Linux distribution</a></h2>
 
@@ -150,17 +226,17 @@
     </p>
 
     <ul>
-      <li class="lilist">
+      <li>
         Avoid distributions that freeze packages as <a href="../linux.html#debian">they are often quite behind on security updates</a>.
-      </li>
+ 
 
-      <li class="lilist">
+      <li>
         Use a distribution with an init system other than <a href="https://systemd.io/">systemd</a>. systemd contains a lot of unnecessary
         attack surface; <a href="https://ewontfix.com/14/">it attempts to do far more things than necessary</a> and goes beyond what an
         init system should do. An init system should not need many lines of code to function properly.
-      </li>
+ 
 
-      <li class="lilist">
+      <li>
         Use <a href="https://musl.libc.org/">musl</a> as the default C library. musl is heavily focused on minimality which <a
         href="https://github.com/NixOS/nixpkgs/issues/90147#issuecomment-643473182">results in very small attack surface</a>, whereas other C libraries
         such as glibc are overly complex and prone to vulnerabilities. For example, <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=glibc">
@@ -168,9 +244,9 @@
         very few in musl</a>. While counting CVEs by itself is often an inaccurate statistic, it can sometimes be used to represent an overaching issue, such as
         in this case. musl also has <a href="https://www.dustri.org/b/security-features-of-musl.html">decent exploit mitigations</a>, particularly its
         <a href="https://www.openwall.com/lists/musl/2020/05/13/1">new hardened memory allocator</a>.
-      </li>
+ 
 
-      <li class="lilist">
+      <li>
         Preferably use a distribution that utilises <a href="https://www.libressl.org/">LibreSSL</a> by default rather than <a href="https://www.openssl.org/">
         OpenSSL</a>. <a href="https://arstechnica.com/information-technology/2014/04/openssl-code-beyond-repair-claims-creator-of-libressl-fork/">OpenSSL contains
         tremendous amounts of totally unnecessary attack surface and follows poor security practices</a>. For example, it still maintains OS/2 and VMS support —
@@ -179,7 +255,7 @@
         <a href="https://en.wikipedia.org/wiki/LibreSSL#Changes">superior programming practices</a> and <a href="https://opensslrampage.org/">eradicates
         a lot of attack surface</a>. Within LibreSSL's first year, <a href="https://www.openbsd.org/papers/libtls-fsec-2015/mgp00005.html">it mitigated a
         large number of vulnerabilities, including a few high severity ones</a>.
-      </li>
+ 
     </ul>
 
     <p>
@@ -1091,7 +1167,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     </p>
 
     <ul>
-      <li class="lilist">
+      <li>
         <a href="https://clang.llvm.org/docs/ControlFlowIntegrity.html">Control Flow Integrity</a> (CFI) is an exploit mitigation that <a
         href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">aims to prevent code reuse attacks like ROP or JOP</a>.
         A large portion of vulnerabilities are exploited using these techniques due to more widely adopted mitigations, such as NX, making older
@@ -1100,9 +1176,9 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
         the following compilation flags:
 
         <pre><code>-flto -fvisibility=hidden -fsanitize=cfi</code></pre> <br>
-      </li>
+ 
 
-      <li class="lilist">
+      <li>
         <a href="https://en.wikipedia.org/wiki/Shadow_stack">Shadow stacks</a> protect a program's return address by replicating it in a different,
         hidden stack. The return addresses in the main stack and the shadow stack are then compared to see if either differ. If so, this would
         indicate an attack and the program will abort, therefore mitigating ROP attacks. Clang has a feature known as <a
@@ -1110,18 +1186,18 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
         To enable this, you must apply the following compilation flags:
 
         <pre><code>-fsanitize=shadow-call-stack</code></pre> <br>
-      </li>
+ 
 
-      <li class="lilist">
+      <li>
         If the aforementioned ShadowCallStack is not an option, you can alternatively use <a href="https://clang.llvm.org/docs/SafeStack.html">
         SafeStack</a> which has a similar goal. Unfortunately though, this feature <a href="https://bugs.chromium.org/p/chromium/issues/detail?id=908597">
         suffers from many vulnerabilities</a> so it isn't nearly as effective. If you still wish to enable this, you must apply the following
         compilation flag:
 
         <pre><code>-fsanitize=safe-stack</code></pre> <br>
-      </li>
+ 
 
-      <li class="lilist">
+      <li>
         One of the most common memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized
         memory</a>. Clang has an option to <a href="https://reviews.llvm.org/D54604">automatically initialize variables</a> with either zero or a specific
         pattern. It is recommended to initialize variables to zero as using other patterns is more suitable for bug finding than exploit mitigation.
@@ -1130,7 +1206,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
         <pre><code>-ftrivial-auto-var-init=zero -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang</code></pre> <br>
 
         The existence of this option <a href="https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html">is currently being debated</a>.
-      </li>
+ 
     </ul>
 
     <h2 id="memory-safe-languages"><a href="#memory-safe-languages">7. Memory safe languages</a></h2>
@@ -1841,17 +1917,17 @@ password_pbkdf2 $username $password</code></pre>
     </p>
 
     <ul>
-      <li class="lilist">
+      <li>
         UEFI secure boot alone lacks an immutable root of trust so a physical attacker can still reflash the firmware of the device. To mitigate this, use UEFI secure boot in combination with <a
         href="https://mjg59.dreamwidth.org/33981.html">Intel Boot Guard</a> or <a href="https://blog.cloudflare.com/anchoring-trust-a-hardware-secure-boot-story/">AMD Secure Boot</a>.
-      </li>
+ 
 
-      <li class="lilist">
+      <li>
         A remote attacker (or a physical attacker when not using <a href="#encryption">encryption</a>) can simply modify any other privileged part of the operating system. For example, if they have
         the privileges to modify the kernel, then they'd also be able to modify <code>/sbin/init</code> to achieve effectively the same result. Thus, only verifying the kernel and bootloader will not
         do anything against a remote attacker. To mitigate this, you must verify the base operating system with <a href="https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html">
         dm-verity</a>, although this is very difficult and cumbersome due to the layout of traditional Linux distributions.
-      </li>
+ 
     </ul>
 
     <p>
@@ -1981,11 +2057,6 @@ install thunderbolt /bin/false</code></pre>
       href="https://forums.grsecurity.net/viewtopic.php?t=2522">many of them can be abused to gain full root privileges anyway</a>.
     </p>
 
-    <p class="p-final">
-      <a href="../index.html" class="back">Go back</a>
-    </p>
-
-    <button class="dark-mode-toggle">🌓</button>
-    <script type="text/javascript" src="../toggle.js"></script>
+    <button class="back"><a href="../index.html">Go back</a></button>
 </body>
 </html>

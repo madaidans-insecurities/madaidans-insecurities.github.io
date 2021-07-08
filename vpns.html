@@ -1,43 +1,40 @@
 <!DOCTYPE html>
 <html lang=en>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
-  <meta name="referrer" content="no-referrer">
-  <link rel="stylesheet" type="text/css" href="styles.css">
-  <title>VPNs | Madaidan's Insecurities</title>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+    <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+    <script type="module" src="js/theme.min.js"></script>
+    <title>VPNs | Madaidan's Insecurities</title>
+  </head>
 
-<body>
-  <h1>VPNs</h1>
+  <body>
+    <button class="theme-toggle">🌓</button>
+    <h1>VPNs</h1>
 
-  <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
+    <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
 
-  <p>
-    VPNs give nearly no security benefit as <a href="https://transparencyreport.google.com/https/overview?hl=en">over 95% of websites that people actually use
-    already support HTTPS</a> which encrypts your connection. VPNs will only ever give a security benefit when you're browsing a site lacking HTTPS which is rare. <br>
-    <br>
-    A VPN can provide a privacy advantage since it does hide the websites you visit from people monitoring your traffic and it hides your IP address from the websites
-    you visit however, it is important to understand the limitiations of this. When using a VPN, you send all of your internet traffic to a single server and they can
-    do whatever they want with it. You have to trust them fully not to do anything malicious. There is no way for you to verify that your VPN provider doesn't log. Many
-    VPNs have lied about their no logging polices before, <a href="https://torrentfreak.com/ipvanish-no-logging-vpn-led-homeland-security-to-comcast-user-180505/">such as
-    IPVanish</a>. VPNs are also very vulnerable to <a href="https://en.wikipedia.org/wiki/Traffic_analysis">traffic analysis attacks</a>, in which sensitive information
-    can be inferred from the network traffic despite the encryption. <br>
-    <br>
-    If you want privacy and anonymity, use <a href="https://www.torproject.org/">Tor</a> instead which avoids trusting a single party and is more private by design. <br>
-    <br>
-    Also see <a href="https://gist.github.com/joepie91/5a9909939e6ce7d09e29">"Don't use VPN services"</a> and <a
-    href="https://matt.traudt.xyz/posts/you-want-tor-24tFBCJV.html">"You want Tor Browser... not a VPN"</a>.
-  </p>
+    <p>
+      VPNs give nearly no security benefit as <a href="https://transparencyreport.google.com/https/overview?hl=en">over 95% of websites that people actually use
+      already support HTTPS</a> which encrypts your connection. VPNs will only ever give a security benefit when you're browsing a site lacking HTTPS which is rare. <br>
+      <br>
+      A VPN can provide a privacy advantage since it does hide the websites you visit from people monitoring your traffic and it hides your IP address from the websites
+      you visit however, it is important to understand the limitiations of this. When using a VPN, you send all of your internet traffic to a single server and they can
+      do whatever they want with it. You have to trust them fully not to do anything malicious. There is no way for you to verify that your VPN provider doesn't log. Many
+      VPNs have lied about their no logging polices before, <a href="https://torrentfreak.com/ipvanish-no-logging-vpn-led-homeland-security-to-comcast-user-180505/">such as
+      IPVanish</a>. VPNs are also very vulnerable to <a href="https://en.wikipedia.org/wiki/Traffic_analysis">traffic analysis attacks</a>, in which sensitive information
+      can be inferred from the network traffic despite the encryption. <br>
+      <br>
+      If you want privacy and anonymity, use <a href="https://www.torproject.org/">Tor</a> instead which avoids trusting a single party and is more private by design. <br>
+      <br>
+      Also see <a href="https://gist.github.com/joepie91/5a9909939e6ce7d09e29">"Don't use VPN services"</a> and <a
+      href="https://matt.traudt.xyz/posts/you-want-tor-24tFBCJV.html">"You want Tor Browser... not a VPN"</a>.
+    </p>
 
-  <p class="p-final">
-    <a href="index.html" class="back">Go back</a>
-  </p>
-
-  <button class="dark-mode-toggle">🌓</button>
-  <script type="text/javascript" src="toggle.js"></script>
-</body>
+    <button class="back"><a href="index.html">Go back</a></button>
+  </body>
 </html>

@@ -1,94 +1,89 @@
 <!DOCTYPE html>
 <html lang=en>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+    <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+    <script type="module" src="js/theme.min.js"></script>
+    <title>Articles | Madaidan's Insecurities</title>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
-  <meta name="referrer" content="no-referrer">
-  <link rel="stylesheet" type="text/css" href="styles.css">
-  <title>Articles | Madaidan's Insecurities</title>
-</head>
+  <body>
+    <button class="theme-toggle">🌓</button>
+    <h1>Security & Privacy Evaluations</h1>
 
-<body>
-  <h1>Security & Privacy Evaluations</h1>
+    <p>
+      Below lies a list of analyses regarding security and privacy focused topics. The security assessments make no
+      attempt at evaluating security based on the number of former vulnerabilities in a particular program. Instead,
+      criteria involve the software's overall security posture and ease of exploitation. Primarily, the assessments
+      include an analysis of the software's attack surface exposure, as well as the adoption of modern defensive
+      techniques. In particular, they study the deployed exploit mitigations and the extent to which different parts
+      of the software are compartmentalised, as is necessary to reduce the potential harm a successful exploit
+      could produce. Note that these analyses are purely objective and do not account for threat models or other
+      user-dependent factors.
+    </p>
+    <p>
+      Likewise, the privacy evaluations are focused on meaningful approaches to achieving privacy, rather than incomplete
+      and misguided approaches, as is common elsewhere. It is important to create a clear distinction between privacy and
+      security to avoid conflating the subjects of any particular article.
+    </p>
 
-  <p>
-     Below lies a list of analyses regarding security and privacy focused topics. The security assessments make no
-     attempt at evaluating security based on the number of former vulnerabilities in a particular program. Instead,
-     criteria involve the software's overall security posture and ease of exploitation. Primarily, the assessments
-     include an analysis of the software's attack surface exposure, as well as the adoption of modern defensive
-     techniques. In particular, they study the deployed exploit mitigations and the extent to which different parts
-     of the software are compartmentalised, as is necessary to reduce the potential harm a successful exploit
-     could produce. Note that these analyses are purely objective and do not account for threat models or other
-     user-dependent factors. <br>
-     <br>
-     Likewise, the privacy evaluations are focused on meaningful approaches to achieving privacy, rather than incomplete
-     and misguided approaches, as is common elsewhere. It is important to create a clear distinction between privacy and
-     security to avoid conflating the subjects of any particular article.
-  </p>
+    <div class="index-row">
+      <div class="index-column">
+        <h2>Security</h2>
+        <ul class="index-column-list">
+          <li><a href="android.html">Android</a></li>
+          <li><a href="firefox-chromium.html">Firefox and Chromium</a></li>
+          <li><a href="linux.html">Linux</a></li>
+          <li><a href="linux-phones.html">Linux Phones</a></li>
+          <li><a href="openbsd.html">OpenBSD</a></li>
+        </ul>
+      </div>
 
-  <div class="index-row">
-    <div class="index-column">
-      <h2>Security</h2>
-      <ul class="index-column-list">
-        <li><a href="android.html">Android</a></li>
-        <li><a href="firefox-chromium.html">Firefox and Chromium</a></li>
-        <li><a href="linux.html">Linux</a></li>
-        <li><a href="linux-phones.html">Linux Phones</a></li>
-        <li><a href="openbsd.html">OpenBSD</a></li>
-      </ul>
+      <div class="index-column">
+        <h2>Privacy</h2>
+        <ul class="index-column-list">
+          <li><a href="browser-tracking.html">Browser Tracking</a></li>
+          <li><a href="encrypted-dns.html">Encrypted DNS</a></li>
+          <li><a href="messengers.html">Messengers</a></li>
+          <li><a href="vpns.html">VPNs</a></li>
+        </ul>
+      </div>
     </div>
 
-    <div class="index-column" id="right-index-column">
-      <h2>Privacy</h2>
-      <ul class="index-column-list">
-        <li><a href="browser-tracking.html">Browser Tracking</a></li>
-        <li><a href="encrypted-dns.html">Encrypted DNS</a></li>
-        <li><a href="messengers.html">Messengers</a></li>
-        <li><a href="vpns.html">VPNs</a></li>
-      </ul>
-    </div>
-  </div>
+    <h1>Guides</h1>
 
-  <h1>Guides</h1>
+    <p>The articles below are guides dedicated to improving security and privacy.</p>
 
-  <p>
-    The articles below are guides dedicated to improving security and privacy.
-  </p>
+    <ul class="index-row">
+      <li><a href="security-privacy-advice.html">Security and Privacy Advice</a></li>
+      <li><a href="guides/linux-hardening.html">Linux Hardening Guide</a></li>
+    </ul>
 
-  <ul class="index-row">
-    <li><a href="security-privacy-advice.html">Security and Privacy Advice</a></li>
-    <li><a href="guides/linux-hardening.html">Linux Hardening Guide</a></li>
-  </ul>
+    <h1>About</h1>
 
-  <h1>About</h1>
+    <p>
+      My name is "madaidan". I'm a security researcher <a href="https://github.com/madaidan">who works on
+      various open source projects</a>, mainly <a href="https://www.whonix.org/">Whonix</a>. My website
+      provides information on security and privacy-related topics — it aims to highlight security issues
+      within popular technology, debunk misinformation and provide free security guidance for everyone. This
+      website was created by me, with help from concat and a few other friends. <br>
+      <br>
+      You can contact me on various platforms, including Reddit, Matrix and Telegram. I operate a bridged <a
+      href="https://matrix.to/#/%23general:spitetech.com">Matrix room</a> and <a href="https://t.me/spitetech">Telegram
+      group</a> that I'm often active in. <br>
+      <br>
+      If you wish to support me and my work, you can donate using the following addresses:
+    </p>
 
-  <p>
-    My name is "madaidan". I'm a security researcher <a href="https://github.com/madaidan">who works on
-    various open source projects</a>, mainly <a href="https://www.whonix.org/">Whonix</a>. My website
-    provides information on security and privacy-related topics — it aims to highlight security issues
-    within popular technology, debunk misinformation and provide free security guidance for everyone. This
-    website was created by me, with help from concat and a few other friends. <br>
-    <br>
-    You can contact me on various platforms, including Reddit, Matrix and Telegram. I operate a bridged <a
-    href="https://matrix.to/#/%23general:spitetech.com">Matrix room</a> and <a href="https://t.me/spitetech">Telegram
-    group</a> that I'm often active in. <br>
-    <br>
-    If you wish to support me and my work, you can donate using the following addresses:
-  </p>
-
-  <ul>
-    <li>Bitcoin: <pre><code>bc1q6eqphq0qy25eypmq4q2s9fqdj0g4kww6zw0hsv</code></pre></li>
-    <li>Ethereum: <pre><code>0xFB71c3a10a1DAb3Ccd6cdEA96e0f62086871a826</code></pre></li>
-    <li>Monero: <pre><code>894Ngkskmch5VV9ZQVzh5x6ujuVA7oUV33f8zpH2KsnhKxnSzHrAJB3PztGSy2MQQx1GwCjf94TLp5C8HfYJRWjQD9yEdx3</code></pre></li>
-    <li>Dogecoin: <pre><code>DREbJGC15jJmCtVGPsuvq2zHMzt5tCnN74</code></pre></li>
-  </ul>
-
-  <br><br>
-
-  <button class="dark-mode-toggle">🌓</button>
-  <script type="text/javascript" src="toggle.js"></script>
-</body>
+    <ul>
+      <li>Bitcoin: <pre><code>bc1q6eqphq0qy25eypmq4q2s9fqdj0g4kww6zw0hsv</code></pre></li>
+      <li>Ethereum: <pre><code>0xFB71c3a10a1DAb3Ccd6cdEA96e0f62086871a826</code></pre></li>
+      <li>Monero: <pre><code>894Ngkskmch5VV9ZQVzh5x6ujuVA7oUV33f8zpH2KsnhKxnSzHrAJB3PztGSy2MQQx1GwCjf94TLp5C8HfYJRWjQD9yEdx3</code></pre></li>
+      <li>Dogecoin: <pre><code>DREbJGC15jJmCtVGPsuvq2zHMzt5tCnN74</code></pre></li>
+    </ul>
+  </body>
 </html>
