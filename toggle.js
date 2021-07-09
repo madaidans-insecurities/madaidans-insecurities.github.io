@@ -8,12 +8,6 @@ function setDarkMode() {
     }
 }
 
-if (window.matchMedia("(prefers-color-scheme: dark)").matches && localStorage.getItem("mode") === null) {
-    localStorage.setItem("mode", "dark");
-} if (localStorage.getItem("mode") === "dark") {
-    document.body.classList.add("dark-mode");
-}
-
 const button = document.querySelector("button");
 
 button.addEventListener("click", event => {
