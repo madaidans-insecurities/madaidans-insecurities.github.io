@@ -1,6 +1,1 @@
-if (window.matchMedia("(prefers-color-scheme: dark)").matches && localStorage.getItem("mode") === null) {
-    localStorage.setItem("mode", "dark");
-}
-if (localStorage.getItem("mode") === "dark") {
-    document.body.classList.add("dark-mode");
-}
+window.matchMedia("(prefers-color-scheme: dark)").matches&&null===localStorage.getItem("mode")&&localStorage.setItem("mode","dark"),"dark"===localStorage.getItem("mode")&&document.body.classList.add("dark-mode");
