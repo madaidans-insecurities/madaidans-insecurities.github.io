@@ -69,15 +69,15 @@ function toLight(): void {
     switchTheme(MEDIA_LIGHT, "light-theme", "/stylesheets/light.css");
 }
 
-function changeTheme() {
-    switch (STORE.getItem("mode")) {
+function changeTheme(): void {
+    switch (STORE.getItem(STORE_KEY)) {
         case "light":
             toDark();
-            STORE.setItem("mode", "dark");
+            STORE.setItem(STORE_KEY, "dark");
             break;
         case "dark":
             toLight();
-            STORE.setItem("mode", "light");
+            STORE.setItem(STORE_KEY, "light");
             break;
         default:
             matchSystem();
