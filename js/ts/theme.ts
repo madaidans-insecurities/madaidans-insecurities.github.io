@@ -62,11 +62,11 @@ function switchTheme(mediaColor: MediaQueryList, styleID: string, styleSrc: stri
 }
 
 function toDark(): void {
-    switchTheme(MEDIA_DARK, "dark-theme", "stylesheets/dark.css");
+    switchTheme(MEDIA_DARK, "dark-theme", "/stylesheets/dark.css");
 }
 
 function toLight(): void {
-    switchTheme(MEDIA_LIGHT, "light-theme", "stylesheets/light.css");
+    switchTheme(MEDIA_LIGHT, "light-theme", "/stylesheets/light.css");
 }
 
 function changeTheme() {

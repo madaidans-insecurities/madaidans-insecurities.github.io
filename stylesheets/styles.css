@@ -14,7 +14,7 @@
 }
 
 html {
-    font-size: calc(1em + 0.33vw);
+    font-size: calc(1em + .33vw);
 }
 
 body {
@@ -90,7 +90,7 @@ pre {
 
 code {
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    font-size: 0.85em;
+    font-size: .85em;
     background-color: transparent;
 }
 
@@ -133,13 +133,13 @@ ol {
 
 ol > li {
   counter-increment: item;
-  margin-bottom: 0.6em;
+  margin-bottom: .6em;
   margin-left: 1em;
 }
 
 ol > li:before {
   content: counters(item, ".") ". ";
-  padding-right: 0.2em;    
+  padding-right: .2em;    
 }
 
 li > ol {
@@ -189,16 +189,14 @@ blockquote {
 
 .back {
     background: #111;
-    border-radius: 0.33em;
+    border-radius: .33em;
     color: #fefefe;
+    display: inline-block;
     font-size: 1.25rem;
     margin: 2rem 0 5rem;
-    padding: .75rem;
-    border: 0;
-}
-
-.back a {
+    padding: .4rem .75rem;
     text-decoration: none;
+    border: 0;
 }
 
 .theme-toggle {
