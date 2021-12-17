@@ -62,7 +62,7 @@
       <a href="#gui-isolation" class="subheaders2">4.2.3 GUI isolation</a> <br>
       <a href="#ptrace" class="subheaders2">4.2.4 ptrace</a> <br>
       <a href="#tiocsti" class="subheaders2">4.2.5 TIOCSTI</a> <br>
-      <a href="#systemd-sandboxing" class="subheaders">4.3 Systemd service sandboxing</a> <br>
+      <a href="#systemd-service-sandboxing" class="subheaders">4.3 Systemd service sandboxing</a> <br>
       <a href="#gvisor" class="subheaders">4.4 gVisor</a> <br>
       <a href="#virtual-machines" class="subheaders">4.5 Virtual machines</a> <br>
       <br>
@@ -936,7 +936,7 @@ SupplementaryGroups=sysfs</code></pre>
       the ioctl in your seccomp filter</a> or by using <a href="https://github.com/containers/bubblewrap/commit/06a7f31fe4a035443e25c00ecea1a3c48d77ddc1">bubblewrap's <code>--new-session</code> argument</a>.
     </p>
 
-    <h3 id="systemd-sandboxing"><a href="#systemd-sandboxing">4.3 Systemd sandboxing</a></h3>
+    <h3 id="systemd-service-sandboxing"><a href="#systemd-service-sandboxing">4.3 Systemd service sandboxing</a></h3>
 
     <p>
       <a href="#choosing-the-right-distro">systemd is unrecommended</a>, but some may be unable to switch. These people can at the very least, sandbox services so they can only access what they need. Here is
