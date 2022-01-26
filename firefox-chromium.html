@@ -27,35 +27,39 @@
     important exploit mitigations. Section 3 discusses some miscellaneous topics. Finally, section 4 provides links to what
     other security researchers have said about this topic.
   </p>
-
+  
   <h2>Contents</h2>
 
-  <div class="headers">
-    <a href="#sandboxing">1. Sandboxing</a> <br>
-    <a href="#site-isolation" class="subheaders">1.1 Site Isolation</a> <br>
-    <a href="#windows-sandbox" class="subheaders">1.2 Windows</a> <br>
-    <a href="#linux-sandbox" class="subheaders">1.3 Linux</a> <br>
-    <a href="#linux-sandbox-escapes" class="subheaders2">1.3.1 Linux Sandbox Escapes</a> <br>
-    <a href="#seccomp-bpf" class="subheaders2">1.3.2 seccomp-bpf</a> <br>
-    <a href="#android-sandbox" class="subheaders">1.4 Android</a> <br>
-    <a href="#missing-processes" class="subheaders">1.5 Missing Processes</a> <br>
-    <br>
-    <a href="#exploit-mitigations">2. Exploit Mitigations</a> <br>
-    <a href="#acg-cig" class="subheaders">2.1 Arbitrary Code Guard and Code Integrity Guard</a> <br>
-    <a href="#cfi" class="subheaders">2.2 Control Flow Integrity</a> <br>
-    <a href="#untrusted-fonts-blocking" class="subheaders">2.3 Untrusted Fonts Blocking</a> <br>
-    <a href="#jit-hardening" class="subheaders">2.4 JIT Hardening</a> <br>
-    <a href="#memory-allocator-hardening" class="subheaders">2.5 Memory Allocator Hardening</a> <br>
-    <a href="#memory-partitioning" class="subheaders2">2.5.1 Memory Partitioning</a> <br>
-    <a href="#out-of-line-metadata" class="subheaders2">2.5.2 Out-of-line Metadata</a> <br>
-    <a href="#partitionalloc-other" class="subheaders2">2.5.3 Other</a> <br>
-    <a href="#auto-var-init" class="subheaders">2.6 Automatic Variable Initialisation</a> <br>
-    <br>
-    <a href="#miscellaneous">3. Miscellaneous</a> <br>
-    <br>
-    <a href="#security-researcher-views">4. Other Security Researchers' Views on Firefox</a> <br>
-  </div>
-
+  <details>
+    <summary><a href="#sandboxing">1. Sandboxing</a></summary>
+      <a href="#site-isolation" >1.1 Site Isolation</a> <br>
+      <a href="#windows-sandbox" >1.2 Windows</a>
+      <details>
+        <summary><a href="#linux-sandbox" >1.3 Linux</a></summary>
+          <a href="#linux-sandbox-escapes" >1.3.1 Linux Sandbox Escapes</a> <br>
+          <a href="#seccomp-bpf" >1.3.2 seccomp-bpf</a>
+      </details>
+      <a href="#android-sandbox" >1.4 Android</a> <br>
+      <a href="#missing-processes" >1.5 Missing Processes</a>
+  </details>
+  <details>
+    <summary><a href="#exploit-mitigations">2. Exploit Mitigations</a></summary>
+      <a href="#acg-cig" >2.1 Arbitrary Code Guard and Code Integrity Guard</a> <br>
+      <a href="#cfi" >2.2 Control Flow Integrity</a> <br>
+      <a href="#untrusted-fonts-blocking" >2.3 Untrusted Fonts Blocking</a> <br>
+      <a href="#jit-hardening" >2.4 JIT Hardening</a> <br>
+      <details>
+        <summary><a href="#memory-allocator-hardening" >2.5 Memory Allocator Hardening</a></summary>
+          <a href="#memory-partitioning" >2.5.1 Memory Partitioning</a> <br>
+          <a href="#out-of-line-metadata" >2.5.2 Out-of-line Metadata</a> <br>
+          <a href="#partitionalloc-other" >2.5.3 Other</a> <br>
+      </details>
+      <a href="#auto-var-init" >2.6 Automatic Variable Initialization</a> <br>
+  </details>
+  &emsp;&ensp;<a href="#miscellaneous" class="nodropdown">3. Miscellaneous</a>
+  <br>
+  &emsp;&ensp;<a href="#security-researcher-views" class="nodropdown">4. Other Security Researcher Views on Firefox</a>
+  
   <h2 id="sandboxing"><a href="#sandboxing">1. Sandboxing</a></h2>
 
   <p>

@@ -181,18 +181,32 @@ thead, tfoot {
     margin-bottom: 2rem;
 }
 
-.headers {
-    font-size: 25px;
+details {
+    margin: 0;
+    line-height: 2;
 }
 
-.subheaders {
-    margin-left: 10px;
-    font-size: 18px;
+a.nodropdown {
+    font-size: 1.33rem;
+    line-height: 2;
+    margin: 1em;    
 }
 
-.subheaders2 {
-    margin-left: 26px;
-    font-size: 16px;
+summary {
+    font-size: 1.33rem;
+}
+
+details[open] > details {
+    margin-left: 2.5em;
+    font-size: calc(.75em);
+}
+
+details[open] > details > summary {
+    font-size: calc(1.33em);
+}
+
+details[open] > a {
+    margin-left: 3em;
 }
 
 /* Makes the index columns stack on top of each other at low screen width */
