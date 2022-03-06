@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
   <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" type="text/css" href="styles.css">
   <title>Security and Privacy Advice | Madaidan's Insecurities</title>
@@ -50,7 +50,7 @@
     <br>
     The security of QubesOS depends entirely on how you use it. The security within the virtual machines matter a lot — don't
     neglect it. Make sure that you use secure guest operating systems and split everything between as many virtual machines as
-    possible. Virtualization can be a very strong security boundary, but it is not magic. I'd recommend reading <a
+    possible. Virtualisation can be a very strong security boundary, but it is not magic. I'd recommend reading <a
     href="https://seclists.org/dailydave/2010/q3/29">Brad Spengler's criticisms of QubesOS</a> to understand some of its limitations. <br>
     <br>
     <a href="linux.html">Do not use Linux</a> (QubesOS <a
@@ -64,11 +64,11 @@
     modern exploit mitigations and more from the start. As such, they are far more locked down than other platforms and significantly
     more resistant to attacks. <br>
     <br>
-    Use either the stock operating system or preferably, <a href="https://grapheneos.org/">GrapheneOS</a> on a Pixel >=3. Do not
-    root your device, do not keep your bootloader unlocked and stay away from alternative operating systems like LineageOS as
+    Use either the stock operating system or preferably, <a href="https://grapheneos.org/">GrapheneOS</a> on a Pixel ≥4. Do not
+    root your device, do not keep your bootloader unlocked and stay away from alternative operating systems like LineageOS, as
     they substantially worsen the security model. Read the <a href="android.html">Android article</a> for more details. <br>
     <br>
-    Alternatively, use an up-to-date iPhone which is comparable to GrapheneOS on a Pixel and do not jailbreak your device. <br>
+    Alternatively, use an up-to-date iPhone which is comparable to GrapheneOS on a Pixel, and do not jailbreak your device. <br>
     <br>
     <a href="linux-phones.html">Stay away from Linux phones</a>.
   </p>
@@ -78,9 +78,9 @@
   <p>
     For security, use Chromium. Avoid Firefox or browsers based on it as they are currently <a
     href="firefox-chromium.html">very lacking in security</a>. The new Microsoft
-    Edge browser that is based on Chromium may be a better choice for Windows users as it can utilise <a
+    Edge browser that is based on Chromium is a better choice for Windows users as it can utilise <a
     href="https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-application-guard/md-app-guard-overview">
-    Windows Defender Application Guard</a> (WDAG). <br>
+    Microsoft Defender Application Guard</a> (MDAG). <br>
     <br>
     For privacy, use the Tor Browser and consider using the security slider. Do not assume that "hardening" Firefox or
     other browsers will make it private; <a href="browser-tracking.html">it won't</a>.
@@ -94,16 +94,15 @@
   <h2 id="messenger"><a href="#messenger">Messenger</a></h2>
 
   <p>
-    <a href="messengers.html">Use Signal</a>, preferably with a burner or VoIP
-    number.
+    <a href="messengers.html">Use Signal</a>, preferably with a burner or VoIP number.
   </p>
 
   <h2 id="email"><a href="#email">Email</a></h2>
 
   <p>
-    If you can, stay away from email as it is a fundamentally insecure protocol, but if you must use it, use a reputable email provider
-    with a strong focus on security, such as <a href="https://protonmail.com/">ProtonMail</a> or <a href="https://tutanota.com/">
-    Tutanota</a>. <br>
+    If you can, <a href="https://latacora.singles/2020/02/19/stop-using-encrypted.html">stay away from email</a>, as it is a fundamentally
+    insecure protocol, but if you must use it, use a reputable email provider with a strong focus on security, such as
+    <a href="https://protonmail.com/">ProtonMail</a> or <a href="https://tutanota.com/">Tutanota</a>. <br>
     <br>
     Consider staying away from web apps as they <a href="https://protonmail.com/blog/cryptographic-architecture-response/">can
     provide weaker security</a>. When a user visits a website in a browser, that website can target that specific user with
@@ -138,9 +137,10 @@
     </li>
 
     <li class="lilist">
-      Always use full-disk encryption. Use <a href="https://www.veracrypt.fr/en/Home.html">VeraCrypt</a> for this or
+      Always use full-disk encryption. Use
       <a href="https://docs.microsoft.com/en-us/windows/security/information-protection/bitlocker/bitlocker-overview">
-      Bitlocker</a> if on Windows.
+      Bitlocker</a> on Windows, <a href="https://support.apple.com/guide/deployment/intro-to-filevault-dep82064ec40/web">
+      FileVault</a> on macOS and <a href="https://wiki.archlinux.org/title/Dm-crypt">dm-crypt</a> on Linux.
     </li>
 
     <li class="lilist">
@@ -160,16 +160,15 @@
     </li>
 
     <li class="lilist">
-      Always use HTTPS. Manually type in the <code>https://</code> part when visting a website to prevent <a
+      Always use HTTPS. Manually type in the <code>https://</code> part of the URL when visting a website to prevent <a
       href="https://security.stackexchange.com/questions/41988/how-does-sslstrip-work">sslstrip attacks</a>. Make sure
-      that the padlock icon is displayed in the address bar. Install <a href="https://www.eff.org/https-everywhere">HTTPS
-      Everywhere</a> in your browser if it is not included already.
+      that the padlock icon is displayed in the address bar. Enable HTTPS-only mode in your browser.
     </li>
 
     <li class="lilist">
       Install <a href="https://en.wikipedia.org/wiki/NoScript">NoScript</a> to block content such as JavaScript as much
-      as you can. JavaScript inherently presents a massive attack surface as it is arbitrary code executed straight off
-      of a website. NoScript also provides protection against attacks such as <a
+      as you can. JavaScript inherently presents a massive attack surface, as it is arbitrary code executed directly from
+      a website. NoScript also provides protection against attacks such as <a
       href="https://en.wikipedia.org/wiki/Cross-site_scripting">cross-site scripting</a>, <a
       href="https://en.wikipedia.org/wiki/Cross-site_request_forgery">cross-site request forgery</a> and more.
     </li>

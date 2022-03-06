@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
   <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" type="text/css" href="styles.css">
   <title>Android | Madaidan's Insecurities</title>
@@ -14,7 +14,7 @@
 <body>
   <h1>Android</h1>
 
-  <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
+  <p class="date"><em><time datetime="2021-09-21">Last edited: September 21st, 2021</time></em></p>
 
   <p>
     By default, Android has a <a href="https://arxiv.org/abs/1904.05572">strong security model</a> and incorporates
@@ -45,15 +45,15 @@
 
   <p>
     Rooting your device allows an attacker to easily gain extremely high privileges. Android's architecture is built
-    upon <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>. By default,
+    upon the <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>. By default,
     <a href="https://source.android.com/security/overview/implement#root-processes">only around 6 processes run as the root
-    user on a typical Android device</a> and even those are still heavily constrained via the <a
+    user on a typical Android device</a>, and even those are still heavily constrained via the <a
     href="https://source.android.com/security/selinux">full system SELinux policy</a>. Completely unrestricted root is found
     nowhere in the operating system; even the init system does not have unrestricted root access. Exposing privileges far
     greater than any other part of the OS to the application layer is not a good idea. <br>
     <br>
-    It does not matter if you have to whitelist apps that have root — an attacker can fake user input by for example,
-    <a href="https://en.wikipedia.org/wiki/Clickjacking">clickjacking</a> or they can exploit vulnerabilities in apps that
+    It does not matter if you have to whitelist apps that have root — an attacker can fake user input by, for example,
+    <a href="https://en.wikipedia.org/wiki/Clickjacking">clickjacking</a>, or they can exploit vulnerabilities in apps that
     you have granted root to. Rooting turns huge portions of the operating system into root attack surface; vulnerabilities
     in the UI layer — such as in the display server, among other things — can now be abused to gain complete root access. In
     addition, root fundamentally breaks verified boot and other security features by placing excessive trust in persistent
@@ -62,7 +62,7 @@
     <br>
     A common argument for rooting is that Linux allows root, but this does not account for the fact that the average
     desktop Linux system does not have a security model like Android does. On the usual Linux system, <a
-    href="linux.html#root">gaining root is extremely easy</a>. This is why Linux hardening procedures often involve
+    href="linux.html#root">gaining root is extremely easy</a>, hence Linux hardening procedures often involve
     restricting access to the root account.
   </p>
 
@@ -71,8 +71,8 @@
   <p>
     The majority of custom ROMs severely weaken the security model by disabling verified boot, using userdebug builds,
     disabling SELinux and various other issues. Furthermore, you are also usually at the mercy of the maintainer to
-    apply security updates properly. Certain ROMs often apply security patches late or sometimes not apply them at all,
-    especially when it comes to firmware patches.
+    apply security updates properly. Certain ROMs often apply security patches late, or in some cases, not at all. The
+    latter especially applies to firmware patches.
   </p>
 
   <h3 id="lineageos"><a href="#lineageos">LineageOS</a></h3>
@@ -87,7 +87,8 @@
       userdebug builds by default</a>. This <a href="https://source.android.com/setup/build/building#choose-a-target">
       adds many debugging features as additional attack surface</a>. It also <a
       href="https://github.com/LineageOS/android_system_sepolicy/search?q=userdebug&type=code">weakens various SELinux
-      polices</a> and exposes root access via adb which <a href="#rooting">as discussed above</a>, is not a good idea.
+      polices</a> and exposes root access via ADB, which, <a href="#rooting">as previously discussed</a>, is not a good
+      idea.
     </li>
 
     <li class="lilist">
@@ -102,7 +103,7 @@
     </li>
 
     <li class="lilist">
-      Most LineageOS builds also do not include firmware updates which prevents users from getting new patches to fix
+      Most LineageOS builds also do not include firmware updates, which prevents users from getting new patches to fix
       vulnerabilities. Instead, it gives a pop-up advising users to flash updates manually that most people will simply
       ignore.
     </li>
@@ -118,26 +119,26 @@
 
   <p>
     <a href="https://microg.org/">MicroG</a> is a common alternative to Google Play Services. It is often used to get rid
-    of Google's tracking, but most people do not realise that this can potentially worsen security as it
+    of Google's tracking, but most people do not realise that this can potentially worsen security, as it
     <a href="https://github.com/microg/android_packages_apps_GmsCore/wiki/Signature-Spoofing">requires signature spoofing
     support</a> which allows apps to request to bypass signature verification. This subverts the security model and
     breaks the application sandbox as an app can now masquerade itself as another app to gain access to the app's files.
     In a system with signature spoofing, it is impossible to know anything — there is no way to trust that an application
-    is genuinely what it claims to be and it is impossible to build a strong security model upon this. <br>
+    is genuinely what it claims to be, and it is impossible to build a strong security model upon this. <br>
     <br>
     Although some signature spoofing implementations restrict access to this functionality to make it less bad, such as <a
     href="https://gitlab.com/CalyxOS/platform_frameworks_base/-/commit/bfeee22ba01b6fddb795c6c9b2d93565bb6a4965">CalyxOS'
-    implementation</a> which allows only microG to spoof the Play Services signature and nothing else.
+    implementation</a>, which allows only microG to spoof the Play Services signature and nothing else.
   </p>
 
   <h2 id="firewalls"><a href="#firewalls">Firewalls</a></h2>
 
   <p>
     Firewalls, such as <a href="https://github.com/ukanth/afwall/">AFWall+</a> or <a href="https://www.netguard.me/">
-    Netguard</a>, are regularly used on Android to attempt to block network access from a specific app, but these
-    do not reliably work — apps can use IPC to bypass the restrictions. If you cut off network access to an app, it
+    Netguard</a>, are regularly used on Android to attempt blocking network access from a specific app, but these
+    do not reliably work — apps can use IPC to bypass such restrictions. If you cut off network access to an app, it
     will not prevent the app from sending an <a href="https://developer.android.com/reference/android/content/Intent">
-    intent</a> to another app (such as the browser) to make it make the same connection. Many apps already do this
+    intent</a> to another app (such as the browser) for it to make the same connection. Many apps already do this
     unintentionally whilst using APIs such as the <a
     href="https://developer.android.com/reference/android/app/DownloadManager">download manager</a>. <br>
     <br>
@@ -151,7 +152,7 @@
   <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 
   <p>
-    The best option for privacy and security on Android is to get a Pixel 3 or greater and flash <a href="https://grapheneos.org/">
+    The best option for privacy and security on Android is to get a Pixel 4 or greater and flash <a href="https://grapheneos.org/">
     GrapheneOS</a>. GrapheneOS does not contain any tracking unlike the stock OS on most devices. Additionally, GrapheneOS
     retains the baseline security model whilst improving upon it with <a href="https://grapheneos.org/features">substantial
     hardening enhancements</a> — examples of which include a <a href="https://github.com/GrapheneOS/hardened_malloc">hardened
@@ -167,43 +168,32 @@
     <li class="lilist">
       <a href="https://source.android.com/security/verifiedboot/">Full verified boot</a> with <a
       href="https://android.googlesource.com/platform/external/avb/+/master/README.md#pixel-2-and-later">support for custom
-      signing keys</a> — certain Android OEMs often fail to implement verified boot properly or at the very least, neglect
+      signing keys</a> — certain Android OEMs often fail to implement verified boot properly, or at the very least, neglect
       to include support for custom keys to be able to flash an alternative operating system without having to lose verified
-      boot. On Pixels, verified boot is implemented securely and alternative operating systems are often signed with custom
+      boot. On Pixels, verified boot is implemented securely, and alternative operating systems are often signed with custom
       keys to keep the security model intact.
     </li>
-
+    
     <li class="lilist">
       <a href="https://www.blog.google/products/pixel/titan-m-makes-pixel-3-our-most-secure-phone-yet/">The Titan M chip</a> —
       the Titan M is a tamper-resistant hardware security module that provides a number of security properties. It can securely
       store cryptographic material using the <a href="https://developer.android.com/training/articles/keystore#HardwareSecurityModule">
       StrongBox keystore</a> and enforces throttling upon repeated failed login attempts to mitigate bruteforcing attacks.
-      Furthermore, it is integrated into the verified boot process and due to its <a
+      Furthermore, it is integrated into the verified boot process, and due to its <a
       href="https://android-developers.googleblog.com/2018/10/building-titan-better-security-through.html">tamper-resistant nature</a>,
       it is <a href="https://www.google.com/about/appsecurity/android-rewards/">extremely difficult</a> to extract data from the chip
       or bypass its security features; if any abnormal conditions are detected, such as unnatural changes in temperature, the Titan M
       will erase all data stored within it, thereby categorically mitigating most side-channel attacks. Even if an attacker gained
       access to Google's signing keys for the Titan M firmware, they would not be able to flash their own malicious firmware due to
-      <a href="https://android-developers.googleblog.com/2018/05/insider-attack-resistance.html">insider attack resistance</a> which
+      <a href="https://android-developers.googleblog.com/2018/05/insider-attack-resistance.html">insider attack resistance</a>, which
       prevents updating firmware until the valid lockscreen passcode is entered.
-    </li>
-
-    <li class="lilist">
-      <a href="https://i.blackhat.com/USA-19/Thursday/us-19-Pi-Exploiting-Qualcomm-WLAN-And-Modem-Over-The-Air-wp.pdf">
-      Decent SoC exploit mitigations and a strict IOMMU to isolate physical components</a> — the Qualcomm SoC used on Pixel devices
-      implements modern exploit mitigations and a robust <a href="https://en.wikipedia.org/wiki/Input%E2%80%93output_memory_management_unit">
-      IOMMU</a> which controls the areas of memory accessible to devices and ensures that an exploit in, for example, the baseband will
-      not grant the attacker complete memory access. In comparison, other manufacturers such as Broadcom have historically neglected to
-      include <a href="https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html">basic</a> <a
-      href="https://www.youtube.com/watch?v=TDk2RId8LFo">mitigations</a> introduced elsewhere decades ago, including stack cookies, ASLR
-      and DEP.
     </li>
 
     <li class="lilist">
       <a href="https://android-developers.googleblog.com/2018/10/control-flow-integrity-in-android-kernel.html">
       Fine-grained, forward-edge kernel Control Flow Integrity</a> (CFI) and <a
       href="https://security.googleblog.com/2019/10/protecting-against-code-reuse-in-linux_30.html">ShadowCallStack</a> — the Pixel kernels
-      are compiled with custom hardening patches which includes <a href="linux.html#cfi">CFI and ShadowCallStack</a> to mitigate code reuse
+      are compiled with custom hardening patches, which includes <a href="linux.html#cfi">CFI and ShadowCallStack</a> to mitigate code reuse
       attacks, among various other mitigations. While such mitigations are commonly deployed throughout user space, as briefly mentioned at
       the beginning of the article, it is up to the OEM to enable it in the kernel which is uncommon outside of Pixel devices.
     </li>
@@ -213,8 +203,8 @@
       through <a href="https://en.wikipedia.org/wiki/MAC_address">MAC addresses</a> which are unique identifiers assigned to network interface
       controllers (NICs). Every time a device connects to a network, its MAC address is exposed. This enables adversaries to track the device and
       uniquely identify it on the local network. Certain mobile devices have attempted to resolve this issue by randomising the MAC address however, <a
-      href="https://arxiv.org/pdf/1703.02874.pdf">many don't do this and the ones that do often use a faulty implementation</a>, resulting in the MAC
-      address still being leaked. Furthermore, other Wi-Fi indentifiers exist that can further enable fingerprinting or even be used to infer the MAC
+      href="https://arxiv.org/pdf/1703.02874.pdf">many don't do this, and the ones that do often use a faulty implementation</a>, resulting in the MAC
+      address still being leaked. Furthermore, other Wi-Fi identifiers exist that can further enable fingerprinting or even be used to infer the MAC
       address, including <a href="https://papers.mathyvanhoef.com/asiaccs2016.pdf">information elements in probe requests and predictable sequence
       numbers</a>. In comparison, <a href="https://android-developers.googleblog.com/2017/04/changes-to-device-identifiers-in.html">Pixels use an
       effective implementation of MAC address randomisation, minimal probe requests and randomised initial sequence numbers</a>.

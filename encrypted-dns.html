@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'self'; script-src 'self'; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
   <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" type="text/css" href="styles.css">
   <title>Encrypted DNS | Madaidan's Insecurities</title>
@@ -14,25 +14,26 @@
 <body>
   <h1>Why encrypted DNS is ineffective</h1>
 
-  <p class="date"><em><time datetime="2021-03-27">Last edited: March 27, 2021</time></em></p>
+  <p class="date"><em><time datetime="2021-09-21">Last edited: September 21st, 2021</time></em></p>
 
   <p>
     Encrypted DNS (<a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS">DoH</a>, <a
     href="https://en.wikipedia.org/wiki/DNS_over_TLS">DoT</a>, <a href="https://en.wikipedia.org/wiki/DNSCrypt">
-    DNScrypt</a>, etc.) may seem useful at first glance, but it is clear upon further inspection that this is not
-    the case as it doesn't have any real privacy or security benefits.
+    DNScrypt</a>, etc.) is often recommended as a solution to some network privacy and security issues, but this is
+    not the case. This article explains why encrypting your DNS queries alone will not have any meaningful privacy
+    or security benefits.
   </p>
 
   <h2 id="security"><a href="#security">Security</a></h2>
 
   <p>
-    Normal DNS queries are unencrypted and unauthenticated so they can be modified and examined by an attacker.
-    This may sound like a big issue, but HTTPS has already solved this. If I visit madaidans-insecurities.github.io,
-    my browser expects a valid TLS certificate for that website regardless if an attacker has messed with the DNS
-    query. If the certificate is incorrect, your browser will show a big scary warning. <br>
+    Normal DNS queries are unencrypted and unauthenticated, so they can be modified and examined by an attacker.
+    This may sound like a big issue, but HTTPS has already solved this problem. If someone visits "madaidans-insecurities.github.io",
+    their browser expects a valid TLS certificate for that website, regardless if an attacker may have messed with
+    the DNS query. If the certificate is incorrect, the browser will produce a clear warning. <br>
     <br>
-    If you're not using HTTPS, then encrypted DNS still doesn't make a difference. The attacker can just modify
-    anything other than the DNS query and get essentially the same result.
+    If the connection is not done over HTTPS, then encrypted DNS still doesn't make a difference. The attacker can
+    simply modify anything other than the DNS query and achieve effectively the same result.
   </p>
 
   <h2 id="privacy"><a href="#privacy">Privacy</a></h2>
@@ -52,9 +53,8 @@
 
   <p>
     <a href="https://en.wikipedia.org/wiki/Server_Name_Indication">Server Name Indication</a> (SNI) is an
-    extension to TLS which leaks the hostname that the client is attemping to connect to. <br>
-    <br>
-    For example, if you connect to this website, someone monitoring the connection can see this: <br>
+    extension to TLS which leaks the hostname that the client is attemping to connect to. For example, if
+    you connect to this website, someone monitoring the connection can see the following: <br>
     <img src="images/wireshark-sni.jpg" alt="SNI in Wireshark">
     <br>
     <br>
@@ -81,10 +81,10 @@
   <h3 id="ip-addresses"><a href="#ip-addresses">IP Addresses</a></h3>
 
   <p>
-    Even if you are using some form of encrypted DNS, eSNI and OCSP stapling, the IP addresses of the websites you visit are
-    still leaked and they can be used to identify <a href="https://blog.apnic.net/2019/08/23/what-can-you-learn-from-an-ip-address/">
-    over 95% of websites</a>. Some IP addresses host multiple domains that can obscure this a small bit, but that's not
-    very reliable.
+    Even if you are using some form of encrypted DNS, eSNI/ECH and OCSP stapling, the IP addresses of the websites you visit are
+    still leaked, and they can be used to identify <a href="https://blog.apnic.net/2019/08/23/what-can-you-learn-from-an-ip-address/">
+    over 95% of websites</a>. Some IP addresses may host multiple domains that can obscure this a small bit, but that's not
+    reliable and won't make any difference in most cases.
   </p>
 
   <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
@@ -93,7 +93,7 @@
     Encrypting your DNS queries alone is not enough to hide the domains you visit and gives no security advantage.
     It will only help against some very rudimentary censorship systems that rely entirely on DNS blocking, but it isn't
     hard for those systems to develop workarounds. If you do want to effectively hide the websites you browse, use
-    a VPN or, preferably, Tor.
+    a VPN or preferably, Tor.
   </p>
 
   <p class="p-final">

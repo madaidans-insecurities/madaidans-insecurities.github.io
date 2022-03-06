@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
   <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" type="text/css" href="styles.css">
   <title>Firefox and Chromium | Madaidan's Insecurities</title>
@@ -14,7 +14,7 @@
 <body>
   <h1>Firefox and Chromium</h1>
 
-  <p class="date"><em><time datetime="2021-06-18">Last edited: June 18th, 2021</time></em></p>
+  <p class="date"><em><time datetime="2021-09-21">Last edited: September 21st, 2021</time></em></p>
 
   <p>
     Firefox is sometimes recommended as a supposedly more secure browser because of its parent company's privacy practices.
@@ -49,11 +49,11 @@
     <a href="#memory-partitioning" class="subheaders2">2.5.1 Memory Partitioning</a> <br>
     <a href="#out-of-line-metadata" class="subheaders2">2.5.2 Out-of-line Metadata</a> <br>
     <a href="#partitionalloc-other" class="subheaders2">2.5.3 Other</a> <br>
-    <a href="#auto-var-init" class="subheaders">2.6 Automatic Variable Initialization</a> <br>
+    <a href="#auto-var-init" class="subheaders">2.6 Automatic Variable Initialisation</a> <br>
     <br>
     <a href="#miscellaneous">3. Miscellaneous</a> <br>
     <br>
-    <a href="#security-researcher-views">4. Other Security Researcher Views on Firefox</a> <br>
+    <a href="#security-researcher-views">4. Other Security Researchers' Views on Firefox</a> <br>
   </div>
 
   <h2 id="sandboxing"><a href="#sandboxing">1. Sandboxing</a></h2>
@@ -62,7 +62,7 @@
     Sandboxing is a technique used to isolate certain programs to prevent a vulnerability in them from compromising
     the rest of the system by restricting access to unnecessary resources. All common browsers nowadays include a sandbox
     and utilise a multi-process architecture. The browser splits itself up into different processes (e.g. the content
-    process, GPU process, RDD process, etc.) and sandboxes them individually, strictly adhering to <a
+    process, GPU process, RDD process, etc.) and sandboxes them individually, strictly adhering to the <a
     href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>. It is very important
     that a browser uses a sandbox as it processes untrusted input by design, poses enormous attack surface and is one of the
     most used applications on the system. Without a sandbox, any exploit in the browser can be used to take over the rest of
@@ -71,7 +71,7 @@
     <br>
     However, sandboxes are not black and white. Just having a sandbox doesn't do much if it's full of holes.
     <a href="https://wiki.mozilla.org/Security/Sandbox">Firefox's sandbox</a> is quite weak for the reasons documented below. Note
-    that this is a non-exhaustive list and the issues below are only a few examples of such weaknesses.
+    that this is a non-exhaustive list, and the issues below are only a few examples of such weaknesses.
   </p>
 
   <h3 id="site-isolation"><a href="#site-isolation">1.1 Site Isolation</a></h3>
@@ -91,19 +91,13 @@
     href="https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/security/side-channel-threat-model.md">the only proper
     mitigation is through site isolation</a>. <br>
     <br>
-    Firefox currently lacks any form of site isolation. Mozilla is working on implementing this with <a
-    href="https://wiki.mozilla.org/Project_Fission">Project Fission</a> and is <a
-    href="https://blog.mozilla.org/security/2021/05/18/introducing-site-isolation-in-firefox/">rolling it out on the Nightly and Beta release
-    channels</a>, but it is still a work in progress and is not yet fit for serious use. Fission in its current state and even once it is
-    initially released will not be anywhere near the level of maturity of Chromium's site isolation and it will take many more years for it to
-    reach that point. Fission still suffers from all the security issues of the baseline content process sandbox, as documented below — it is
+    Firefox fully followed out their Fission project in <a href="https://www.mozilla.org/en-US/firefox/95.0/releasenotes/">Firefox 95</a> however,
+    Fission in its current state is not as mature as Chromium's site isolation, and it will take many more years for it to reach that point.
+    Fission still suffers from all the security issues of the baseline content process sandbox, as documented below, and it is
     not a panacea for all sandboxing issues. However, more specific to Fission itself, there are <a
     href="https://bugzilla.mozilla.org/show_bug.cgi?id=1505832">numerous</a> <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1484019">
     cross-site</a> <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1707955">leaks</a>, allowing a compromised content process to access
-    the data of another and bypass site isolation. <br>
-    <br>
-    The sandbox is currently only focused on isolating the browser as a whole from the rest of the operating system and even that is still not
-    great, as explained below.
+    the data of another and bypass site isolation.
   </p>
 
   <h3 id="windows-sandbox"><a href="#windows-sandbox">1.2 Windows</a></h3>
@@ -130,7 +124,7 @@
   <h4 id="linux-sandbox-escapes"><a href="#linux-sandbox-escapes">1.3.1 Sandbox Escapes</a></h4>
 
   <p>
-    Firefox's sandboxing on other platforms, such as Linux, is significantly worse. The restrictions are generally quite permissive and it is even susceptible to various
+    Firefox's sandboxing on other platforms, such as Linux, is significantly worse. The restrictions are generally quite permissive, and it is even susceptible to various
     trivial sandbox escape vulnerabilities that span back years, as well as exposing sizable attack surface from within the sandbox.
   </p>
 
@@ -383,7 +377,7 @@
     <br>
     Mozilla has been <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=510629">planning to implement CFI for a while</a>
     but has yet to make much progress. On Linux, Android and ChromeOS, <a href="https://www.chromium.org/developers/testing/control-flow-integrity">Chromium enables
-    Clang's fine-grained, forward-edge CFI</a> and on Windows, it <a
+    Clang's fine-grained, forward-edge CFI</a>, and on Windows, it <a
     href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#Process-mitigation-policies">enables the coarse-grained, forward-edge Control
     Flow Guard</a> (CFG). <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1438868">Firefox only enables CFG on Windows</a> which is not as effective as Clang's
     CFI due to it being coarse-grained rather than fine-grained and does not apply to other platforms.
@@ -503,7 +497,7 @@
 
   <p>
     Furthermore, Firefox lacks a hardened memory allocator. Firefox currently uses <a href="https://searchfox.org/mozilla-central/source/memory/build/mozjemalloc.cpp">
-    mozjemalloc</a> which is a fork of <a href="https://github.com/jemalloc/jemalloc">jemalloc</a>. Jemalloc is a performance-oriented
+    mozjemalloc</a>, which is a fork of <a href="https://github.com/jemalloc/jemalloc">jemalloc</a>. Jemalloc is a performance-oriented
     memory allocator — it does not have a focus on security which makes it <a
     href="https://media.blackhat.com/bh-us-12/Briefings/Argyoudis/BH_US_12_Argyroudis_Exploiting_the_%20jemalloc_Memory_%20Allocator_Slides.pdf">
     very prone to exploitation</a>. Mozjemalloc does add on a few security features to jemalloc which are useful, but <a
@@ -555,28 +549,28 @@
     MiraclePtr and *Scan</a> projects to effectively mitigate most use-after-free exploits.
   </p>
 
-  <h3 id="auto-var-init"><a href="#auto-var-init">2.6 Automatic Variable Initialization</a></h3>
+  <h3 id="auto-var-init"><a href="#auto-var-init">2.6 Automatic Variable Initialisation</a></h3>
 
   <p>
-    One of the most common classes of memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized memory</a>. Clang has an option to
-    <a href="https://reviews.llvm.org/D54604">automatically initialize stack variables</a> with either zero or a specific pattern, thus mitigating this class of vulnerabilities for the stack. <a
+    One of the most common classes of memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialised memory</a>. Clang has an option to
+    <a href="https://reviews.llvm.org/D54604">automatically initialise stack variables</a> with either zero or a specific pattern, thus mitigating this class of vulnerabilities for the stack. <a
     href="https://chromium.googlesource.com/chromium/src.git/+/7d38bae3ef691d5091b6d4d7973a9b4d2cd85eb2/build/config/compiler/BUILD.gn#125">Chromium enables this by default on all platforms except
     Android</a>, whereas <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1546873">Firefox only enables it in debugging builds</a> for uncovering bugs and is not used in production to mitigate
     exploits. <br>
     <br>
-    As for the heap, both PartitionAlloc and mozjemalloc zero-fill allocations so they are equivalent in that regard.
+    As for the heap, both PartitionAlloc and mozjemalloc zero-fill allocations, so they are equivalent in that regard.
   </p>
 
   <h2 id="miscellaneous"><a href="#miscellaneous">3. Miscellaneous</a></h2>
 
   <p>
     Firefox <a href="https://wiki.mozilla.org/Oxidation">does have some parts written in Rust, a memory safe language</a>,
-    but the majority of the browser is still written in memory unsafe languages and the parts that are memory safe do not include important attack
-    surfaces so this isn't anything substantial and <a href="https://www.chromium.org/Home/chromium-security/memory-safety">Chromium is working on
+    but the majority of the browser is still written in memory unsafe languages, and the parts that are memory safe do not include important attack
+    surfaces, so this isn't anything substantial, and <a href="https://www.chromium.org/Home/chromium-security/memory-safety">Chromium is working on
     switching to memory safe languages too</a>. <br>
     <br>
     Additionally, writing parts in a memory safe language does not necessarily improve security and may even <em>degrade</em> security by allowing for
-    bypasses of exploit mitigations. Some security features are geared towards a particular language and in an environment where different languages
+    bypasses of exploit mitigations. Some security features are geared towards a particular language, and in an environment where different languages
     are mixed, <a href="https://www.cs.ucy.ac.cy/~eliasathan/papers/tops20.pdf">those features may be bypassed by abusing the other language</a>. For
     example, when mixing C and Rust code in the same binary with CFI enabled, the integrity of the control flow will be guaranteed in the C code, but the
     Rust code will remain unchanged because buffer overflows are impossible in Rust anyway. However, this allows an attacker to bypass CFI by exploiting
@@ -591,15 +585,93 @@
     again, is not anything substantial.
   </p>
 
-  <h2 id="security-researcher-views"><a href="#security-researcher-views">4. Other Security Researcher Views on Firefox</a></h2>
+  <h2 id="security-researcher-views"><a href="#security-researcher-views">4. Other Security Researchers' Views on Firefox</a></h2>
 
   <p>
-    <a href="https://medium.com/@thegrugq/tor-and-its-discontents-ef5164845908">Many</a> <a href="https://grapheneos.org/usage#web-browsing">security</a>
-    <a href="https://twitter.com/kennwhite/status/804142071133126656">experts</a> <a href="https://archive.fo/9aBLk">also</a>
-    <a href="https://news.ycombinator.com/item?id=13800323">share</a> <a href="https://news.ycombinator.com/item?id=13623735">these</a>
-    <a href="https://marc.info/?l=openbsd-misc&m=152872551609819&w=2">views</a> <a href="https://twitter.com/tqbf/status/930807512609296384">about</a>
-    <a href="https://twitter.com/tqbf/status/930860544927649792">Firefox</a>.
+    Many security experts also share these views about Firefox, and a few examples are listed below:
   </p>
+  
+  <ul>
+    <li class="lilist">
+      thegrugq, information security researcher: <br>
+      <a href="https://medium.com/@thegrugq/tor-and-its-discontents-ef5164845908">Tor and its Discontents</a>
+    </li>
+    
+    <li class="lilist">
+      Kenn White, security researcher: <br>
+      <a href="https://twitter.com/kennwhite/status/804142071133126656">https://twitter.com/kennwhite/status/804142071133126656</a>
+    </li>
+    
+    <li class="lilist">
+      PaXTeam, developer of PaX: <br>
+      <a href="https://archive.fo/9aBLk">https://archive.fo/9aBLk</a>
+    </li>
+    
+    <li class="lilist">
+      Daniel Micay, lead developer of GrapheneOS: <br>
+      <a href="https://grapheneos.org/usage#web-browsing">https://grapheneos.org/usage#web-browsing</a>
+    </li>
+    
+    <li class="lilist">
+      Matthew Garrett, Linux developer: <br>
+      <a href="https://news.ycombinator.com/item?id=13800323">https://news.ycombinator.com/item?id=13800323</a>
+    </li>
+    
+    <li class="lilist">
+      Dan Guido, CEO of Trail of Bits: <br>
+      <a href="https://news.ycombinator.com/item?id=13623735">https://news.ycombinator.com/item?id=13623735</a>
+    </li>
+    
+    <li class="lilist">
+      Theo de Raadt, lead developer of OpenBsd: <br>
+      <a href="https://marc.info/?l=openbsd-misc&m=152872551609819&w=2">https://marc.info/?l=openbsd-misc&m=152872551609819&w=2</a>
+    </li>
+    
+    <li class="lilist">
+      Thomas Ptacek, co-founder of Latacora and Matasano Security: <br>
+      <a href="https://twitter.com/tqbf/status/930807512609296384">https://twitter.com/tqbf/status/930807512609296384</a>, <br>
+      <a href="https://twitter.com/tqbf/status/930860544927649792">https://twitter.com/tqbf/status/930860544927649792</a>, <br>
+      <a href="https://twitter.com/tqbf/status/830511154950766595">https://twitter.com/tqbf/status/830511154950766595</a>
+    </li>
+    
+    <li class="lilist">
+       qwertyoruiopz, iOS exploit developer: <br>
+      <a href="https://twitter.com/qwertyoruiopz/status/805887567493271556">https://twitter.com/qwertyoruiopz/status/805887567493271556</a>, <br>
+      <a href="https://twitter.com/qwertyoruiopz/status/730704655748075520">https://twitter.com/qwertyoruiopz/status/730704655748075520</a>
+    </li>
+    
+    <li class="lilist">
+      John Wu, Android security engineer: <br>
+      <a href="https://twitter.com/topjohnwu/status/1105739918444253184">https://twitter.com/topjohnwu/status/1105739918444253184</a>, <br>
+      <a href="https://twitter.com/topjohnwu/status/1455606288419733505">https://twitter.com/topjohnwu/status/1455606288419733505</a>
+    </li>
+    
+    <li class="lilist">
+      Chris Rohlf, security engineer: <br>
+      <a href="https://twitter.com/chrisrohlf/status/1455549993536966671">https://twitter.com/chrisrohlf/status/1455549993536966671</a>
+    </li>
+    
+    <li class="lilist">
+      Matthew Green, cryptographer at Johns Hopkins University: <br>
+      <a href="https://twitter.com/matthew_d_green/status/830488564672626690">https://twitter.com/matthew_d_green/status/830488564672626690</a>
+    </li>
+    
+    <li class="lilist">
+      Bruno Keith, security researcher at Dataflow Security: <br>
+      <a href="https://twitter.com/bkth_/status/1265971734777380865">https://twitter.com/bkth_/status/1265971734777380865</a>
+    </li>
+    
+    <li class="lilist">
+      Niklas Baumstark, security researcher at Dataflow Security: <br>
+      <a href="https://twitter.com/_niklasb/status/1131129708073107456">https://twitter.com/_niklasb/status/1131129708073107456</a>
+    </li>
+    
+    <li class="lilist">
+      The Tor Project investigating ways to harden the Tor Browser; in particular, they conclude that Firefox is too poorly written
+      for them to apply PaX's Reuse Attack Protector (in comparison, <a href="https://twitter.com/paxteam/status/730902448018231300">
+      RAP can be applied to Chromium with relatively little effort</a>): <br>
+      <a href="https://gitlab.torproject.org/tpo/applications/tor-browser/-/wikis/Hardening">https://gitlab.torproject.org/tpo/applications/tor-browser/-/wikis/Hardening</a>
+  </ul>
 
   <p class="p-final">
     <a href="index.html" class="back">Go back</a>

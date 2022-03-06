@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
     <meta name="referrer" content="no-referrer">
     <link rel="stylesheet" href="../styles.css">
     <title>Linux Hardening Guide | Madaidan's Insecurities</title>
@@ -12,14 +12,18 @@
   <body>
     <h1>Linux Hardening Guide</h1>
 
-    <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
+    <p class="date"><em><time datetime="2021-09-21">Last edited: September 21st, 2021</time></em></p>
 
     <p>
       <a href="../linux.html">Linux is not a secure operating system</a>. However, there are steps you can take to improve it. This guide aims to explain
       how to harden Linux as much as possible for security and privacy. This guide attempts to be distribution-agnostic and is not tied to any specific one. <br>
       <br>
-      DISCLAIMER: Do not attempt to apply anything in this article if you do not know exactly what you are doing. This guide is focused purely on security and privacy,
-      not performance, usability, or anything else. <br>
+      DISCLAIMER: Do not attempt to apply anything in this article if you do not know exactly what you are doing. This guide is focused purely on security and privacy —
+      not performance, usability or anything else. This guide is not intended to be followed exactly — readers must examine their own threat model and decide which
+      steps to apply. This guide is also not meant to attack a particular group of people or software. Certain software is recommended against in this guide due to
+      security concerns, but this is not out of disdain. At its core, hardening is reducing the ways in which your system can be attacked. Under some threat models,
+      the attack surface presented by a specific program may be too large to be acceptable. Whether or not this is applicable to you depends on your personal threat
+      model. <br>
       <br>
       All commands listed in this guide will require root privileges. Words beginning with "$" sign indicate a variable that may differ between users as to suit their
       setup.
@@ -62,7 +66,7 @@
       <a href="#gui-isolation" class="subheaders2">4.2.3 GUI isolation</a> <br>
       <a href="#ptrace" class="subheaders2">4.2.4 ptrace</a> <br>
       <a href="#tiocsti" class="subheaders2">4.2.5 TIOCSTI</a> <br>
-      <a href="#systemd-sandboxing" class="subheaders">4.3 Systemd service sandboxing</a> <br>
+      <a href="#systemd-service-sandboxing" class="subheaders">4.3 Systemd service sandboxing</a> <br>
       <a href="#gvisor" class="subheaders">4.4 gVisor</a> <br>
       <a href="#virtual-machines" class="subheaders">4.5 Virtual machines</a> <br>
       <br>
@@ -151,23 +155,26 @@
 
     <ul>
       <li class="lilist">
-        Avoid distributions that freeze packages as <a href="../linux.html#debian">they are often quite behind on security updates</a>.
+        Avoid distributions that freeze packages, as <a href="../linux.html#stable-release-models">they are often quite behind on security updates</a>.
       </li>
 
       <li class="lilist">
-        Use a distribution with an init system other than <a href="https://systemd.io/">systemd</a>. systemd contains a lot of unnecessary
-        attack surface; <a href="https://ewontfix.com/14/">it attempts to do far more things than necessary</a> and goes beyond what an
-        init system should do. An init system should not need many lines of code to function properly.
+        Use a distribution with an init system other than <a href="https://systemd.io/">systemd</a>.
+        systemd contains a lot of unnecessary attack surface and <a href="https://www.agwa.name/blog/post/how_to_crash_systemd_in_one_tweet">inserts a
+        considerable amount of complexity into the most privileged user space component</a>; <a href="https://ewontfix.com/14/">it attempts to do far
+        more things than necessary</a> and goes beyond what an init system should do. An init system should not need many lines of code to function properly.
+        While a common argument in favour of systemd is its ability to sandbox system services, this can be replicated on other init systems through
+        sandboxing utilities like bubblewrap, <a href="#sandboxing">as documented below</a>.
       </li>
 
       <li class="lilist">
         Use <a href="https://musl.libc.org/">musl</a> as the default C library. musl is heavily focused on minimality which <a
         href="https://github.com/NixOS/nixpkgs/issues/90147#issuecomment-643473182">results in very small attack surface</a>, whereas other C libraries
         such as glibc are overly complex and prone to vulnerabilities. For example, <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=glibc">
-        over a hundred vulnerabilities in glibc have been publicly disclosed</a> compared to the <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=musl">
-        very few in musl</a>. While counting CVEs by itself is often an inaccurate statistic, it can sometimes be used to represent an overaching issue, such as
-        in this case. musl also has <a href="https://www.dustri.org/b/security-features-of-musl.html">decent exploit mitigations</a>, particularly its
-        <a href="https://www.openwall.com/lists/musl/2020/05/13/1">new hardened memory allocator</a>.
+        over a hundred vulnerabilities in glibc have been publicly disclosed</a>, compared to the <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=musl">
+        very few in musl</a>. While counting CVEs by itself is often an inaccurate statistic, in this case, it represents an overarching issue and is
+        symptomatic of underlying security issues. musl also has invested in <a href="https://www.dustri.org/b/security-features-of-musl.html">decent exploit mitigations</a>,
+        particularly its <a href="https://www.openwall.com/lists/musl/2020/05/13/1">hardened memory allocator</a>, heavily inspired by GrapheneOS' hardened_malloc.
       </li>
 
       <li class="lilist">
@@ -183,12 +190,12 @@
     </ul>
 
     <p>
-      The best distribution to use as a base for your hardened operating system would be <a href="https://www.gentoo.org/">Gentoo Linux</a> as it allows you to configure
+      The best distribution to use as a base for your hardened operating system would be <a href="https://www.gentoo.org/">Gentoo Linux</a>, as it allows you to configure
       your system exactly how you want it to be which will be extremely useful, especially when we come to <a href="#hardened-compilation-flags">more secure compilation
       flags</a> later in the guide. <br>
       <br>
       However, Gentoo may not be feasible for many people due to its significant usability pitfalls. In this case, <a href="https://voidlinux.org/">Void Linux</a>'s musl
-      build or <a href="https://www.alpinelinux.org/">Alpine Linux</a> is a good compromise.
+      build or <a href="https://www.alpinelinux.org/">Alpine Linux</a> would be a good compromise.
     </p>
 
     <h2 id="kernel"><a href="#kernel">2. Kernels</a></h2>
@@ -235,7 +242,7 @@
     <pre><code>sysctl -w $tunable = $value</code></pre>
 
     <p>
-      To change sysctls permanently you can add the one you want to change to <code>/etc/sysctl.conf</code> or the corresponding files within
+      To change sysctls permanently, you can add the one you want to change to <code>/etc/sysctl.conf</code> or the corresponding files within
       <code>/etc/sysctl.d</code>, depending on your Linux distribution. <br>
       <br>
       The following are the recommended sysctl settings that you should change.
@@ -306,7 +313,7 @@ net.core.bpf_jit_harden=2</code></pre>
 
     <p>
       The <a href="https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html">SysRq key</a> exposes a lot of potentially dangerous debugging functionality
-      to unprivileged users. Contrary to common assumptions, SysRq is not only an issue for physical attacks as <a href="https://github.com/xairy/unlockdown">
+      to unprivileged users. Contrary to common assumptions, SysRq is not only an issue for physical attacks, as <a href="https://github.com/xairy/unlockdown">
       it can also be triggered remotely</a>. The value of this sysctl makes it so that a user can only use the <a href="https://www.kernel.org/doc/Documentation/SAK.txt">
       secure attention key</a> which will be necessary for <a href="#accessing-root-securely">accessing root securely</a>. Alternatively, you can simply set the
       value to <code>0</code> to disable SysRq completely.
@@ -316,7 +323,7 @@ net.core.bpf_jit_harden=2</code></pre>
 
     <p>
       User namespaces are a feature in the kernel which aim to improve sandboxing and make it easily accessible for unprivileged users however, <a
-      href="../linux.html#kernel">this feature exposes significant kernel attack surface for privilege escalation</a> so this sysctl restricts the
+      href="../linux.html#kernel">this feature exposes significant kernel attack surface for privilege escalation</a>, so this sysctl restricts the
       usage of user namespaces to the <code>CAP_SYS_ADMIN</code> <a href="#capabilities">capability</a>. For unprivileged sandboxing,
       it is instead recommended to use a setuid binary with little attack surface to minimise the potential for privilege escalation. This topic is
       covered further in the <a href="#application-sandboxing">sandboxing section</a>. <br>
@@ -398,7 +405,7 @@ net.ipv6.conf.default.accept_source_route=0</code></pre>
 net.ipv6.conf.default.accept_ra=0</code></pre>
 
     <p>
-      Malicious IPv6 router advertisements <a href="https://tools.cisco.com/security/center/resources/ipv6_first_hop">can result in a man-in-the-middle attack</a> so
+      Malicious IPv6 router advertisements <a href="https://tools.cisco.com/security/center/resources/ipv6_first_hop">can result in a man-in-the-middle attack</a>, so
       they should be disabled.
     </p>
 
@@ -409,8 +416,8 @@ net.ipv4.tcp_fack=0</code></pre>
     <p>
       This disables <a href="https://tools.ietf.org/html/rfc2018">TCP SACK</a>. SACK is <a
       href="https://github.com/Netflix/security-bulletins/blob/master/advisories/third-party/2019-001.md">commonly exploited</a>
-      and <a href="https://serverfault.com/questions/10955/when-to-turn-tcp-sack-off">unnecessary for many circumstances</a> so it should
-      be disabled if you don't require it.
+      and <a href="https://serverfault.com/questions/10955/when-to-turn-tcp-sack-off">unnecessary in many circumstances</a>, so it should
+      be disabled if it is not required.
     </p>
 
     <h4 id="sysctl-userspace"><a href="#sysctl-userspace">2.2.3 User space</a></h4>
@@ -441,7 +448,7 @@ fs.protected_hardlinks=1</code></pre>
 
     <p>
       This only permits symlinks to be followed when outside of a world-writable sticky directory, when the owner of the symlink
-      and follower match, or when the directory owner matches the symlink's owner. This also prevents hardlinks from being created
+      and follower match or when the directory owner matches the symlink's owner. This also prevents hardlinks from being created
       by users that do not have read/write access to the source file. Both of these prevent many common <a
       href="https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use">TOCTOU races</a>.
     </p>
@@ -459,16 +466,25 @@ fs.protected_regular=2</code></pre>
     <p>
       Boot parameters pass settings to the kernel at boot using your bootloader. Some settings can be used to increase security,
       similar to sysctl. Bootloaders often differ in how boot parameters are set. A few examples are listed below, but you should
-      research the required steps for your specific bootloader. <br>
+      research the required steps for your specific bootloader.
+    </p>
+    
+    <ul>
+      <li>If using GRUB as your bootloader, edit <code>/etc/default/grub</code>, and add your parameters to the <code>
+      GRUB_CMDLINE_LINUX_DEFAULT=</code> line.</li>
+      <li>If using Syslinux, edit <code>/boot/syslinux/syslinux.cfg</code>, and add them to the <code>APPEND</code> line.</li>
+      <li>If using systemd-boot, edit your loader entry, and append them to the end of the <code>linux</code> line.</li>
+    </ul>
+    
+    <p>
+      The following settings are recommended to increase security. <br>
       <br>
-      If using GRUB as your bootloader, edit <code>/etc/default/grub</code> and add your parameters to the <code>
-      GRUB_CMDLINE_LINUX_DEFAULT=</code> line. <br>
-      <br>
-      If using Syslinux, edit <code>/boot/syslinux/syslinux.cfg</code> and add them to the <code>APPEND</code> line. <br>
-      <br>
-      If using systemd-boot, edit your loader entry and append them to the end of the <code>linux</code> line. <br>
-      <br>
-      The following settings are recommended to increase security.
+      This section originally recommended to apply various <code>slub_debug</code> options however, due to <a
+      href="https://github.com/torvalds/linux/commit/792702911f581f7793962fbeb99d5c3a1b28f4c3">Linux deciding to implicitly
+      disable kernel pointer hashing</a> when using this option, in addition to several other issues with these features, they can no
+      longer be recommended. Users are instead advised to use <code>init_on_free</code> as a replacement for memory poisoning
+      and linux-hardened's slab canaries in place of redzoning. If <code>slub_debug</code> is in use for anything other than
+      debugging, it is highly recommended to remove it immediately.
     </p>
 
     <h4 id="boot-kernel"><a href="#boot-kernel">2.3.1 Kernel self-protection</a></h4>
@@ -481,25 +497,13 @@ fs.protected_regular=2</code></pre>
       by <a href="https://www.openwall.com/lists/kernel-hardening/2017/06/20/10">making it harder to influence slab cache layout</a>.
     </p>
 
-    <pre><code>slub_debug=FZ</code></pre>
-
-    <p>
-      These enable <a href="https://www.kernel.org/doc/html/latest/vm/slub.html">sanity checks (F) and redzoning (Z)</a>. Sanity
-      checks add various checks to prevent corruption in certain slab operations. Redzoning adds extra areas around slabs that
-      detect when a slab is overwritten past its real size which can help detect overflows.
-    </p>
-
     <pre><code>init_on_alloc=1 init_on_free=1</code></pre>
 
     <p>
       This enables <a
       href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6471384af2a6530696fc0203bafe4de41a23c9ef">
       zeroing of memory during allocation and free time</a> which can help mitigate use-after-free vulnerabilities and erase
-      sensitive information in memory. <br>
-      <br>
-      If your kernel version is lower than 5.3, then these options do not exist. Instead, append "P" to the above <code>slub_debug</code>
-      option to get <code>slub_debug=FZP</code> and also add <code>page_poison=1</code>. These offer a weaker form of memory erasure upon
-      deallocation since they are actually a debugging feature that just happens to have some security benefits.
+      sensitive information in memory.
     </p>
 
     <pre><code>page_alloc.shuffle=1</code></pre>
@@ -514,6 +518,14 @@ fs.protected_regular=2</code></pre>
 
     <p>
       This enables <a href="https://en.wikipedia.org/wiki/Kernel_page-table_isolation">Kernel Page Table Isolation</a> which mitigates Meltdown and prevents some KASLR bypasses.
+    </p>
+    
+    <pre><code>randomize_kstack_offset=on</code></pre>
+    
+    <p>
+      This option <a href="https://lkml.org/lkml/2019/3/18/246">randomises the kernel stack offset on each syscall</a> which makes attacks that rely on
+      deterministic kernel stack layout significantly more difficult, such as the <a href="https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html">
+      exploitation of CVE-2019-18683</a>.
     </p>
 
     <pre><code>vsyscall=none</code></pre>
@@ -585,7 +597,7 @@ fs.protected_regular=2</code></pre>
       If you have followed all of the above recommendations, excluding your specific CPU mitigations, you will have:
     </p>
 
-    <pre><code>slab_nomerge slub_debug=FZ init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 quiet loglevel=0</code></pre>
+    <pre><code>slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 quiet loglevel=0</code></pre>
 
     <p>
       You may need to <a href="#regenerate-grub-config">regenerate your GRUB configuration file</a> to apply these if using GRUB as your bootloader.
@@ -707,6 +719,7 @@ install udf /bin/false</code></pre>
 install nfs /bin/true
 install nfsv3 /bin/true
 install nfsv4 /bin/true
+install ksmbd /bin/true
 install gfs2 /bin/true</code></pre>
 
     <p>
@@ -737,7 +750,7 @@ install btusb /bin/false</code></pre>
       <br>
       Be aware though that sometimes the kernel module for the microphone is the same as the module for the speaker. This means that disabling the microphone like
       this may also inadvertently disable any speakers. Although <a href="https://arxiv.org/ftp/arxiv/papers/1611/1611.07350.pdf">speakers can potentially be
-      turned into microphones too</a> so this isn't necessarily a negative outcome. <br>
+      turned into microphones too</a>, so this isn't necessarily a negative outcome. <br>
       <br>
       It would be preferred to physically remove these devices or, at the very least, disable them in the BIOS / UEFI. Disabling the kernel modules is not as effective.
     </p>
@@ -782,7 +795,7 @@ install btusb /bin/false</code></pre>
       <a href="https://www.kernel.org/doc/html/latest/filesystems/sysfs.html">sysfs</a> is a pseudo-filesystem which provides large quantities of kernel and hardware information. It is
       commonly mounted at <code>/sys</code>. sysfs has been the cause of <a href="https://www.openwall.com/lists/kernel-hardening/2017/10/05/5">numerous information leaks, particularly
       of kernel pointers</a>. Whonix's <a href="https://github.com/Whonix/security-misc">security-misc package</a> includes the <a
-      href="https://github.com/Whonix/security-misc/blob/master/usr/lib/security-misc/hide-hardware-info">hide-hardware-info script</a> which restricts access to this directory as well
+      href="https://github.com/Whonix/security-misc/blob/master/usr/libexec/security-misc/hide-hardware-info">hide-hardware-info script</a> which restricts access to this directory as well
       as a few in <code>/proc</code> in an attempt to hide potential hardware identifiers and prevent kernel pointer leaks. This script is configurable and allows <a
       href="https://www.whonix.org/wiki/Security-misc#Whitelisting_Applications">whitelisting specific applications based on groups</a>. It is recommended
       to apply this and make it execute on boot with an init script. For example, <a href="https://github.com/Whonix/security-misc/blob/master/lib/systemd/system/hide-hardware-info.service">this
@@ -809,8 +822,8 @@ SupplementaryGroups=sysfs</code></pre>
     <h3 id="grsecurity"><a href="#grsecurity">2.9 Grsecurity</a></h3>
 
     <p>
-      <a href="https://grsecurity.net/">Grsecurity</a> is a set of kernel patches that can massively increase kernel security. These patches used to be freely available, but <a
-      href="https://grsecurity.net/passing_the_baton">are now commercial and must be purchased</a>. If it is available, then it is highly recommended that you get it. Grsecurity
+      <a href="https://grsecurity.net/">Grsecurity</a> is a set of kernel patches that can massively increase kernel security. These patches used to be freely available, but they
+      <a href="https://grsecurity.net/passing_the_baton">are now commercial and must be purchased</a>. If it is available, then it is highly recommended that you get it. Grsecurity
       offers state-of-the-art kernel and user space protections.
     </p>
 
@@ -845,7 +858,7 @@ SupplementaryGroups=sysfs</code></pre>
       <br>
       The most used MAC systems are SELinux and AppArmor. SELinux is a lot more secure than AppArmor as it is more fine-grained. For example, it's inode-based rather than path-based, allows enforcing
       <a href="https://selinuxproject.org/page/ObjectClassesPerms">significantly stronger restrictions</a>, can <a href="https://kernsec.org/files/lss2015/vanderstoep.pdf">filter kernel ioctls</a>
-      and much more. Unfortunately, this comes at the cost of being much more difficult to use and harder to learn so AppArmor may be preferred by some. <br>
+      and much more. Unfortunately, this comes at the cost of being much more difficult to use and harder to learn, so AppArmor may be preferred by some. <br>
       <br>
       To enable AppArmor in the kernel, you must set the following <a href="#boot-parameters">boot parameters</a>:
     </p>
@@ -871,8 +884,8 @@ SupplementaryGroups=sysfs</code></pre>
       <br>
       If you want to take it a step further, you can setup a full system MAC policy that confines every single user space process by implementing an initramfs hook which enforces
       a MAC policy for the init system. This is how <a href="https://source.android.com/security/selinux">Android uses SELinux</a> and how <a
-      href="https://github.com/Whonix/apparmor-profile-everything">Whonix will use AppArmor in the future</a>. This is necessary for enforcing a strong security model implementing <a
-      href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>.
+      href="https://github.com/Whonix/apparmor-profile-everything">Whonix will use AppArmor in the future</a>. This is necessary for enforcing a strong security model implementing the
+      <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>.
     </p>
 
     <h2 id="sandboxing"><a href="#sandboxing">4. Sandboxing</a></h2>
@@ -889,7 +902,7 @@ SupplementaryGroups=sysfs</code></pre>
       href="https://www.whonix.org/wiki/Sandbox-app-launcher">sandbox-app-launcher</a> once it is complete. <a href="../linux.html#firejail">You should not use Firejail</a>. <br>
       <br>
       Container solutions, such as <a href="https://www.docker.com/">Docker</a> and <a href="https://linuxcontainers.org/">LXC</a>, are often used as a misguided form of sandboxing. These are too permissive as to support a
-      wide variety of applications so they cannot be considered a strong application sandbox.
+      wide variety of applications, so they cannot be considered a strong application sandbox.
     </p>
 
     <h3 id="common-sandbox-escapes"><a href="#common-sandbox-escapes">4.2 Common sandbox escapes</a></h3>
@@ -899,7 +912,7 @@ SupplementaryGroups=sysfs</code></pre>
     <p>
       <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/">PulseAudio</a> is a common sound server, but it <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/AccessControl/">
       was not written with isolation or sandboxing in mind</a>, making it a recurring sandbox escape vulnerability. To prevent this, it is recommended to block access to PulseAudio from within your sandbox or uninstall
-      it from your system entirely. You can use the <a href="https://alsa-project.org/wiki/Main_Page">standard ALSA utilities</a> instead.
+      it from your system entirely. You can use the <a href="https://alsa-project.org/wiki/Main_Page">standard ALSA utilities</a> or <a href="https://pipewire.org/">PipeWire</a> instead.
     </p>
 
     <h4 id="d-bus"><a href="#d-bus">4.2.2 D-Bus</a></h4>
@@ -925,7 +938,7 @@ SupplementaryGroups=sysfs</code></pre>
 
     <p>
       As <a href="#sysctl-userspace">discussed earlier</a>, ptrace is a system call that could be abused to trivially compromise processes running outside of the sandbox. To prevent this, you can enable the
-      kernel YAMA ptrace restrictions via sysctl or you can blacklist the ptrace syscall in your seccomp filter.
+      kernel's YAMA ptrace restrictions via sysctl, or you can blacklist the ptrace syscall in your seccomp filter.
     </p>
 
     <h4 id="tiocsti"><a href="#tiocsti">4.2.5 TIOCSTI</a></h4>
@@ -936,7 +949,7 @@ SupplementaryGroups=sysfs</code></pre>
       the ioctl in your seccomp filter</a> or by using <a href="https://github.com/containers/bubblewrap/commit/06a7f31fe4a035443e25c00ecea1a3c48d77ddc1">bubblewrap's <code>--new-session</code> argument</a>.
     </p>
 
-    <h3 id="systemd-sandboxing"><a href="#systemd-sandboxing">4.3 Systemd sandboxing</a></h3>
+    <h3 id="systemd-service-sandboxing"><a href="#systemd-service-sandboxing">4.3 Systemd service sandboxing</a></h3>
 
     <p>
       <a href="#choosing-the-right-distro">systemd is unrecommended</a>, but some may be unable to switch. These people can at the very least, sandbox services so they can only access what they need. Here is
@@ -1009,7 +1022,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     </ul>
 
     <p>
-      You cannot just copy this example configuration into yours. Each service's requirements differ and the sandbox has to be fine-tuned for each of them specifically. To learn more about all of the options you can set, read
+      You cannot just copy this example configuration into yours. Each service's requirements differ, and the sandbox has to be fine-tuned for each of them specifically. To learn more about all of the options you can set, read
       the <a href="https://www.freedesktop.org/software/systemd/man/systemd.exec.html">systemd.exec manpage</a>. <br>
       <br>
       If you use an init system other than systemd, then all of these options can be easily replicated with bubblewrap.
@@ -1019,7 +1032,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <p>
       Ordinary sandboxes inherently share the same kernel as the host. You are trusting the kernel, which we have <a href="#kernel">already evaluated to be insecure</a>, to confine these programs properly. <a
-      href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">A kernel exploit from within the sandbox can bypass any restrictions as the host kernel's entire
+      href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">A kernel exploit from within the sandbox can bypass any restrictions, as the host kernel's entire
       attack surface is completely exposed</a>. There have been efforts to limit the attack surface with seccomp however, it is not enough to fully fix this issue. <a href="https://gvisor.dev/">gVisor</a> is a solution to this
       problem. It provides each application with its own kernel that reimplements a large portion of the Linux kernel's syscalls but in a <a href="#memory-safe-languages">memory safe language</a>, therefore providing
       significantly stronger isolation.
@@ -1028,8 +1041,8 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <h3 id="virtual-machines"><a href="#virtual-machines">4.5 Virtual machines</a></h3>
 
     <p>
-      While not a traditional "sandbox", <a href="https://en.wikipedia.org/wiki/Virtual_machine">virtual machines</a> separate processes by virtualizing an entirely new system, thereby providing very strong isolation.
-      <a href="https://www.linux-kvm.org/page/Main_Page">KVM</a> is a kernel module that allows the kernel to function as a hypervisor and <a href="https://www.qemu.org/">QEMU</a> is an emulator that utilises KVM.
+      While not a traditional "sandbox", <a href="https://en.wikipedia.org/wiki/Virtual_machine">virtual machines</a> separate processes by virtualising an entirely new system, thereby providing very strong isolation.
+      <a href="https://www.linux-kvm.org/page/Main_Page">KVM</a> is a kernel module that allows the kernel to function as a hypervisor, and <a href="https://www.qemu.org/">QEMU</a> is an emulator that utilises KVM.
       <a href="https://virt-manager.org">Virt-manager</a> and <a href="https://en.wikipedia.org/wiki/GNOME_Boxes">GNOME Boxes</a> are both good and easy-to-use GUIs to manage KVM/QEMU virtual machines. <a
       href="https://www.whonix.org/wiki/KVM#Why_Use_KVM_Over_VirtualBox.3F">Virtualbox is unrecommended for several reasons</a>.
     <p>
@@ -1054,11 +1067,11 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <pre><code>/usr/lib/libhardened_malloc.so</code></pre>
 
     <p>
-      hardened_malloc may break some applications, although the majority will work fine. It is recommended to compile hardened_malloc with the
-      following options to minimise breakage:
+      hardened_malloc may break some applications, although the majority will work fine. If issues are experienced, it is recommended to compile
+      hardened_malloc in its "light" configuration via the following build option in order to minimise breakage:
     </p>
 
-    <pre><code>CONFIG_SLAB_QUARANTINE_RANDOM_LENGTH=0 CONFIG_SLAB_QUARANTINE_QUEUE_LENGTH=0 CONFIG_GUARD_SLABS_INTERVAL=8</code></pre>
+    <pre><code>VARIANT=light</code></pre>
 
     <p>
       You should also set the following with <a href="#sysctl">sysctl</a> to <a
@@ -1066,7 +1079,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       created by hardened_malloc</a>:
     </p>
 
-    <pre><code>vm.max_map_count=524240</code></pre>
+    <pre><code>vm.max_map_count=1048576</code></pre>
 
     <p>
       <a href="https://www.whonix.org/wiki/Hardened_Malloc">The Whonix project provides a hardened_malloc package for Debian-based distributions</a>.
@@ -1082,7 +1095,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       Certain compilation options can be used to add additional exploit mitigations that eliminate entire classes of common vulnerabilities.
       You have likely heard of regular protections, such as <a href="https://wiki.gentoo.org/wiki/Hardened/Toolchain">Position Independent
       Executables, Stack Smashing Protector, immediate binding, read-only relocations and FORTIFY_SOURCE</a>, but this section will not
-      go over those as they have already been widely adopted. Instead, it will discuss <em>modern</em> exploit mitigations like Control Flow
+      go over those, as they have already been widely adopted. Instead, it will discuss <em>modern</em> exploit mitigations like Control Flow
       Integrity and shadow stacks. <br>
       <br>
       This section refers to native programs, written primarily in C or C++. You must be using the <a href="https://clang.llvm.org/">Clang
@@ -1122,9 +1135,9 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       </li>
 
       <li class="lilist">
-        One of the most common memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized
-        memory</a>. Clang has an option to <a href="https://reviews.llvm.org/D54604">automatically initialize variables</a> with either zero or a specific
-        pattern. It is recommended to initialize variables to zero as using other patterns is more suitable for bug finding than exploit mitigation.
+        One of the most common memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialised
+        memory</a>. Clang has an option to <a href="https://reviews.llvm.org/D54604">automatically initialise variables</a> with either zero or a specific
+        pattern. It is recommended to initialise variables to zero as using other patterns is more suitable for bug finding than exploit mitigation.
         To enable this, you must apply the following compilation flags:
 
         <pre><code>-ftrivial-auto-var-init=zero -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang</code></pre> <br>
@@ -1138,8 +1151,8 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <p>
       Programs written in <a href="https://en.wikipedia.org/wiki/Memory_safety">memory safe languages</a> are automatically protected from various
       security vulnerabilities, including <a href="https://en.wikipedia.org/wiki/Buffer_overflow">buffer overflows</a>, <a
-      href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialized variables</a>, <a href="https://cwe.mitre.org/data/definitions/416.html">
-      use-after-free</a> and more. The majority of vulnerabilities that have been discovered were memory safety issues as proven by research conducted
+      href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialised variables</a>, <a href="https://cwe.mitre.org/data/definitions/416.html">
+      use-after-free</a> and more. The majority of vulnerabilities that have been discovered were memory safety issues, as proven by research conducted
       by security researchers at <a href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">Microsoft</a> and <a
       href="https://www.chromium.org/Home/chromium-security/memory-safety">Google</a>. Examples of such memory <strong>safe</strong> languages include <a
       href="https://doc.rust-lang.org/nomicon/meet-safe-and-unsafe.html">Rust</a>, <a href="https://docs.swift.org/swift-book/LanguageGuide/MemorySafety.html">
@@ -1208,7 +1221,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <p>
       This makes shadow perform 65536 rounds. <br>
       <br>
-      Your passwords are not automatically rehashed after applying this setting so you need to reset the password with:
+      Your passwords are not automatically rehashed after applying this setting, so you need to reset the password with:
     </p>
 
     <pre><code>passwd $username</code></pre>
@@ -1479,7 +1492,7 @@ WantedBy=multi-user.target</code></pre>
     <pre><code>find / -type f \( -perm -4000 -o -perm -2000 \)</code></pre>
 
     <p>
-      You should then remove any unnecessary setuid / setgid bits on programs you don't use, or, replace them with <a href="#capabilities">capabilities</a>. <br>
+      You should then remove any unnecessary setuid / setgid bits on programs you don't use, or replace them with <a href="#capabilities">capabilities</a>. <br>
       <br>
       To remove the setuid bit, execute:
     </p>
@@ -1499,7 +1512,7 @@ WantedBy=multi-user.target</code></pre>
     <pre><code>setcap $capability+ep $path_to_program</code></pre>
 
     <p>
-      Or, to remove an unnecessary capability, execute:
+      To remove an unnecessary capability, execute:
     </p>
 
     <pre><code>setcap -r $path_to_program</code></pre>
@@ -1673,9 +1686,8 @@ IPv6PrivacyExtensions=kernel</code></pre>
       <a href="https://www.felixcloutier.com/x86/rdrand">RDRAND</a> is a CPU instruction for providing random numbers. It is automatically used by the kernel as an entropy source if it is available;
       but since it is proprietary and part of the CPU itself, it is impossible to audit and verify its security properties. You are not even able to reverse engineer the code if you wish. This RNG
       has <a href="https://en.wikipedia.org/wiki/RDRAND#Reception">suffered</a> <a href="https://arstechnica.com/gadgets/2019/10/how-a-months-old-amd-microcode-bug-destroyed-my-weekend/">from</a>
-      <a href="https://twitter.com/RichFelker/status/1125794261839032320">vulnerabilities</a> <a href="https://twitter.com/pid_eins/status/1149649806056280069">before</a>, some of which may have been <a
-      href="https://archive.nytimes.com/www.nytimes.com/interactive/2013/09/05/us/documents-reveal-nsa-campaign-against-encryption.html">backdoors</a>. It is possible to distrust this feature by <a
-      href="#boot-parameters">setting the following boot parameter</a>:
+      <a href="https://twitter.com/RichFelker/status/1125794261839032320">vulnerabilities</a> <a href="https://twitter.com/pid_eins/status/1149649806056280069">before</a> and often has a weak
+      implementation. It is possible to distrust this feature by <a href="#boot-parameters">setting the following boot parameter</a>:
     </p>
 
     <pre><code>random.trust_cpu=off</code></pre>
@@ -1975,7 +1987,7 @@ install thunderbolt /bin/false</code></pre>
 
     <p>
       In the Linux kernel, "root privileges" are split up into various different <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities</a>. This
-      is helpful in applying <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a> — instead of giving a process total root
+      is helpful in applying the <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a> — instead of giving a process total root
       privileges, you can grant them only a specific subset instead. For example, if a program simply needs to set your system time, then it only needs <code>CAP_SYS_TIME</code>
       rather than total root. This could limit the potential damage that can be done however, you must still be cautious with granting capabilities as <a
       href="https://forums.grsecurity.net/viewtopic.php?t=2522">many of them can be abused to gain full root privileges anyway</a>.

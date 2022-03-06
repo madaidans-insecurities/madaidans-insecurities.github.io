@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'sha256-BHF2wjYzuFl1eF3qjlsAq+xvWjfztG2awREfjczVAIQ='; script-src 'self' 'sha256-6GFZjgP8rd6OHbLQAdEHCPBmNWb5aZRO1LA9AiwCdHI='; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
   <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" type="text/css" href="styles.css">
   <title>Linux Phones | Madaidan's Insecurities</title>
@@ -14,7 +14,7 @@
 <body>
   <h1>Linux Phones</h1>
 
-  <p class="date"><em><time datetime="2021-06-14">Last edited: June 14th, 2021</time></em></p>
+  <p class="date"><em><time datetime="2021-09-21">Last edited: September 21st, 2021</time></em></p>
 
   <h2 id="comparison"><a href="#comparison">Comparison with Other Phones</a></h2>
 
@@ -23,20 +23,20 @@
     such as Android or iOS. A few of the points in this article do apply to the Librem 5 specifically, but the majority
     applies to any Linux phone unless specified otherwise. <br>
     <br>
-    Linux phones lack any significant security model and the points from the <a href="linux.html">Linux article</a> apply to
+    Linux phones lack any significant security model, and the points from the <a href="linux.html">Linux article</a> apply to
     Linux phones fully. There is not yet a single Linux phone with a sane security model. They do not have modern security
-    features, such as full system MAC policies, verified boot, strong app sandboxing, modern exploit mitigations and so on
+    features, such as full system MAC policies, verified boot, strong app sandboxing, modern exploit mitigations and so on,
     which modern Android phones already deploy. <br>
     <br>
     Distributions like PureOS are not particularly secure. They are mostly a reskinned Debian and do not include substantial
-    hardening. While AppArmor is enabled, the majority of processes still run unconfined so that is mostly negligible. PureOS
+    hardening. While AppArmor is enabled, the majority of processes still run unconfined, so that is mostly negligible. PureOS
     <a href="https://source.puri.sm/pureos/packages/pureos-security-hardening">changes a few security-relevant settings</a>, but
     these are also mostly negligible:
   </p>
 
   <ul>
     <li class="lilist">
-      PureOS does not apply the exec-shield patch so that sysctl doesn't even exist in the first place.
+      PureOS does not apply the exec-shield patch, so that sysctl doesn't even exist in the first place.
     </li>
 
     <li class="lilist">
@@ -59,9 +59,9 @@
 
   <p>
     PureOS also uses <a href="https://en.wikipedia.org/wiki/Linux-libre">linux-libre</a>. This will prevent the user
-    from loading any proprietary firmware updates which just so happens to be almost all of them. <a
+    from loading any proprietary firmware updates, which just so happens to be almost all of them. <a
     href="https://puri.sm/posts/librem5-solving-the-first-fsf-ryf-hurdle/">The Librem 5 prevents the user from updating
-    new firmware even with an alternative kernel</a> which forces the user to use outdated and insecure firmware with
+    new firmware even with an alternative kernel</a>, which forces the user to use outdated and insecure firmware with
     known vulnerabilities. <br>
     <br>
     The hardware itself lacks many modern security features too, such as <a href="https://source.android.com/security/verifiedboot/">
@@ -70,7 +70,7 @@
     <br>
     Although one way to fix the issues in software would be to install a more sane OS like Android or its derivatives,
     such as GrapheneOS, if support for the hardware was added. Keep in mind though that it would still lack important
-    hardware and firmware security features like verified boot so it still isn't close to a normal Android device. <br>
+    hardware and firmware security features like verified boot, so it still isn't close to a normal Android device. <br>
     <br>
     These devices are also not open hardware/firmware unlike what they try to imply. The majority of the
     hardware/firmware is still proprietary.
@@ -87,7 +87,7 @@
     mode" that disables the sensors, it also requires flipping all of the other switches, including the network switches
     which effectively turns your device into a brick just to prevent audio recording. <br>
     <br>
-    The network kill switch has two primary threat models: preventing cell tower triangulation or preventing data exfiltration
+    The network kill switch has two primary threat models: preventing cell tower triangulation, or preventing data exfiltration
     after the device has been compromised. The switch is useless in either of these threat models:
   </p>
 
@@ -118,10 +118,10 @@
     to isolate the modem is via the Linux kernel USB stack which is not a strong barrier as shown in the <a href="linux.html">
     Linux article</a>. <br>
     <br>
-    There is also a lot of misinformation about how the modem being on a separate chip means it's isolated — this is
-    completely untrue. Just look at how FireWire for example can be <a
-    href="https://en.wikipedia.org/wiki/IEEE_1394#Security_issues">abused for DMA</a> while being completely separate
-    from the rest of the hardware. Whether or not the modem is on a separate chip is irrelevant to if it's isolated.
+    There is also a lot of misinformation as to how the modem being on a separate chip means it's isolated — this is
+    completely untrue. Just look at how, for example, <a
+    href="https://en.wikipedia.org/wiki/IEEE_1394#Security_issues"> FireWire can be abused for DMA</a> while being completely
+    separate from the rest of the hardware. Whether or not the modem is on a separate chip is irrelevant to if it's isolated.
   </p>
 
   <p class="p-final">
