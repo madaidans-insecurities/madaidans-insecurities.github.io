@@ -1099,7 +1099,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       Integrity and shadow stacks. <br>
       <br>
       This section refers to native programs, written primarily in C or C++. You must be using the <a href="https://clang.llvm.org/">Clang
-      compiler</a> as these features <a href="https://outflux.net/slides/2019/lpc/gcc-and-clang.pdf"> are not available on GCC</a>. Keep in
+      compiler</a>, as most of these features <a href="https://outflux.net/slides/2019/lpc/gcc-and-clang.pdf">are not available on GCC</a>. Keep in
       mind that due to the lack of widespread adoption of these mitigations, certain applications may fail to function with them enabled.
     </p>
 
@@ -1120,7 +1120,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
         hidden stack. The return addresses in the main stack and the shadow stack are then compared to see if either differ. If so, this would
         indicate an attack and the program will abort, therefore mitigating ROP attacks. Clang has a feature known as <a
         href="https://clang.llvm.org/docs/ShadowCallStack.html">ShadowCallStack</a> which accomplishes this however, it is only available on ARM64.
-        To enable this, you must apply the following compilation flags:
+        To enable this, you must apply the following compilation flag:
 
         <pre><code>-fsanitize=shadow-call-stack</code></pre> <br>
       </li>
@@ -1136,13 +1136,39 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
       <li class="lilist">
         One of the most common memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialised
-        memory</a>. Clang has an option to <a href="https://reviews.llvm.org/D54604">automatically initialise variables</a> with either zero or a specific
-        pattern. It is recommended to initialise variables to zero as using other patterns is more suitable for bug finding than exploit mitigation.
-        To enable this, you must apply the following compilation flags:
+        memory</a>. <a href="https://reviews.llvm.org/D54604">Clang</a> and <a href="https://gcc.gnu.org/pipermail/gcc-patches/2021-February/565514.html">
+        GCC</a> both have options to automatically initialise variables</a> with either zero or a specific pattern. It is recommended to initialise
+        variables to zero, as using other patterns is more suitable for bug finding than exploit mitigatio. To enable this, you must apply the following
+        compilation flag:
 
-        <pre><code>-ftrivial-auto-var-init=zero -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang</code></pre> <br>
+        <pre><code>-ftrivial-auto-var-init=zero</code></pre> <br>
 
-        The existence of this option <a href="https://lists.llvm.org/pipermail/cfe-dev/2020-April/065221.html">is currently being debated</a>.
+        If on Clang, you must also apply:
+
+        <pre><code>-enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang</code></pre> <br>
+      </li>
+
+      <li class="lilist">
+        An <a href="https://en.wikipedia.org/wiki/Integer_overflow">integer overflow</a> is a class of vulnerabilities in which an arithmetic operation
+        causes an integer value to exceed its maximum range, resulting in either the value wrapping around (in the case of unsigned integers) or causing
+        undefined behaviour (in the case of signed integers). Clang's <a href="https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html">
+        UndefinedBehaviorSanitizer</a> (UBSan) is designed to prevent many forms of undefined behaviour, including integer overflows. To enable Clang's
+        integer sanitisation for both signed and unsigned integers, apply the following compilation flags:
+
+        <pre><code>-fsanitize=signed-integer-overflow,unsigned-integer-overflow -fsanitize-trap=signed-integer-overflow,unsigned-integer-overflow</code></pre> <br>
+
+        Note that these options can cause a substantial performance regression. An alternative is to use the <code>-fwrapv</code> flag, which causes signed
+        overflows to wrap rather than causing undefined behaviour however, this isn't as comprehensive as UBSan.
+      </li>
+
+      <li class="lilist">
+        The <a href="https://blog.qualys.com/vulnerabilities-threat-research/2017/06/19/the-stack-clash">Stack Clash</a> is an attack in which the stack
+        grows too large, allowing an attacker to jump over the guard page and arbitrarily read/write to another memory region such as the heap. Both
+        <a href="https://blog.llvm.org/posts/2021-01-05-stack-clash-protection/">Clang</a> and
+        <a href="https://patchwork.ozlabs.org/project/gcc/patch/87360ef8-85ba-3bc3-18a0-f1333d9f6889@redhat.com/">GCC</a> introduced mitigations against this,
+        which can be enabled with the following compilation flag:
+
+        <pre><code>-fstack-clash-protection</code></pre>
       </li>
     </ul>
 
