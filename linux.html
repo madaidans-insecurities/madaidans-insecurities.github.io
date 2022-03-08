@@ -255,7 +255,7 @@
     <br>
     CFI usually has 2 parts: forward-edge protection (covering JOP, COP, etc.) and backward-edge protection (covering ROP). CFI implementations can vary significantly.
     Some CFI implementations only cover either forward-edges or backward-edges. Some are coarse-grained (the attacker has more freeway to execute a larger amount
-    of instructions) rather than fine-grained. Some are probabilistic (they rely on a secret being held and the security properties are not guaranteed) rather than
+    of gadgets) rather than fine-grained. Some are probabilistic (they rely on a secret being held and the security properties are not guaranteed) rather than
     deterministic. <br>
     <br>
     The Linux kernel has <a href="https://www.phoronix.com/scan.php?page=news_item&px=Clang-CFI-Linux-5.13">only implemented support for Clang's forward-edge CFI on
@@ -360,7 +360,7 @@
 
   <p>
     On ordinary Linux desktops, <a href="https://www.whonix.org/wiki/Dev/Strong_Linux_User_Account_Isolation">a compromised non-root user account with access to
-    sudo is equal to full root compromise</a> as there are an abundance of ways for an attacker to retrieve the sudo password. Usually, the standard
+    sudo is equal to full root compromise</a>, as there are an abundance of ways for an attacker to retrieve the sudo password. Usually, the standard
     user is part of the "sudo" or "wheel" group which makes a sudo password security theater. For example, the attacker can exploit the plethora of keylogging
     opportunities, such as <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">Xorg’s lack of GUI isolation</a>,
     <a href="https://www.usenix.org/legacy/event/sec09/tech/full_papers/zhang.pdf">the</a> <a href="https://www.openwall.com/lists/oss-security/2011/11/05/3">many</a>

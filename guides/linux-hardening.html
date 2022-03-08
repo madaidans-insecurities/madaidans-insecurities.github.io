@@ -306,7 +306,7 @@ net.core.bpf_jit_harden=2</code></pre>
 
     <p>
       <a href="https://en.wikipedia.org/wiki/Kexec">kexec is a system call that is used to boot another kernel during runtime</a>. This functionality can
-      be abused to load a malicious kernel and gain arbitrary code execution in kernel mode so this sysctl disables it.
+      be abused to load a malicious kernel and gain arbitrary code execution in kernel mode, so this sysctl disables it.
     </p>
 
     <pre><code>kernel.sysrq=4</code></pre>
@@ -328,7 +328,7 @@ net.core.bpf_jit_harden=2</code></pre>
       it is instead recommended to use a setuid binary with little attack surface to minimise the potential for privilege escalation. This topic is
       covered further in the <a href="#application-sandboxing">sandboxing section</a>. <br>
       <br>
-      Be aware though that this sysctl only exists on certain Linux distributions as it requires a kernel patch. If your kernel does not include
+      Be aware though that this sysctl only exists on certain Linux distributions, as it requires a kernel patch. If your kernel does not include
       this patch, you can alternatively disable user namespaces completely (including for root) by setting <code>user.max_user_namespaces=0</code>.
     </p>
 
@@ -436,7 +436,7 @@ vm.mmap_rnd_compat_bits=16</code></pre>
 
     <p>
       <a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization">ASLR</a> is a common exploit mitigation which randomises the
-      position of critical parts of a process in memory. This can make a wide variety of exploits harder to pull off as they first require an
+      position of critical parts of a process in memory. This can make a wide variety of exploits harder to pull off, as they first require an
       information leak. The above settings increase the bits of entropy used for mmap ASLR, improving its effectiveness. <br>
       <br>
       The values of these sysctls must be set in relation to the CPU architecture. The above values are compatible with x86, but other architectures
@@ -531,7 +531,7 @@ fs.protected_regular=2</code></pre>
     <pre><code>vsyscall=none</code></pre>
 
     <p>
-      This disables <a href="https://lwn.net/Articles/446528/">vsyscalls</a> as they are obsolete and have been replaced with <a href="https://en.wikipedia.org/wiki/VDSO">vDSO</a>.
+      This disables <a href="https://lwn.net/Articles/446528/">vsyscalls</a>, as they are obsolete and have been replaced with <a href="https://en.wikipedia.org/wiki/VDSO">vDSO</a>.
       vsyscalls are also at fixed addresses in memory, making them a potential target for ROP attacks.
     </p>
 
@@ -615,7 +615,7 @@ fs.protected_regular=2</code></pre>
     <pre><code>proc /proc proc nosuid,nodev,noexec,hidepid=2,gid=proc 0 0</code></pre>
 
     <p>
-      systemd-logind still needs to see other users' processes so, for user sessions to work correctly on a systemd system, you must create
+      systemd-logind still needs to see other users' processes, so for user sessions to work correctly on a systemd system, you must create
       <code>/etc/systemd/system/systemd-logind.service.d/hidepid.conf</code> and add:
     </p>
 
@@ -730,7 +730,7 @@ install gfs2 /bin/true</code></pre>
 
     <p>
       The <a href="https://www.kernel.org/doc/html/v4.12/media/v4l-drivers/vivid.html">vivid driver</a> is only useful for testing purposes and <a
-      href="https://www.openwall.com/lists/oss-security/2019/11/02/1">has been the cause of privilege escalation vulnerabilities</a> so it should be disabled.
+      href="https://www.openwall.com/lists/oss-security/2019/11/02/1">has been the cause of privilege escalation vulnerabilities</a>, so it should be disabled.
     </p>
 
     <pre><code>install bluetooth /bin/false
@@ -781,7 +781,7 @@ install btusb /bin/false</code></pre>
       <br>
       On the filesystem, there exists the kernel images and System.map files in <code>/boot</code>. There is also other sensitive kernel information in the <code>/usr/src</code> and
       <code>/{,usr/}lib/modules</code> directories. <a href="#file-permissions">You should restrict the file permissions of these directories to make them only readable by the
-      root user</a>. You should also delete the System.map files as they are not required for anything except advanced debugging. <br>
+      root user</a>. You should also delete the System.map files, as they are not required for anything except advanced debugging. <br>
       <br>
       Additionally, certain logging daemons, such as systemd's <code>journalctl</code>, include the kernel logs which can be used to bypass the above <code>dmesg_restrict</code> protection.
       Removing the user from the <code>adm</code> group is often sufficient to revoke access to these logs:
@@ -831,7 +831,7 @@ SupplementaryGroups=sysfs</code></pre>
 
     <p>
       <a href="https://www.openwall.com/lkrg/">Linux Kernel Runtime Guard</a> (LKRG) is a kernel module which ensures kernel integrity at runtime and detects exploits. It can
-      kill entire classes of kernel exploits; but it is not a perfect mitigation as <a href="https://github.com/milabs/lkrg-bypass">LKRG is bypassable by design</a>. It is only
+      kill entire classes of kernel exploits; but it is not a perfect mitigation, as <a href="https://github.com/milabs/lkrg-bypass">LKRG is bypassable by design</a>. It is only
       suitable for off-the-shelf malware. However, while it is unlikely, LKRG may in itself expose new vulnerabilities like any additional kernel module.
     </p>
 
@@ -856,7 +856,7 @@ SupplementaryGroups=sysfs</code></pre>
     <p>
       Mandatory access control (MAC) systems give fine-grained control over what programs can access. This means that your browser won't have access to your entire home directory or similarly. <br>
       <br>
-      The most used MAC systems are SELinux and AppArmor. SELinux is a lot more secure than AppArmor as it is more fine-grained. For example, it's inode-based rather than path-based, allows enforcing
+      The most used MAC systems are SELinux and AppArmor. SELinux is a lot more secure than AppArmor, as it is more fine-grained. For example, it's inode-based rather than path-based, allows enforcing
       <a href="https://selinuxproject.org/page/ObjectClassesPerms">significantly stronger restrictions</a>, can <a href="https://kernsec.org/files/lss2015/vanderstoep.pdf">filter kernel ioctls</a>
       and much more. Unfortunately, this comes at the cost of being much more difficult to use and harder to learn, so AppArmor may be preferred by some. <br>
       <br>
@@ -1088,7 +1088,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <h2 id="hardened-compilation-flags"><a href="#hardened-compilation-flags">6. Hardened compilation flags</a></h2>
 
     <p>
-      Compiling your own programs can offer numerous benefits as it gives you the ability to optimise your programs for security. However, it
+      Compiling your own programs can offer numerous benefits, as it gives you the ability to optimise your programs for security. However, it
       is easy to do the exact opposite and worsen security — if you are unsure about what you are doing, skip this section. This will be easiest
       on a source-based distribution, <a href="#choosing-the-right-distro">such as Gentoo</a>, but it is possible to do this on others. <br>
       <br>
@@ -1128,7 +1128,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       <li class="lilist">
         If the aforementioned ShadowCallStack is not an option, you can alternatively use <a href="https://clang.llvm.org/docs/SafeStack.html">
         SafeStack</a> which has a similar goal. Unfortunately though, this feature <a href="https://bugs.chromium.org/p/chromium/issues/detail?id=908597">
-        suffers from many vulnerabilities</a> so it isn't nearly as effective. If you still wish to enable this, you must apply the following
+        suffers from many vulnerabilities</a>, so it isn't nearly as effective. If you still wish to enable this, you must apply the following
         compilation flag:
 
         <pre><code>-fsanitize=safe-stack</code></pre> <br>
@@ -1274,7 +1274,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       This section details the safest way possible of accessing the root account. These instructions should be applied as soon as the OS is
       installed to make sure it is free of malware. <br>
       <br>
-      You must not use your ordinary user account to access root as it may have been compromised. You also must not log directly into the
+      You must not use your ordinary user account to access root, as it may have been compromised. You also must not log directly into the
       root account. Create a separate "admin" user account that is used solely for accessing root and nothing else by executing:
     </p>
 
@@ -1461,7 +1461,7 @@ WantedBy=multi-user.target</code></pre>
       Time synchronization is vital for anonymity and security. A wrong system clock can expose you to clock skew fingerprinting attacks or can be used to feed you outdated HTTPS
       certificates, bypassing certficate expiry or revocation. <br>
       <br>
-      The most popular time synchronization method, <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol">NTP</a>, is insecure as <a
+      The most popular time synchronization method, <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol">NTP</a>, is insecure, as <a
       href="https://blog.hboeck.de/archives/863-Dont-update-NTP-stop-using-it.html">it is unencrypted and unauthenticated</a>,
       allowing an attacker to trivially intercept and modify requests. <a href="https://tools.ietf.org/html/rfc5905#page-23">NTP also leaks your local system time in NTP timestamp
       format</a> which can be used for clock skew fingerprinting, as briefly mentioned before. <br>
@@ -1546,7 +1546,7 @@ WantedBy=multi-user.target</code></pre>
     <h3 id="umask"><a href="#umask">11.2 umask</a></h3>
 
     <p>
-      umask sets the default file permissions for newly created files. The default umask is <code>0022</code> which is not very secure as this gives read access to every user on the system for newly
+      umask sets the default file permissions for newly created files. The default umask is <code>0022</code> which is not very secure, as this gives read access to every user on the system for newly
       created files. To make new files unreadable by anyone other than the owner, edit <code>/etc/profile</code> and add:
     </p>
 
@@ -1780,7 +1780,7 @@ IPv6PrivacyExtensions=kernel</code></pre>
       If you are still using legacy BIOS then you should migrate to UEFI as to take advantage of newer security features. <br>
       <br>
       Most BIOS or UEFI implementations support setting a password. It is best to enable this and set a very strong password. This is a weak protection though as it is trivial to reset the password. It is
-      often stored in volatile memory so an attacker just needs to be able to remove the CMOS battery for a few seconds or they can reset it with a jumper on certain motherboards. <br>
+      often stored in volatile memory, so an attacker just needs to be able to remove the CMOS battery for a few seconds or they can reset it with a jumper on certain motherboards. <br>
       <br>
       You should also disable all unused devices and boot options, such as USB booting, to reduce attack surface. <br>
       <br>
@@ -1871,16 +1871,17 @@ password_pbkdf2 $username $password</code></pre>
     <p>
       <a href="https://source.android.com/security/verifiedboot/">Verified boot</a> ensures the integrity of the boot chain and base system by cryptographically verifying them. This can be used to
       ensure that a physical attacker cannot modify the software on the device. Without verified boot, all of the precautions mentioned above could be bypassed with ease once physical access is
-      gained. Verified boot is not just for physical security as many people assume. It can also be used to prevent remote malware persistence — if an attacker has managed to compromise the entire
-      system and gain extremely high privileges, verified boot will revert their changes upon reboot and ensure they cannot persist. <br>
+      gained. Contrary to common assumptions, verified boot is not just important for physical security — it prevents the persistence of <strong>any</strong> tampering with your system, be it from
+      a physical attacker or a malicious application that has managed to hook itself into the operating system. For example, if a remote attacker has managed to exploit the system and gain high
+      privileges, verified boot would revert their changes upon reboot and ensure that they cannot persist. <br>
       <br>
       The most common verified boot implementation is <a href="https://www.intel.com/content/www/us/en/support/articles/000006942/boards-and-kits/desktop-boards.html">UEFI Secure Boot</a> however,
-      this by itself is not a complete implementation as this only verifies the bootloader and kernel, meaning there are ways to bypass this:
+      this by itself is not a complete implementation, as this only verifies the bootloader and kernel, meaning there are ways to bypass this:
     </p>
 
     <ul>
       <li class="lilist">
-        UEFI secure boot alone lacks an immutable root of trust so a physical attacker can still reflash the firmware of the device. To mitigate this, use UEFI secure boot in combination with <a
+        UEFI secure boot alone lacks an immutable root of trust, so a physical attacker can still reflash the firmware of the device. To mitigate this, use UEFI secure boot in combination with <a
         href="https://mjg59.dreamwidth.org/33981.html">Intel Boot Guard</a> or <a href="https://blog.cloudflare.com/anchoring-trust-a-hardware-secure-boot-story/">AMD Secure Boot</a>.
       </li>
 
@@ -1939,7 +1940,7 @@ install thunderbolt /bin/false</code></pre>
 
     <p>
       A <a href="https://en.wikipedia.org/wiki/Cold_boot_attack">cold boot attack</a> occurs when an attacker analyses the data in RAM before it is erased. When using modern RAM, cold boot attacks aren't
-      very practical as RAM usually clears within a few seconds or minutes unless it has been placed inside a cooling solution, such as liquid nitrogen or a freezer. An attacker would have to rip out the RAM
+      very practical, as RAM usually clears within a few seconds or minutes unless it has been placed inside a cooling solution, such as liquid nitrogen or a freezer. An attacker would have to rip out the RAM
       sticks from your device and expose it to liquid nitrogen all within a few seconds and without the user noticing. <br>
       <br>
       If cold boot attacks are part of your threat model, then guard your computer for a few minutes after shutdown to ensure that nobody has access to your RAM sticks. You could also solder the RAM sticks into your
@@ -1953,7 +1954,7 @@ install thunderbolt /bin/false</code></pre>
       Additionally, modern kernels include a <a href="https://lwn.net/Articles/730006/">reset attack mitigation</a> which commands the firmware to erase data upon shutdown, although this requires <a
       href="https://www.trustedcomputinggroup.org/wp-content/uploads/Platform-Reset-Attack-Mitigation-Specification.pdf">firmware support</a>. <br>
       <br>
-      Make sure that you shutdown your computer normally so the mitigations explained above can kick in. <br>
+      Make sure that you shutdown your computer normally, so the mitigations explained above can kick in. <br>
       <br>
       If none of the above are adequate for your threat model, you can implement <a href="https://tails.boum.org/contribute/design/memory_erasure/">Tails' memory erasure process</a> which erases the majority of
       memory (with the <a href="https://tails.boum.org/support/known_issues/index.en.html#video-memory">exception of video memory</a>) and has been proven to be effective.
@@ -2015,7 +2016,7 @@ install thunderbolt /bin/false</code></pre>
       In the Linux kernel, "root privileges" are split up into various different <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities</a>. This
       is helpful in applying the <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a> — instead of giving a process total root
       privileges, you can grant them only a specific subset instead. For example, if a program simply needs to set your system time, then it only needs <code>CAP_SYS_TIME</code>
-      rather than total root. This could limit the potential damage that can be done however, you must still be cautious with granting capabilities as <a
+      rather than total root. This could limit the potential damage that can be done however, you must still be cautious with granting capabilities, as <a
       href="https://forums.grsecurity.net/viewtopic.php?t=2522">many of them can be abused to gain full root privileges anyway</a>.
     </p>
 
