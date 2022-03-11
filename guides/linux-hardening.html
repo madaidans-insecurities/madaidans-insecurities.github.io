@@ -31,121 +31,129 @@
 
     <h2>Contents</h2>
 
-    <div class="headers">
-      <a href="#choosing-the-right-distro">1. Choosing the right Linux distribution</a> <br>
-      <br>
-      <a href="#kernel">2. Kernel hardening</a> <br>
-      <a href="#stable-vs-lts" class="subheaders">2.1 Stable vs. LTS</a> <br>
-      <a href="#sysctl" class="subheaders">2.2 Sysctl</a> <br>
-      <a href="#sysctl-kernel" class="subheaders2">2.2.1 Kernel self-protection</a> <br>
-      <a href="#sysctl-network" class="subheaders2">2.2.2 Network</a> <br>
-      <a href="#sysctl-userspace" class="subheaders2">2.2.3 User space</a> <br>
-      <a href="#boot-parameters" class="subheaders">2.3 Boot parameters</a> <br>
-      <a href="#boot-kernel" class="subheaders2">2.3.1 Kernel self-protection</a> <br>
-      <a href="#cpu-mitigations" class="subheaders2">2.3.2 CPU mitigations</a><br>
-      <a href="#result" class="subheaders2">2.3.3 Result</a><br>
-      <a href="#hidepid" class="subheaders">2.4 hidepid</a> <br>
-      <a href="#kernel-attack-surface-reduction" class="subheaders">2.5 Kernel attack surface reduction</a> <br>
-      <a href="#kasr-boot-parameters" class="subheaders2">2.5.1 Boot parameters</a> <br>
-      <a href="#kasr-kernel-modules" class="subheaders2">2.5.2 Blacklisting kernel modules</a> <br>
-      <a href="#kasr-rfkill" class="subheaders2">2.5.3 rfkill</a> <br>
-      <a href="#other-kernel-pointer-leaks" class="subheaders">2.6 Other kernel pointer leaks</a> <br>
-      <a href="#restricting-sysfs" class="subheaders">2.7 Restricting access to sysfs</a> <br>
-      <a href="#linux-hardened" class="subheaders">2.8 linux-hardened</a> <br>
-      <a href="#grsecurity" class="subheaders">2.9 Grsecurity</a> <br>
-      <a href="#lkrg" class="subheaders">2.10 Linux Kernel Runtime Guard</a> <br>
-      <a href="#kernel-self-compilation" class="subheaders">2.11 Kernel self-compilation</a> <br>
-      <br>
-      <a href="#mac">3. Mandatory access control</a> <br>
-      <br>
-      <a href="#sandboxing">4. Sandboxing</a> <br>
-      <a href="#application-sandboxing" class="subheaders">4.1 Application sandboxing</a> <br>
-      <a href="#common-sandbox-escapes" class="subheaders">4.2 Common sandbox escapes</a> <br>
-      <a href="#pulseaudio" class="subheaders2">4.2.1 PulseAudio</a> <br>
-      <a href="#d-bus" class="subheaders2">4.2.2 D-Bus</a> <br>
-      <a href="#gui-isolation" class="subheaders2">4.2.3 GUI isolation</a> <br>
-      <a href="#ptrace" class="subheaders2">4.2.4 ptrace</a> <br>
-      <a href="#tiocsti" class="subheaders2">4.2.5 TIOCSTI</a> <br>
-      <a href="#systemd-service-sandboxing" class="subheaders">4.3 Systemd service sandboxing</a> <br>
-      <a href="#gvisor" class="subheaders">4.4 gVisor</a> <br>
-      <a href="#virtual-machines" class="subheaders">4.5 Virtual machines</a> <br>
-      <br>
-      <a href="#hardened-malloc">5. Hardened memory allocator</a> <br>
-      <br>
-      <a href="#hardened-compilation-flags">6. Hardened compilation flags</a> <br>
-      <br>
-      <a href="#memory-safe-languages">7. Memory safe languages</a> <br>
-      <br>
-      <a href="#root">8. The root account</a> <br>
-      <a href="#securetty" class="subheaders">8.1 /etc/securetty</a> <br>
-      <a href="#restricting-su" class="subheaders">8.2 Restricting su</a> <br>
-      <a href="#locking-root" class="subheaders">8.3 Locking the root account</a> <br>
-      <a href="#denying-ssh-root-login" class="subheaders">8.4 Denying root login via SSH</a> <br>
-      <a href="#increase-hashing-rounds" class="subheaders">8.5 Increasing the number of hashing rounds</a> <br>
-      <a href="#restricting-xorg" class="subheaders">8.6 Restricting Xorg root access</a> <br>
-      <a href="#accessing-root-securely" class="subheaders">8.7 Accessing root securely</a> <br>
-      <br>
-      <a href="#firewalls">9. Firewalls</a> <br>
-      <br>
-      <a href="#identifiers">10. Identifiers</a> <br>
-      <br>
-      <a href="#hostnames" class="subheaders">10.1 Hostnames and usernames</a> <br>
-      <a href="#timezones-locales-keymaps" class="subheaders">10.2 Timezones / Locales / Keymaps</a> <br>
-      <a href="#machine-id" class="subheaders">10.3 Machine ID</a> <br>
-      <a href="#mac-address-spoofing" class="subheaders">10.4 MAC address spoofing</a> <br>
-      <a href="#time-attacks" class="subheaders">10.5 Time attacks</a> <br>
-      <a href="#icmp-timestamps" class="subheaders2">10.5.1 ICMP timestamps</a> <br>
-      <a href="#tcp-timestamps" class="subheaders2">10.5.2 TCP timestamps</a> <br>
-      <a href="#tcp-isns" class="subheaders2">10.5.3 TCP initial sequence numbers</a> <br>
-      <a href="#time-synchronization" class="subheaders2">10.5.4 Time synchronization</a> <br>
-      <a href="#keystroke-fingerprinting" class="subheaders">10.6 Keystroke fingerprinting</a> <br>
-      <br>
-      <a href="#file-permissions">11. File permissions</a> <br>
-      <a href="#setuid" class="subheaders">11.1 setuid / setgid</a> <br>
-      <a href="#umask" class="subheaders">11.2 umask</a> <br>
-      <br>
-      <a href="#core-dumps">12. Core dumps</a> <br>
-      <a href="#core-dumps-sysctl" class="subheaders">12.1 sysctl</a> <br>
-      <a href="#core-dumps-systemd" class="subheaders">12.2 systemd</a> <br>
-      <a href="#core-dumps-ulimit" class="subheaders">12.3 ulimit</a> <br>
-      <a href="#core-dumps-setuid" class="subheaders">12.4 setuid processes</a> <br>
-      <br>
-      <a href="#swap">13. Swap</a> <br>
-      <br>
-      <a href="#pam">14. PAM</a> <br>
-      <br>
-      <a href="#microcode">15. Microcode updates</a> <br>
-      <br>
-      <a href="#ipv6-privacy">16. IPv6 privacy extensions</a> <br>
-      <a href="#ipv6-networkmanager" class="subheaders">16.1 NetworkManager</a> <br>
-      <a href="#ipv6-systemd-networkd" class="subheaders">16.2 systemd-networkd</a> <br>
-      <br>
-      <a href="#partitioning">17. Partitioning and mount options</a> <br>
-      <br>
-      <a href="#entropy">18. Entropy</a> <br>
-      <a href="#additional-entropy-sources" class="subheaders">18.1 Additional entropy sources</a> <br>
-      <a href="#rdrand" class="subheaders">18.2 RDRAND</a> <br>
-      <br>
-      <a href="#editing-as-root">19. Editing files as root</a> <br>
-      <br>
-      <a href="#distro-specific">20. Distribution-specific hardening</a> <br>
-      <a href="#https-mirrors" class="subheaders">20.1 HTTPS package manager mirrors</a> <br>
-      <a href="#apt-seccomp-bpf" class="subheaders">20.2 APT seccomp-bpf</a> <br>
-      <br>
-      <a href="#physical-security">21. Physical security</a> <br>
-      <a href="#encryption" class="subheaders">21.1 Encryption</a> <br>
-      <a href="#bios-uefi" class="subheaders">21.2 BIOS / UEFI hardening</a> <br>
-      <a href="#bootloader-passwords" class="subheaders">21.3 Bootloader passwords</a> <br>
-      <a href="#grub" class="subheaders2">21.3.1 GRUB</a> <br>
-      <a href="#syslinux" class="subheaders2">21.3.2 Syslinux</a> <br>
-      <a href="#systemd-boot" class="subheaders2">21.3.3 systemd-boot</a> <br>
-      <a href="#verified-boot" class="subheaders">21.4 Verified boot</a> <br>
-      <a href="#usbs" class="subheaders">21.5 USBs</a> <br>
-      <a href="#dma-attacks" class="subheaders">21.6 DMA attacks</a> <br>
-      <a href="#cold-boot-attacks" class="subheaders">21.7 Cold boot attacks</a> <br>
-      <br>
-      <a href="#best-practices">22. Best practices</a> <br>
-    </div>
+    <a href="#choosing-the-right-distro" class="nodropdown">1. Choosing the right Linux distribution</a>
+    <details>
+      <summary><a href="#kernel">2. Kernel hardening</a></summary>
+        <a href="#stable-vs-lts" >2.1 Stable vs. LTS</a> <br>
+        <details>
+          <summary><a href="#sysctl" >2.2 Sysctl</a></summary>
+            <a href="#sysctl-kernel" >2.2.1 Kernel self-protection</a> <br>
+            <a href="#sysctl-network" >2.2.2 Network</a> <br>
+            <a href="#sysctl-userspace" >2.2.3 User space</a> <br>
+        </details>
+        <details>
+          <summary><a href="#boot-parameters" >2.3 Boot parameters</a></summary>
+            <a href="#boot-kernel" >2.3.1 Kernel self-protection</a> <br>
+            <a href="#cpu-mitigations" >2.3.2 CPU mitigations</a><br>
+            <a href="#result" >2.3.3 Result</a><br>
+        </details>
+        <a href="#hidepid" >2.4 hidepid</a> <br>
+        <details>
+          <summary><a href="#kernel-attack-surface-reduction" >2.5 Kernel attack surface reduction</a></summary>
+            <a href="#kasr-boot-parameters" >2.5.1 Boot parameters</a> <br>
+            <a href="#kasr-kernel-modules" >2.5.2 Blacklisting kernel modules</a> <br>
+            <a href="#kasr-rfkill" >2.5.3 rfkill</a> <br>
+        </details>
+        <a href="#other-kernel-pointer-leaks" >2.6 Other kernel pointer leaks</a> <br>
+      <a href="#restricting-sysfs" >2.7 Restricting access to sysfs</a> <br>
+      <a href="#linux-hardened" >2.8 linux-hardened</a> <br>
+      <a href="#grsecurity" >2.9 Grsecurity</a> <br>
+      <a href="#lkrg" >2.10 Linux Kernel Runtime Guard</a> <br>
+      <a href="#kernel-self-compilation" >2.11 Kernel self-compilation</a> <br>
+    </details>
+    <a href="#mac" class="nodropdown">3. Mandatory access control</a> <br>
+    <details>
+      <summary><a href="#sandboxing">4. Sandboxing</a></summary>
+        <a href="#application-sandboxing" >4.1 Application sandboxing</a> <br>
+        <details>
+          <summary><a href="#common-sandbox-escapes" >4.2 Common sandbox escapes</a></summary>
+            <a href="#pulseaudio" >4.2.1 PulseAudio</a> <br>
+            <a href="#d-bus" >4.2.2 D-Bus</a> <br>
+            <a href="#gui-isolation" >4.2.3 GUI isolation</a> <br>
+            <a href="#ptrace" >4.2.4 ptrace</a> <br>
+            <a href="#tiocsti" >4.2.5 TIOCSTI</a> <br>
+        </details>
+        <a href="#systemd-sandboxing" >4.3 Systemd service sandboxing</a> <br>
+        <a href="#gvisor" >4.4 gVisor</a> <br>
+        <a href="#virtual-machines" >4.5 Virtual machines</a> <br>
+    </details>
+    <a href="#hardened-malloc" class="nodropdown">5. Hardened memory allocator</a> <br>      
+    <a href="#hardened-compilation-flags" class="nodropdown">6. Hardened compilation flags</a> <br>
+    <a href="#memory-safe-languages" class="nodropdown">7. Memory safe languages</a> <br> 
+    <details>
+      <summary><a href="#root">8. The root account</a></summary>
+        <a href="#securetty" >8.1 /etc/securetty</a> <br>
+        <a href="#restricting-su" >8.2 Restricting su</a> <br>
+        <a href="#locking-root" >8.3 Locking the root account</a> <br>
+        <a href="#denying-ssh-root-login" >8.4 Denying root login via SSH</a> <br>
+        <a href="#increase-hashing-rounds" >8.5 Increasing the number of hashing rounds</a> <br>
+        <a href="#restricting-xorg" >8.6 Restricting Xorg root access</a> <br>
+        <a href="#accessing-root-securely" >8.7 Accessing root securely</a> <br>
+    </details>        
+    <a href="#firewalls" class="nodropdown">9. Firewalls</a> <br>
+    <details>
+      <summary><a href="#identifiers">10. Identifiers</a></summary>
+        <a href="#hostnames" >10.1 Hostnames and usernames</a> <br>
+        <a href="#timezones-locales-keymaps" >10.2 Timezones / Locales / Keymaps</a> <br>
+        <a href="#machine-id" >10.3 Machine ID</a> <br>
+        <a href="#mac-address-spoofing" >10.4 MAC address spoofing</a> <br>
+        <details>
+          <summary><a href="#time-attacks" >10.5 Time attacks</a></summary>
+            <a href="#icmp-timestamps" >10.5.1 ICMP timestamps</a> <br>
+            <a href="#tcp-timestamps" >10.5.2 TCP timestamps</a> <br>
+            <a href="#tcp-isns" >10.5.3 TCP initial sequence numbers</a> <br>
+            <a href="#time-synchronization" >10.5.4 Time synchronization</a> <br>
+          </details>
+        <a href="#keystroke-fingerprinting" >10.6 Keystroke fingerprinting</a> <br>
+    </details>
+    <details>
+      <summary><a href="#file-permissions">11. File permissions</a></summary>
+        <a href="#setuid" >11.1 setuid / setgid</a> <br>
+        <a href="#umask" >11.2 umask</a> <br>
+    </details>
+    <details>
+      <summary><a href="#core-dumps">12. Core dumps</a></summary>
+        <a href="#core-dumps-sysctl" >12.1 sysctl</a> <br>
+        <a href="#core-dumps-systemd" >12.2 systemd</a> <br>
+        <a href="#core-dumps-ulimit" >12.3 ulimit</a> <br>
+        <a href="#core-dumps-setuid" >12.4 setuid processes</a> <br>
+    </details>
+    <a href="#swap" class="nodropdown">13. Swap</a> <br>
+    <a href="#pam" class="nodropdown">14. PAM</a> <br>
+    <a href="#microcode" class="nodropdown">15. Microcode updates</a> <br>
+    <details>
+      <summary><a href="#ipv6-privacy">16. IPv6 privacy extensions</a></summary>
+        <a href="#ipv6-networkmanager" >16.1 NetworkManager</a> <br>
+        <a href="#ipv6-systemd-networkd" >16.2 systemd-networkd</a> <br>
+    </details>
+    <a href="#partitioning" class="nodropdown">17. Partitioning and mount options</a> <br>
+    <details>
+      <summary><a href="#entropy">18. Entropy</a></summary>
+        <a href="#additional-entropy-sources" >18.1 Additional entropy sources</a> <br>
+        <a href="#rdrand" >18.2 RDRAND</a> <br>
+    </details>
+    <a href="#editing-as-root" class="nodropdown">19. Editing files as root</a> <br>
+    <details>
+      <summary><a href="#distro-specific">20. Distribution-specific hardening</a></summary>
+        <a href="#https-mirrors" >20.1 HTTPS package manager mirrors</a> <br>
+        <a href="#apt-seccomp-bpf" >20.2 APT seccomp-bpf</a> <br>
+    </details>
+    <details>
+      <summary><a href="#physical-security">21. Physical security</a></summary>
+        <a href="#encryption" >21.1 Encryption</a> <br>
+        <a href="#bios-uefi" >21.2 BIOS / UEFI hardening</a> <br>
+        <details>
+          <summary><a href="#bootloader-passwords" >21.3 Bootloader passwords</a></summary>
+            <a href="#grub" >21.3.1 GRUB</a> <br>
+            <a href="#syslinux" >21.3.2 Syslinux</a> <br>
+            <a href="#systemd-boot" >21.3.3 systemd-boot</a> <br> 
+        </details>
+        <a href="#verified-boot" >21.4 Verified boot</a> <br>
+        <a href="#usbs" >21.5 USBs</a> <br>
+        <a href="#dma-attacks" >21.6 DMA attacks</a> <br>
+        <a href="#cold-boot-attacks" >21.7 Cold boot attacks</a> <br>
+    </details>
+    <a href="#best-practices" class="nodropdown">22. Best practices</a> <br>
 
     <h2 id="choosing-the-right-distro"><a href="#choosing-the-right-distro">1. Choosing the right Linux distribution</a></h2>
 
