@@ -194,6 +194,7 @@ a.nodropdown {
 
 summary {
     font-size: 1.33rem;
+    margin-left: 0.2rem;
 }
 
 details[open] > details {
