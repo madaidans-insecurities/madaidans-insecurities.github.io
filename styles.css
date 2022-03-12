@@ -163,6 +163,9 @@ thead, tfoot {
     text-align: right;
     text-decoration: none;
     visibility: hidden;
+    position: absolute;
+    top: 0;
+    right: 20px;
 }
 
 .p-final {
