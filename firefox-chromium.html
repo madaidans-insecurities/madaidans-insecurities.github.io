@@ -379,7 +379,7 @@
     As briefly mentioned before, code reuse attacks can be used to achieve near-arbitrary code execution by chaining together snippets of code that already
     exist in the program. ACG and CIG only mitigate one potential attack vector — creating a ROP/JOP chain to transition mappings to executable. However, an
     attacker can still use a pure ROP/JOP chain, relying wholly on the pre-existing gadgets without needing to introduce their own code. This can be mitigated
-    with <a href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">Control Flow Integrity</a> (CFI) which severely restricts the
+    with <a href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">Control Flow Integrity</a> (CFI), which severely restricts the
     gadgets an attacker is able to make use of, thus disrupting their chain. <br>
     <br>
     CFI usually has 2 parts: forward-edge protection (covering JOP, COP, etc.) and backward-edge protection (covering ROP). CFI implementations can vary significantly.

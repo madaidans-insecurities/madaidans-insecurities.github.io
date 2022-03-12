@@ -65,10 +65,10 @@
     The <a href="https://theinvisiblethings.blogspot.com/2010/08/ms-dos-security-model.html">traditional application security
     model</a> on desktop operating systems gives any executed application complete access to all data within the same user
     account. This means that any malicious application you install or an exploited vulnerability in an otherwise benevolent
-    application can result in the attacker immediately gaining access to your data. Such vulnerabilities are inevitable and
+    application can result in the attacker immediately gaining access to your data. Such vulnerabilities are inevitable, and
     their impact should be limited by strictly isolating software from one another.  <br>
     <br>
-    Linux still follows this security model and as such, there is no resemblance of a strong sandboxing architecture or permission
+    Linux still follows this security model, and as such, there is no resemblance of a strong sandboxing architecture or permission
     model in the standard Linux desktop — current sandboxing solutions are either nonexistent or insufficient. All applications
     have access to each other’s data and can snoop on your personal information. <br>
     <br>
@@ -78,9 +78,9 @@
 
   <ul>
     <li class="lilist">
-      Windows still falls behind when it comes to sandboxing, but it has at least made some progress — Windows <a
+      Windows still falls behind when it comes to sandboxing, but it has at least made some progress — <a
       href="https://docs.microsoft.com/en-us/windows/uwp/security/intro-to-secure-windows-app-development#41-windows-app-model">
-      automatically sandboxes UWP applications</a> and provides the <a
+      Windows automatically sandboxes UWP applications</a> and provides the <a
       href="https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-sandbox/windows-sandbox-overview">Windows
       Sandbox utility</a> for non-UWP applications. <br>
     </li>
@@ -106,13 +106,13 @@
     that security is effectively optional and applications can simply choose not to be sufficiently sandboxed. <br>
     <br>
     Flatpak's permissions are also far too broad to be meaningful. For example, many applications come with the
-    <code>filesystem=home</code> or <code>filesystem=host</code> permissions which grant read-write access to the user's
+    <code>filesystem=home</code> or <code>filesystem=host</code> permissions, which grant read-write access to the user's
     home directory, giving access to all of your personal files and allowing trivial sandbox escapes via writing to
     <code>~/.bashrc</code> or similar. <br>
     <br>
     In the <a href="https://github.com/flathub">Flathub Github organisation</a>, ~550 applications <a
     href="https://github.com/search?q=org%3Aflathub+filesystem%3Dhome&type=code">come</a> <a
-    href="https://github.com/search?q=org%3Aflathub+filesystem%3Dhost&type=code">with</a> such permissions which is ~30% of
+    href="https://github.com/search?q=org%3Aflathub+filesystem%3Dhost&type=code">with</a> such permissions, which is ~30% of
     all repositories. While this percentage may not seem significant, it includes a considerable amount of applications that
     people will commonly use. Examples of such include
     <a href="https://github.com/flathub/org.gimp.GIMP/blob/f819d5614ca19d3ffff99f2040881a873daa175f/org.gimp.GIMP.json#L14">GIMP</a>,
@@ -150,10 +150,10 @@
   <p>
     <a href="https://firejail.wordpress.com/">Firejail</a> is another common sandboxing technology however, it is also insufficient.
     Firejail worsens security by acting as a privilege escalation hole — Firejail requires being <a
-    href="https://en.wikipedia.org/wiki/Setuid">setuid</a>, meaning that it executes with the privileges of the executable's owner
+    href="https://en.wikipedia.org/wiki/Setuid">setuid</a>, meaning that it executes with the privileges of the executable's owner,
     which in this case, is the root user. This means that a vulnerability in Firejail can allow escalating to root privileges. <br>
     <br>
-    As such, great caution should be taken with setuid programs, but Firejail instead focuses more on usability and unessential features which
+    As such, great caution should be taken with setuid programs, but Firejail instead focuses more on usability and unessential features, which
     adds significant attack surface and complexity to the code, resulting in <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=firejail">
     numerous privilege escalation and sandbox escape vulnerabilities</a>, <a href="https://seclists.org/oss-sec/2017/q1/25">many of which
     aren't particularly complicated</a>. <br>
@@ -182,7 +182,7 @@
     <br>
     Most programs on Linux are written in memory unsafe languages, such as C or C++, which causes <a
     href="https://msrc-blog.microsoft.com/2019/07/16/a-proactive-approach-to-more-secure-code/">the majority of discovered security vulnerabilities</a>.
-    Other operating systems have made more progress on adopting memory safe languages, such as Windows which is <a
+    Other operating systems have made more progress on adopting memory safe languages, such as Windows, which is <a
     href="https://msrc-blog.microsoft.com/2019/07/22/why-rust-for-safe-systems-programming/">leaning heavily towards Rust, a memory safe language</a>, or
     macOS which is adopting <a href="https://swift.org/">Swift</a>. While Windows and macOS are still mostly written in memory unsafe languages, they are
     at least making some progress on switching to safe alternatives. <br>
@@ -224,7 +224,7 @@
     <li class="lilist">
       <a href="https://blogs.windows.com/msedgedev/2017/02/23/mitigating-arbitrary-native-code-execution/">In 2017, Windows 10 implemented a mitigation</a> known as <a
       href="https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/exploit-protection-reference?view=o365-worldwide#arbitrary-code-guard">
-      Arbitrary Code Guard</a> (ACG) which mitigates the aforementioned exploit technique by ensuring that all executable memory pages are immutable and can never
+      Arbitrary Code Guard</a> (ACG), which mitigates the aforementioned exploit technique by ensuring that all executable memory pages are immutable and can never
       be made writable. Another mitigation known as <a
       href="https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/exploit-protection-reference?view=o365-worldwide#code-integrity-guard">Code
       Integrity Guard</a> (CIG) is similar to ACG, but it applies to the filesystem instead of memory, ensuring that an attacker cannot execute a malicious program
@@ -247,7 +247,7 @@
     As briefly mentioned before, code reuse attacks can be used to achieve near-arbitrary code execution by chaining together snippets of code that already
     exist in the program. ACG and CIG only mitigate one potential attack vector — creating a ROP/JOP chain to transition mappings to executable. However, an
     attacker can still use a pure ROP/JOP chain, relying wholly on the pre-existing gadgets without needing to introduce their own code. This can be mitigated
-    with <a href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">Control Flow Integrity</a> (CFI) which severely restricts the
+    with <a href="https://blog.trailofbits.com/2016/10/17/lets-talk-about-cfi-clang-edition/">Control Flow Integrity</a> (CFI), which severely restricts the
     gadgets an attacker is able to make use of, thus disrupting their chain. <br>
     <br>
     CFI usually has 2 parts: forward-edge protection (covering JOP, COP, etc.) and backward-edge protection (covering ROP). CFI implementations can vary significantly.
@@ -278,7 +278,7 @@
   <h3 id="vbs"><a href="#vbs">2.4 Virtualization-based Security</a></h3>
 
   <p>
-    Windows supports <a href="https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs">Virtualization-based Security</a> (VBS) which allows it
+    Windows supports <a href="https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/oem-vbs">Virtualization-based Security</a> (VBS), which allows it
     to run the entire operating system inside of a virtual machine and is used to enforce a number of security guarantees. Examples of such include:
   </p>
 
@@ -288,8 +288,7 @@
       Code Integrity</a> (HVCI) makes it significantly harder to inject malicious code into the kernel by using the hypervisor to strengthen code integrity guarantees and
       ensuring that all code must be validly signed. Even if an attacker <a href="https://connormcgarr.github.io/pte-overwrites/">has arbitrary write capabilities and can
       corrupt page table entries</a> (PTEs) to manipulate page permissions, they will still be unable to execute their shellcode because the hypervisor that runs at a higher
-      privilege level won't permit it. This can be thought of as similar to <a href="linux.html#acg-cig">ACG</a> but
-      much stronger and for the kernel.
+      privilege level won't permit it. This can be thought of as similar to <a href="linux.html#acg-cig">ACG</a> but much stronger and for the kernel.
     </li>
 
     <li class="lilist">
@@ -307,13 +306,13 @@
   <h2 id="kernel"><a href="#kernel">3. Kernel</a></h2>
 
   <p>
-    The Linux kernel itself is also extremely lacking in security. It is a monolithic kernel which means that it contains a colossal amount of code all within the most privileged part of
+    The Linux kernel itself is also extremely lacking in security. It is a monolithic kernel, which means that it contains a colossal amount of code all within the most privileged part of
     the operating system and has no isolation between internal components whatsoever. The kernel has huge attack surface and is constantly adding new and dangerous features. It encompasses
     hundreds of subsystems, tens of thousands of configuration options and millions of lines of code. The Linux kernel's size grows exponentially across each release, and it can be thought
     of as equivalent to running all user space code as root in PID 1, if not even more dangerous. <br>
     <br>
     One example of such dangerous features is <a href="https://lwn.net/Articles/740157/">eBPF</a>. In a nutshell, eBPF is a very powerful framework within the Linux kernel that allows
-    <em>unprivileged</em> user space to execute arbitrary code within the kernel in order to dynamically extend kernel functionality. eBPF also includes a JIT compiler which is fundamentally
+    <em>unprivileged</em> user space to execute arbitrary code within the kernel in order to dynamically extend kernel functionality. eBPF also includes a JIT compiler, which is fundamentally
     a W^X violation and opens up the possibility of JIT spraying. <a href="https://github.com/torvalds/linux/blob/master/kernel/bpf/verifier.c">The kernel does perform a number of checks
     on the code that is executed</a>, but <a href="https://www.graplsecurity.com/post/kernel-pwning-with-ebpf-a-love-story">these are routinely bypassed</a>, and <a
     href="https://seclists.org/oss-sec/2021/q2/171">this</a> <a
@@ -358,7 +357,7 @@
   <p>
     On ordinary Linux desktops, <a href="https://www.whonix.org/wiki/Dev/Strong_Linux_User_Account_Isolation">a compromised non-root user account with access to
     sudo is equal to full root compromise</a>, as there are an abundance of ways for an attacker to retrieve the sudo password. Usually, the standard
-    user is part of the "sudo" or "wheel" group which makes a sudo password security theater. For example, the attacker can exploit the plethora of keylogging
+    user is part of the "sudo" or "wheel" group which makes a sudo password security theatre. For example, the attacker can exploit the plethora of keylogging
     opportunities, such as <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">Xorg’s lack of GUI isolation</a>,
     <a href="https://www.usenix.org/legacy/event/sec09/tech/full_papers/zhang.pdf">the</a> <a href="https://www.openwall.com/lists/oss-security/2011/11/05/3">many</a>
     <a href="https://staff.ie.cuhk.edu.hk/~khzhang/my-papers/2016-oakland-interrupt.pdf">infoleaks</a> <a href="https://www.repository.cam.ac.uk/handle/1810/254306">in the</a>
@@ -371,14 +370,14 @@
     much harder to pull off than on Linux. For example, Windows' <a href="https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-overview">
     User Account Control</a> (UAC) provides the <a
     href="https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/user-account-control-switch-to-the-secure-desktop-when-prompting-for-elevation">
-    secure desktop functionality</a> which can make spoofing it significantly harder, provided one is using a standard user account. Moreover, Windows better prevents
+    secure desktop functionality</a>, which can make spoofing it significantly harder, provided one is using a standard user account. Moreover, Windows better prevents
     keylogging by <a href="https://docs.microsoft.com/en-us/previous-versions/dotnet/articles/bb625963(v=msdn.10)#user-interface-privilege-isolation-uipi-and-integrity">
     isolating processes that run at lower integrity levels from those that run at higher integrity levels</a>, therefore mitigating Xorg-style attacks. Windows also <a
     href="https://docs.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-security">restricts DLL preloading</a> by <a
     href="https://docs.microsoft.com/en-us/windows/win32/dlls/secure-boot-and-appinit-dlls">disabling the AppInit_DLLs functionality when secure boot is enabled</a> and
     providing a way to <a href="https://docs.microsoft.com/en-gb/windows/win32/api/libloaderapi/nf-libloaderapi-setdefaultdlldirectories"> restrict DLL search paths</a>,
     therefore also mitigating many <code>LD_PRELOAD</code>-style attacks. Similarly, macOS includes the <a
-    href="https://developer.apple.com/library/archive/technotes/tn2150/_index.html">secure event input</a> feature which thwarts many keylogging attempts and secures
+    href="https://developer.apple.com/library/archive/technotes/tn2150/_index.html">secure event input</a> feature, which thwarts many keylogging attempts and secures
     keyboard input. In addition, macOS' <a href="https://support.apple.com/en-us/HT204899">System Integrity Protection</a> and <a
     href="https://developer.apple.com/documentation/security/hardened_runtime">Hardened Runtime</a> features can also prevent <code>LD_PRELOAD</code>-style attacks.
   </p>
@@ -449,7 +448,7 @@ xinput test id # Replace "id" with the ID from the above command.</code></pre>
     href="https://github.com/gregkh/presentation-cve-is-dead/blob/master/cve-linux-kernel.pdf">is</a> <a
     href="https://grsecurity.net/reports_of_cves_death_greatly_exaggerated">particularly</a> <a
     href="https://blog.frizn.fr/linux-kernel/cve-2020-14381">bad</a> <a href="https://seclists.org/oss-sec/2019/q2/165">at this</a>.    
-    Even when there is a CVE assigned to an issue, sometimes fixes still aren't backported, such as in the Debian Chromium package
+    Even when there is a CVE assigned to an issue, sometimes fixes still aren't backported, such as in the Debian Chromium package,
     which is <a href="https://forums.whonix.org/t/chromium-browser-for-kicksecure-discussions-not-whonix/10388/49">still affected
     by many severe and public vulnerabilities, some of which are even being exploited in the wild</a>. <br>
     <br>

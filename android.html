@@ -14,7 +14,7 @@
 <body>
   <h1>Android</h1>
 
-  <p class="date"><em><time datetime="2022-03-06">Last edited: March 6th, 2022</time></em></p>
+  <p class="date"><em><time datetime="2022-03-11">Last edited: March 11th, 2022</time></em></p>
 
   <p>
     By default, Android has a <a href="https://arxiv.org/abs/1904.05572">strong security model</a> and incorporates
@@ -92,8 +92,8 @@
     </li>
 
     <li class="lilist">
-      LineageOS requires an unlocked bootloader, therefore disabling verified boot which <a href="#unlocking-the-bootloader">
-      is essential to verify the integrity of the operating system</a>.
+      LineageOS requires an unlocked bootloader, therefore disabling verified boot, <a href="#unlocking-the-bootloader">
+      which is essential to verify the integrity of the operating system</a>.
     </li>
 
     <li class="lilist">
@@ -119,16 +119,15 @@
 
   <p>
     <a href="https://microg.org/">MicroG</a> is a common alternative to Google Play Services. It is often used to get rid
-    of Google's tracking, but most people do not realise that this can potentially worsen security, as it
-    <a href="https://github.com/microg/android_packages_apps_GmsCore/wiki/Signature-Spoofing">requires signature spoofing
-    support</a> which allows apps to request to bypass signature verification. This subverts the security model and
+    of Google's tracking, but most people do not realise that this can potentially worsen security, as
+    <a href="https://github.com/microg/android_packages_apps_GmsCore/wiki/Signature-Spoofing">it requires signature spoofing
+    support</a>, which allows apps to request to bypass signature verification. This subverts the security model and
     breaks the application sandbox as an app can now masquerade itself as another app to gain access to the app's files.
     In a system with signature spoofing, it is impossible to know anything — there is no way to trust that an application
     is genuinely what it claims to be, and it is impossible to build a strong security model upon this. <br>
     <br>
-    Although some signature spoofing implementations restrict access to this functionality to make it less bad, such as <a
-    href="https://gitlab.com/CalyxOS/platform_frameworks_base/-/commit/bfeee22ba01b6fddb795c6c9b2d93565bb6a4965">CalyxOS'
-    implementation</a>, which allows only microG to spoof the Play Services signature and nothing else.
+    Although some signature spoofing implementations can restrict access to this functionality to reduce the risk by, for
+    example, allowing only microG to spoof the Play Services signature and nothing else.
   </p>
 
   <h2 id="firewalls"><a href="#firewalls">Firewalls</a></h2>
@@ -157,7 +156,7 @@
     retains the baseline security model whilst improving upon it with <a href="https://grapheneos.org/features">substantial
     hardening enhancements</a> — examples of which include a <a href="https://github.com/GrapheneOS/hardened_malloc">hardened
     memory allocator</a>, <a href="https://github.com/GrapheneOS/platform_bionic">hardened C library</a>, <a
-    href="https://github.com/GrapheneOS/kernel_google_coral">hardened kernel</a>, <a
+    href="https://github.com/GrapheneOS/kernel_google_raviole">hardened kernel</a>, <a
     href="https://github.com/GrapheneOS/platform_system_sepolicy">stricter SELinux policies</a> and more. <br>
     <br>
     Pixel devices are also the best hardware to use, as they implement a significant amount of security hardening that most
@@ -195,12 +194,12 @@
       href="https://security.googleblog.com/2019/10/protecting-against-code-reuse-in-linux_30.html">ShadowCallStack</a> — the Pixel kernels
       are compiled with custom hardening patches, which includes <a href="linux.html#cfi">CFI and ShadowCallStack</a> to mitigate code reuse
       attacks, among various other mitigations. While such mitigations are commonly deployed throughout user space, as briefly mentioned at
-      the beginning of the article, it is up to the OEM to enable it in the kernel which is uncommon outside of Pixel devices.
+      the beginning of the article, it is up to the OEM to enable it in the kernel, which is uncommon outside of Pixel devices.
     </li>
     
     <li class="lilist">
       Wi-Fi privacy features — devices connected to a Wi-Fi network can be tracked through a variety of different methods. Primarily, this occurs
-      through <a href="https://en.wikipedia.org/wiki/MAC_address">MAC addresses</a> which are unique identifiers assigned to network interface
+      through <a href="https://en.wikipedia.org/wiki/MAC_address">MAC addresses</a>, which are unique identifiers assigned to network interface
       controllers (NICs). Every time a device connects to a network, its MAC address is exposed. This enables adversaries to track the device and
       uniquely identify it on the local network. Certain mobile devices have attempted to resolve this issue by randomising the MAC address however, <a
       href="https://arxiv.org/pdf/1703.02874.pdf">many don't do this, and the ones that do often use a faulty implementation</a>, resulting in the MAC

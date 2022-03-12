@@ -102,7 +102,7 @@
             <a href="#icmp-timestamps">10.5.1 ICMP timestamps</a> <br>
             <a href="#tcp-timestamps">10.5.2 TCP timestamps</a> <br>
             <a href="#tcp-isns">10.5.3 TCP initial sequence numbers</a> <br>
-            <a href="#time-synchronization">10.5.4 Time synchronization</a> <br>
+            <a href="#time-synchronisation">10.5.4 Time synchronisation</a> <br>
         </details>
         <a href="#keystroke-fingerprinting">10.6 Keystroke fingerprinting</a> <br>
     </details>
@@ -176,7 +176,7 @@
       </li>
 
       <li class="lilist">
-        Use <a href="https://musl.libc.org/">musl</a> as the default C library. musl is heavily focused on minimality which <a
+        Use <a href="https://musl.libc.org/">musl</a> as the default C library. musl is heavily focused on minimality, which <a
         href="https://github.com/NixOS/nixpkgs/issues/90147#issuecomment-643473182">results in very small attack surface</a>, whereas other C libraries
         such as glibc are overly complex and prone to vulnerabilities. For example, <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=glibc">
         over a hundred vulnerabilities in glibc have been publicly disclosed</a>, compared to the <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=musl">
@@ -199,7 +199,7 @@
 
     <p>
       The best distribution to use as a base for your hardened operating system would be <a href="https://www.gentoo.org/">Gentoo Linux</a>, as it allows you to configure
-      your system exactly how you want it to be which will be extremely useful, especially when we come to <a href="#hardened-compilation-flags">more secure compilation
+      your system exactly how you want it to be, which will be extremely useful, especially when we come to <a href="#hardened-compilation-flags">more secure compilation
       flags</a> later in the guide. <br>
       <br>
       However, Gentoo may not be feasible for many people due to its significant usability pitfalls. In this case, <a href="https://voidlinux.org/">Void Linux</a>'s musl
@@ -221,7 +221,7 @@
       releases are an older stable release that is being supported for a long time. <a href="https://www.grsecurity.net/the_truth_about_linux_4_6">
       There are many consequences to choosing either of the aforementioned releases</a>. <br>
       <br>
-      The Linux kernel <a href="https://grsecurity.net/reports_of_cves_death_greatly_exaggerated">does not use CVEs to identify security
+      <a href="https://grsecurity.net/reports_of_cves_death_greatly_exaggerated">The Linux kernel does not use CVEs to identify security
       vulnerabilities properly</a>. This means that fixes for most security vulnerabilities are not able to be backported to LTS kernels;
       but stable releases contain all security fixes made so far. <br>
       <br>
@@ -298,7 +298,7 @@ net.core.bpf_jit_harden=2</code></pre>
     <p>
       This <a href="https://lkml.org/lkml/2019/4/15/890">restricts loading TTY line disciplines</a> to the <code>CAP_SYS_MODULE</code>
       <a href="#capabilities">capability</a> to prevent unprivileged attackers from loading vulnerable line disciplines with the <code>TIOCSETD</code>
-      ioctl which <a href="https://a13xp0p0v.github.io/2017/03/24/CVE-2017-2636.html">has been abused in a number of exploits before</a>.
+      ioctl, which <a href="https://a13xp0p0v.github.io/2017/03/24/CVE-2017-2636.html">has been abused in a number of exploits before</a>.
     </p>
 
     <pre><code>vm.unprivileged_userfaultfd=0</code></pre>
@@ -323,7 +323,7 @@ net.core.bpf_jit_harden=2</code></pre>
       The <a href="https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html">SysRq key</a> exposes a lot of potentially dangerous debugging functionality
       to unprivileged users. Contrary to common assumptions, SysRq is not only an issue for physical attacks, as <a href="https://github.com/xairy/unlockdown">
       it can also be triggered remotely</a>. The value of this sysctl makes it so that a user can only use the <a href="https://www.kernel.org/doc/Documentation/SAK.txt">
-      secure attention key</a> which will be necessary for <a href="#accessing-root-securely">accessing root securely</a>. Alternatively, you can simply set the
+      secure attention key</a>, which will be necessary for <a href="#accessing-root-securely">accessing root securely</a>. Alternatively, you can simply set the
       value to <code>0</code> to disable SysRq completely.
     </p>
 
@@ -343,13 +343,13 @@ net.core.bpf_jit_harden=2</code></pre>
     <pre><code>kernel.perf_event_paranoid=3</code></pre>
 
     <p>
-      Performance events <a href="https://lore.kernel.org/kernel-hardening/1469630746-32279-1-git-send-email-jeffv@google.com/">add considerable
+      <a href="https://lore.kernel.org/kernel-hardening/1469630746-32279-1-git-send-email-jeffv@google.com/">Performance events add considerable
       kernel attack surface and have caused abundant vulnerabilities</a>. This sysctl restricts all usage of performance events to the
       <code>CAP_PERFMON</code> <a href="#capabilities">capability</a> (<code>CAP_SYS_ADMIN</code> on kernel versions prior to 5.8). <br>
       <br>
       Be aware that this sysctl also requires a kernel patch that is only available on certain distributions. Otherwise, this setting is equivalent to
-      <code>kernel.perf_event_paranoid=2</code> which <a href="https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html#unprivileged-users">
-      only restricts a subset of this functionality</a>.
+      <code>kernel.perf_event_paranoid=2</code>, <a href="https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html#unprivileged-users">
+      which only restricts a subset of this functionality</a>.
     </p>
 
     <h4 id="sysctl-network"><a href="#sysctl-network">2.2.2 Network</a></h4>
@@ -357,7 +357,7 @@ net.core.bpf_jit_harden=2</code></pre>
     <pre><code>net.ipv4.tcp_syncookies=1</code></pre>
 
     <p>
-      This helps protect against <a href="https://en.wikipedia.org/wiki/SYN_flood">SYN flood attacks</a> which are a form of denial of service attack,
+      This helps protect against <a href="https://en.wikipedia.org/wiki/SYN_flood">SYN flood attacks</a>, which are a form of denial-of-service attack,
       in which an attacker sends a large amount of bogus SYN requests in an attempt to consume enough resources to make the system unresponsive to
       legitimate traffic.
     </p>
@@ -405,7 +405,7 @@ net.ipv6.conf.default.accept_source_route=0</code></pre>
 
     <p>
       <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security_guide/sect-security_guide-server_security-disable-source-routing">
-      Source routing is a mechanism that allows users to redirect network traffic</a>. As this can be used to perform man-in-the-middle attacks, in which the traffic
+      Source routing is a mechanism that allows users to redirect network traffic</a>. As this can be used to perform man-in-the-middle attacks in which the traffic
       is redirected for nefarious purposes, the above settings disable this functionality.
     </p>
 
@@ -434,7 +434,7 @@ net.ipv4.tcp_fack=0</code></pre>
 
     <p>
       <a href="https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html">ptrace is a system call that allows a program to alter and
-      inspect another running process</a> which allows attackers to trivially modify the memory of other running programs. This restricts
+      inspect another running process</a>, which allows attackers to trivially modify the memory of other running programs. This restricts
       usage of ptrace to only processes with the <code>CAP_SYS_PTRACE</code> <a href="#capabilities">capability</a>. Alternatively, set the sysctl
       to <code>3</code> to disable ptrace entirely.
     </p>
@@ -465,7 +465,7 @@ fs.protected_hardlinks=1</code></pre>
 fs.protected_regular=2</code></pre>
 
     <p>
-      These <a href="https://github.com/torvalds/linux/commit/30aba6656f61ed44cba445a3c0d38b296fa9e8f5">prevent creating files in potentially
+      <a href="https://github.com/torvalds/linux/commit/30aba6656f61ed44cba445a3c0d38b296fa9e8f5">These prevent creating files in potentially
       attacker-controlled environments</a>, such as world-writable directories, to make data spoofing attacks more difficult.
     </p>
 
@@ -500,7 +500,7 @@ fs.protected_regular=2</code></pre>
     <pre><code>slab_nomerge</code></pre>
 
     <p>
-      This disables slab merging which significantly increases the difficulty of heap exploitation by <a
+      This disables slab merging, which significantly increases the difficulty of heap exploitation by <a
       href="https://www.openwall.com/lists/kernel-hardening/2017/06/19/33">preventing overwriting objects from merged caches</a> and
       by <a href="https://www.openwall.com/lists/kernel-hardening/2017/06/20/10">making it harder to influence slab cache layout</a>.
     </p>
@@ -510,7 +510,7 @@ fs.protected_regular=2</code></pre>
     <p>
       This enables <a
       href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6471384af2a6530696fc0203bafe4de41a23c9ef">
-      zeroing of memory during allocation and free time</a> which can help mitigate use-after-free vulnerabilities and erase
+      zeroing of memory during allocation and free time</a>, which can help mitigate use-after-free vulnerabilities and erase
       sensitive information in memory.
     </p>
 
@@ -525,13 +525,14 @@ fs.protected_regular=2</code></pre>
     <pre><code>pti=on</code></pre>
 
     <p>
-      This enables <a href="https://en.wikipedia.org/wiki/Kernel_page-table_isolation">Kernel Page Table Isolation</a> which mitigates Meltdown and prevents some KASLR bypasses.
+      This enables <a href="https://en.wikipedia.org/wiki/Kernel_page-table_isolation">Kernel Page Table Isolation</a>, which mitigates
+      Meltdown and prevents some KASLR bypasses.
     </p>
     
     <pre><code>randomize_kstack_offset=on</code></pre>
     
     <p>
-      This option <a href="https://lkml.org/lkml/2019/3/18/246">randomises the kernel stack offset on each syscall</a> which makes attacks that rely on
+      This option <a href="https://lkml.org/lkml/2019/3/18/246">randomises the kernel stack offset on each syscall</a>, which makes attacks that rely on
       deterministic kernel stack layout significantly more difficult, such as the <a href="https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html">
       exploitation of CVE-2019-18683</a>.
     </p>
@@ -546,7 +547,7 @@ fs.protected_regular=2</code></pre>
     <pre><code>debugfs=off</code></pre>
 
     <p>
-      This disables debugfs which <a href="https://lkml.org/lkml/2020/7/16/122">exposes a lot of sensitive information about the kernel</a>.
+      This disables debugfs, <a href="https://lkml.org/lkml/2020/7/16/122">which exposes a lot of sensitive information about the kernel</a>.
     </p>
 
     <pre><code>oops=panic</code></pre>
@@ -560,7 +561,7 @@ fs.protected_regular=2</code></pre>
     <pre><code>module.sig_enforce=1</code></pre>
 
     <p>
-      This only allows kernel modules that have been signed with a valid key to be loaded which increases security by making it much harder to load a malicious kernel module. This prevents
+      This only allows kernel modules that have been signed with a valid key to be loaded, which increases security by making it much harder to load a malicious kernel module. This prevents
       all out-of-tree kernel modules, including DKMS modules from being loaded <a href="https://www.kernel.org/doc/html/latest/admin-guide/module-signing.html">unless you have signed them</a>,
       meaning that modules such as the VirtualBox or Nvidia drivers may not be usable, although that may not be important, depending on your setup.
     </p>
@@ -614,7 +615,7 @@ fs.protected_regular=2</code></pre>
     <h3 id="hidepid"><a href="#hidepid">2.4 hidepid</a></h3>
 
     <p>
-      <code>/proc</code> is a pseudo-filesystem that contains information about all processes currently running on the system. By default this is accessible to all users which
+      <code>/proc</code> is a pseudo-filesystem that contains information about all processes currently running on the system. By default, this is accessible to all users, which
       can allow an attacker to spy on other processes. To permit users to only see their own processes and not those of other users, you must mount <code>/proc</code>
       with the <code>hidepid=2,gid=proc</code> mount options. <code>gid=proc</code> exempts the <code>proc</code> group from this feature so you can whitelist specific
       users or processes. One way to add these mount options is to edit <code>/etc/fstab</code> and add:
@@ -661,8 +662,8 @@ SupplementaryGroups=proc</code></pre>
       modules to blacklist. <br>
       <br>
       The <code>install</code> parameter tells <code>modprobe</code> to run a specific command instead of loading the module as normal. <code>/bin/false</code>
-      is a command that simply returns <code>1</code> which will essentially do nothing. Both of these together tells the kernel to run <code>/bin/false</code> instead of
-      loading the module which will prevent the module from being exploited by attackers. The following are kernel modules that are most likely to be unnecessary:
+      is a command that simply returns <code>1</code>, which will essentially do nothing. Both of these together tells the kernel to run <code>/bin/false</code> instead of
+      loading the module, which will prevent the module from being exploited by attackers. The following are kernel modules that are most likely to be unnecessary:
     </p>
 
     <pre><code>install dccp /bin/false
@@ -745,7 +746,7 @@ install gfs2 /bin/true</code></pre>
 install btusb /bin/false</code></pre>
 
     <p>
-      This disables Bluetooth which <a href="https://en.wikipedia.org/wiki/Bluetooth#History_of_security_concerns">has a history of security issues</a>.
+      This disables Bluetooth, <a href="https://en.wikipedia.org/wiki/Bluetooth#History_of_security_concerns">which has a history of security issues</a>.
     </p>
 
     <pre><code>install uvcvideo /bin/false</code></pre>
@@ -803,7 +804,7 @@ install btusb /bin/false</code></pre>
       <a href="https://www.kernel.org/doc/html/latest/filesystems/sysfs.html">sysfs</a> is a pseudo-filesystem which provides large quantities of kernel and hardware information. It is
       commonly mounted at <code>/sys</code>. sysfs has been the cause of <a href="https://www.openwall.com/lists/kernel-hardening/2017/10/05/5">numerous information leaks, particularly
       of kernel pointers</a>. Whonix's <a href="https://github.com/Whonix/security-misc">security-misc package</a> includes the <a
-      href="https://github.com/Whonix/security-misc/blob/master/usr/libexec/security-misc/hide-hardware-info">hide-hardware-info script</a> which restricts access to this directory as well
+      href="https://github.com/Whonix/security-misc/blob/master/usr/libexec/security-misc/hide-hardware-info">hide-hardware-info script</a>, which restricts access to this directory as well
       as a few in <code>/proc</code> in an attempt to hide potential hardware identifiers and prevent kernel pointer leaks. This script is configurable and allows <a
       href="https://www.whonix.org/wiki/Security-misc#Whitelisting_Applications">whitelisting specific applications based on groups</a>. It is recommended
       to apply this and make it execute on boot with an init script. For example, <a href="https://github.com/Whonix/security-misc/blob/master/lib/systemd/system/hide-hardware-info.service">this
@@ -852,7 +853,7 @@ SupplementaryGroups=sysfs</code></pre>
       In addition, apply kernel hardening patches, such as <a href="https://github.com/anthraxx/linux-hardened">linux-hardened</a> or <a href="https://grsecurity.net/">grsecurity</a>, as
       mentioned above. <br>
       <br>
-      Distribution-compiled kernels also have public kernel pointers / symbols which are very useful for exploits. Compiling your own kernel will give you unique kernel symbols which,
+      Distribution-compiled kernels also have public kernel pointers / symbols which are very useful for exploits. Compiling your own kernel will give you unique kernel symbols, which,
       along with <code>kptr_restrict</code>, <code>dmesg_restrict</code> and other hardening against kernel pointer leaks, will make it considerably harder for attackers to create exploits
       that rely on kernel pointer knowledge. <br>
       <br>
@@ -1068,7 +1069,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <pre><code>LD_PRELOAD="/usr/lib/libhardened_malloc.so" $program</code></pre>
 
     <p>
-      It can also be used system-wide by globally preloading the library which is the recommended way of using it. To do so, edit
+      It can also be used system-wide by globally preloading the library, which is the recommended way of using it. To do so, edit
       <code>/etc/ld.so.preload</code> and insert:
     </p>
 
@@ -1210,7 +1211,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <h3 id="restricting-su"><a href="#restricting-su">8.2 Restricting su</a></h3>
 
     <p>
-      <code>su</code> lets you switch users from a terminal. By default it tries to login as root. To restrict the use of <code>su</code> to users within the <code>wheel</code> group, edit <code>/etc/pam.d/su</code> and
+      <code>su</code> lets you switch users from a terminal. By default, it tries to login as root. To restrict the use of <code>su</code> to users within the <code>wheel</code> group, edit <code>/etc/pam.d/su</code> and
       <code>/etc/pam.d/su-l</code> and add:
     </p>
 
@@ -1245,7 +1246,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <p>
       You can increase the number of hashing rounds that shadow uses, thereby increasing the security of your hashed passwords by
-      forcing an attacker to compute much more hashes to crack your password. By default, shadow uses 5000 rounds, but you
+      forcing an attacker to compute substantially more hashes to crack your password. By default, shadow uses 5000 rounds, but you
       can increase this to as many as you want. Although the more rounds you configure, the slower it will be to login.
       Edit <code>/etc/pam.d/passwd</code> and add the rounds option. For example:
     </p>
@@ -1264,7 +1265,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
 
     <p>
       Certain distributions run Xorg as the root user by default. This is an issue because Xorg contains a massive amount of ancient,
-      complicated code which adds huge attack surface and makes it more likely to have exploits that can gain root privileges.
+      complicated code, which adds huge attack surface and makes it more likely to have exploits that can gain root privileges.
       To stop it from being executed as root, edit <code>/etc/X11/Xwrapper.config</code> and add:
     </p>
 
@@ -1329,7 +1330,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <p>
       Firewalls can control incoming and outgoing network traffic and can be used to block or allow certain types of traffic. You
       should always block all incoming traffic unless you have a specific reason not to. It is recommended to set up a strict
-      iptables or nftables firewall. Firewalls must be fine-tuned for your system and there is not one ruleset that can fit all of them.
+      iptables or nftables firewall. Firewalls must be fine-tuned for your system, and there is not one ruleset that can fit all of them.
       It is recommended to get familiar with creating firewall rules. The <a href="https://wiki.archlinux.org/index.php/Iptables">Arch Wiki
       </a> and <a href="https://linux.die.net/man/8/iptables">man page</a> are both good resources for this. <br>
       <br>
@@ -1459,20 +1460,20 @@ WantedBy=multi-user.target</code></pre>
 
     <p>
       <a href="https://bitguard.wordpress.com/2019/09/03/an-analysis-of-tcp-secure-sn-generation-in-linux-and-its-privacy-issues/">TCP initial sequence numbers (ISNs) are another method
-      of leaking the system time</a>. To mitigate this, you must install the <a href="https://github.com/0xsirus/tirdad">tirdad kernel module</a> which generates random ISNs for
+      of leaking the system time</a>. To mitigate this, you must install the <a href="https://github.com/0xsirus/tirdad">tirdad kernel module</a>, which generates random ISNs for
       connections.
     </p>
 
-    <h4 id="time-synchronization"><a href="#time-synchronization">10.5.4 Time synchronization</a></h4>
+    <h4 id="time-synchronisation"><a href="#time-synchronisation">10.5.4 Time synchronisation</a></h4>
 
     <p>
-      Time synchronization is vital for anonymity and security. A wrong system clock can expose you to clock skew fingerprinting attacks or can be used to feed you outdated HTTPS
+      Time synchronisation is vital for anonymity and security. A wrong system clock can expose you to clock skew fingerprinting attacks or can be used to feed you outdated HTTPS
       certificates, bypassing certficate expiry or revocation. <br>
       <br>
-      The most popular time synchronization method, <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol">NTP</a>, is insecure, as <a
+      The most popular time synchronisation method, <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol">NTP</a>, is insecure, as <a
       href="https://blog.hboeck.de/archives/863-Dont-update-NTP-stop-using-it.html">it is unencrypted and unauthenticated</a>,
       allowing an attacker to trivially intercept and modify requests. <a href="https://tools.ietf.org/html/rfc5905#page-23">NTP also leaks your local system time in NTP timestamp
-      format</a> which can be used for clock skew fingerprinting, as briefly mentioned before. <br>
+      format</a>, which can be used for clock skew fingerprinting, as briefly mentioned before. <br>
       <br>
       Thus, you should uninstall any NTP clients and disable <a href="https://www.freedesktop.org/software/systemd/man/systemd-timesyncd.service.html">systemd-timesyncd</a> if it is
       in use. Instead of NTP, you can connect to a trusted website over a secure connection (HTTPS or, preferably, a Tor onion service) and extract the current time from the HTTP header.
@@ -1554,7 +1555,7 @@ WantedBy=multi-user.target</code></pre>
     <h3 id="umask"><a href="#umask">11.2 umask</a></h3>
 
     <p>
-      umask sets the default file permissions for newly created files. The default umask is <code>0022</code> which is not very secure, as this gives read access to every user on the system for newly
+      umask sets the default file permissions for newly created files. The default umask is <code>0022</code>, which is not very secure, as this gives read access to every user on the system for newly
       created files. To make new files unreadable by anyone other than the owner, edit <code>/etc/profile</code> and add:
     </p>
 
@@ -1605,7 +1606,7 @@ Storage=none</code></pre>
     <h2 id="swap"><a href="#swap">13. Swap</a></h2>
 
     <p>
-      Similar to <a href="#core-dumps">core dumps</a>, <a href="https://en.wikipedia.org/wiki/Paging">swapping or paging</a> copies parts of memory to disk which can contain
+      Similar to <a href="#core-dumps">core dumps</a>, <a href="https://en.wikipedia.org/wiki/Paging">swapping or paging</a> copies parts of memory to disk, which can contain
       sensitive information. The kernel should be configured to only swap if absolutely necessary with this <a href="#sysctl">sysctl</a>:
     </p>
 
@@ -1614,7 +1615,7 @@ Storage=none</code></pre>
     <h2 id="pam"><a href="#pam">14. PAM</a></h2>
 
     <p>
-      <a href="http://www.linux-pam.org/">PAM</a> is a framework for user authentication. It's what you use when you login. You can make it more secure by requiring strong passwords or enforcing delays
+      <a href="http://www.linux-pam.org/">PAM</a> is a framework for user authentication — it's what you use when you login. You can make it more secure by requiring strong passwords or enforcing delays
       upon failed login attempts. <br>
       <br>
       To enforce strong passwords, you can use <a href="https://linux.die.net/man/8/pam_pwquality">pam_pwquality</a>. It enforces a configurable policy for passwords. For example, if
@@ -1729,8 +1730,8 @@ IPv6PrivacyExtensions=kernel</code></pre>
     <h2 id="editing-as-root"><a href="#editing-as-root">19. Editing files as root</a></h2>
 
     <p>
-      It is unrecommended to run ordinary text editors as root. Most text editors can do much more than simply edit text files and this can be exploited. For example, open <code>vi</code> as root and
-      enter <code>:sh</code>. You now have a root shell with access to your entire system which an attacker can easily exploit. <br>
+      It is unrecommended to run ordinary text editors as root. Most text editors can do much more than simply edit text files, and this can be exploited. For example, open <code>vi</code> as root and
+      enter <code>:sh</code>. You now have a root shell with access to your entire system, which an attacker can easily exploit. <br>
       <br>
       A solution to this is using <code>sudoedit</code>. This copies the file to a temporary location, opens the text editor as an ordinary user, edits the temporary file and overwrites the original
       file as root. This way, the actual editor doesn't run as root. To use <code>sudoedit</code>, execute:
@@ -1755,7 +1756,7 @@ IPv6PrivacyExtensions=kernel</code></pre>
     <p>
       Linux distributions often use HTTP or a mixture of HTTP and HTTPS mirrors by default to download packages from their software repositories. People assume this is fine because
       package managers verify the signatures of packages before installation. However, historically, <a href="https://www.qubes-os.org/news/2021/03/19/qsb-067/">there</a> <a
-      href="https://security.archlinux.org/ASA-201903-7">has</a> <a href="https://security.archlinux.org/ASA-201910-13">been</a> <a href="https://www.debian.org/security/2016/dsa-3733">
+      href="https://security.archlinux.org/ASA-201903-7">have</a> <a href="https://security.archlinux.org/ASA-201910-13">been</a> <a href="https://www.debian.org/security/2016/dsa-3733">
       multiple</a> <a href="https://www.debian.org/security/2019/dsa-4371">bypasses</a> <a href="https://justi.cz/security/2019/01/22/apt-rce.html">of</a> <a
       href="https://justi.cz/security/2018/09/13/alpine-apk-rce.html">this</a>. You should configure your package manager to exclusively download from HTTPS mirrors for defence-in-depth.
     </p>
@@ -1764,7 +1765,7 @@ IPv6PrivacyExtensions=kernel</code></pre>
 
     <p>
       Since Debian Buster, <a href="https://www.debian.org/releases/buster/amd64/release-notes/ch-whats-new.en.html#apt-sandboxing">the package manager, APT has supported optional
-      seccomp-bpf filtering</a>. This restricts the syscalls that APT is allowed to execute which can severely limit an attacker's ability to do harm to the system if they attempt to
+      seccomp-bpf filtering</a>. This restricts the syscalls that APT is allowed to execute, which can severely limit an attacker's ability to do harm to the system if they attempt to
       exploit a vulnerability in APT. To enable this, create <code>/etc/apt/apt.conf.d/40sandbox</code> and add:
     </p>
 
@@ -1778,17 +1779,17 @@ IPv6PrivacyExtensions=kernel</code></pre>
       Full-disk encryption ensures that all data on your drive is encrypted and cannot be read by a physical attacker. Most distributions support enabling encryption during installation. Make sure you set a
       strong password. You can also encrypt your drive manually with <a href="https://wiki.archlinux.org/index.php/Dm-crypt">dm-crypt</a>. <br>
       <br>
-      Be aware that full-disk encryption does not cover <code>/boot</code>. As such, it is still possible to modify the kernel, bootloader and other critical files. To fully protect against tampering you
+      Be aware that full-disk encryption does not cover <code>/boot</code>. As such, it is still possible to modify the kernel, bootloader and other critical files. To fully protect against tampering, you
       must also implement <a href="#verified-boot">verified boot</a>.
     </p>
 
     <h3 id="bios-uefi"><a href="#bios-uefi">21.2 BIOS / UEFI hardening</a></h3>
 
     <p>
-      If you are still using legacy BIOS then you should migrate to UEFI as to take advantage of newer security features. <br>
+      If you are still using legacy BIOS, then you should migrate to UEFI as to take advantage of newer security features. <br>
       <br>
-      Most BIOS or UEFI implementations support setting a password. It is best to enable this and set a very strong password. This is a weak protection though as it is trivial to reset the password. It is
-      often stored in volatile memory, so an attacker just needs to be able to remove the CMOS battery for a few seconds or they can reset it with a jumper on certain motherboards. <br>
+      Most BIOS or UEFI implementations support setting a password. It is best to enable this and set a very strong password. This is a weak protection though, as it is trivial to reset the password. It is
+      often stored in volatile memory, so an attacker just needs to be able to remove the CMOS battery for a few seconds, or they can reset it with a jumper on certain motherboards. <br>
       <br>
       You should also disable all unused devices and boot options, such as USB booting, to reduce attack surface. <br>
       <br>
@@ -1801,7 +1802,7 @@ IPv6PrivacyExtensions=kernel</code></pre>
 
     <p>
       The bootloader executes very early in the boot process and is responsible for loading your operating system. It is very important that you protect your bootloader. Otherwise, it can be tampered
-      with — for example, a local attacker can easily gain a root shell by using <code>init=/bin/bash</code> as a kernel parameter at boot which tells the kernel to execute <code>/bin/bash</code> instead
+      with — for example, a local attacker can easily gain a root shell by using <code>init=/bin/bash</code> as a kernel parameter at boot, which tells the kernel to execute <code>/bin/bash</code> instead
       of your normal init system. You can prevent this by setting a password for your bootloader. <br>
       <br>
       Setting a bootloader password alone is not enough to fully protect it. You must also setup verified boot <a href="#verified-boot">as documented below</a>.
@@ -1919,7 +1920,7 @@ password_pbkdf2 $username $password</code></pre>
 
     <p>
       <a href="https://en.wikipedia.org/wiki/DMA_attack">Direct memory access (DMA) attacks</a> involve gaining complete access to all of system memory by inserting certain physical devices. This can be
-      mitigated via an <a href="https://en.wikipedia.org/wiki/Input%E2%80%93output_memory_management_unit">IOMMU</a> which controls the areas of memory accessible to devices or by blacklisting
+      mitigated via an <a href="https://en.wikipedia.org/wiki/Input%E2%80%93output_memory_management_unit">IOMMU</a>, which controls the areas of memory accessible to devices, or by blacklisting
       particularly vulnerable kernel modules. <br>
       <br>
       To enable the IOMMU, set the following <a href="#boot-parameters">kernel boot parameters</a>:
@@ -1959,12 +1960,12 @@ install thunderbolt /bin/false</code></pre>
       href="#hardened-malloc">hardened memory allocator</a> can purge sensitive data within user space heap memory via the <a href="https://github.com/GrapheneOS/hardened_malloc#configuration">CONFIG_ZERO_ON_FREE
       configuration option</a>. Despite these though, some data may still remain in memory. <br>
       <br>
-      Additionally, modern kernels include a <a href="https://lwn.net/Articles/730006/">reset attack mitigation</a> which commands the firmware to erase data upon shutdown, although this requires <a
+      Additionally, modern kernels include a <a href="https://lwn.net/Articles/730006/">reset attack mitigation</a>, which commands the firmware to erase data upon shutdown, although this requires <a
       href="https://www.trustedcomputinggroup.org/wp-content/uploads/Platform-Reset-Attack-Mitigation-Specification.pdf">firmware support</a>. <br>
       <br>
       Make sure that you shutdown your computer normally, so the mitigations explained above can kick in. <br>
       <br>
-      If none of the above are adequate for your threat model, you can implement <a href="https://tails.boum.org/contribute/design/memory_erasure/">Tails' memory erasure process</a> which erases the majority of
+      If none of the above are adequate for your threat model, you can implement <a href="https://tails.boum.org/contribute/design/memory_erasure/">Tails' memory erasure process</a>, which erases the majority of
       memory (with the <a href="https://tails.boum.org/support/known_issues/index.en.html#video-memory">exception of video memory</a>) and has been proven to be effective.
     </p>
 
@@ -1978,25 +1979,23 @@ install thunderbolt /bin/false</code></pre>
       3. Don't leak any information about you or your system, no matter how minor it may seem. <br>
       4. <a href="../security-privacy-advice.html">Follow general security and privacy advice</a>. <br>
       <br>
-      Despite the hardening you have done, you must remember that <a href="../linux.html">Linux is still a fundamentally flawed operating system</a> and no amount of hardening can ever fix it fully.
+      Despite the hardening you have done, you must remember that <a href="../linux.html">Linux is still a fundamentally flawed operating system</a>, and no amount of hardening can ever fix it fully.
     </p>
 
     <h2 id="other-guides"><a href="#other-guides">Other guides</a></h2>
 
     <p>
-      You should perform as much varied research as possible and not rely on a single source of information. One of the largest security problems is the user. These are links to other guides that I find valuable: <br>
-      <br>
-      <a href="https://wiki.archlinux.org/index.php/Security">Arch Linux Security wiki page</a> <br>
-      <br>
-      <a href="https://www.whonix.org/wiki/Documentation">Whonix Documentation</a> <br>
-      <br>
-      <a href="https://apps.nsa.gov/iaarchive/library/ia-guidance/security-configuration/operating-systems/guide-to-the-secure-configuration-of-red-hat-enterprise.cfm">NSA RHEL 5 Hardening Guide</a> (slightly outdated
-      but contains useful information nevertheless) <br>
-      <br>
-      <a href="https://kernsec.org/wiki/index.php/Kernel_Self_Protection_Project/Recommended_Settings">KSPP recommended kernel settings</a> <br>
-      <br>
-      <a href="https://github.com/a13xp0p0v/kconfig-hardened-check/">kconfig-hardened-check</a>
+      You should perform as much varied research as possible and not rely on a single source of information. One of the largest security problems is the user. These are links to other guides that I find valuable:
     </p>
+    
+    <ul>
+      <li><a href="https://wiki.archlinux.org/index.php/Security">Arch Linux Security wiki page</a></li>
+      <li><a href="https://www.whonix.org/wiki/Documentation">Whonix Documentation</a></li>
+      <li><a href="https://apps.nsa.gov/iaarchive/library/ia-guidance/security-configuration/operating-systems/guide-to-the-secure-configuration-of-red-hat-enterprise.cfm">NSA RHEL 5 Hardening Guide</a> (slightly outdated
+      but contains useful information nevertheless)</li>
+      <li><a href="https://kernsec.org/wiki/index.php/Kernel_Self_Protection_Project/Recommended_Settings">KSPP recommended kernel settings</a></li>
+      <li><a href="https://github.com/a13xp0p0v/kconfig-hardened-check/">kconfig-hardened-check</a></li>
+    </ul>
 
     <h2 id="glossary"><a href="#glossary">Glossary</a></h2>
 
