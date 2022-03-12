@@ -140,11 +140,14 @@ thead, tfoot {
 }
 
 .back {
-    font-size: 1.25rem;
-    border-radius: .33em;
     background: #111;
+    border-radius: .33em;
     color: #fefefe;
-    padding: .75rem;
+    display: inline-block;
+    font-size: 1.25rem;
+    margin: 2rem 0 5rem;
+    padding: .4rem .75rem;
+    text-decoration: none;
     border: 0;
 }
 
