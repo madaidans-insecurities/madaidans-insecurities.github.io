@@ -1145,7 +1145,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
       <li class="lilist">
         One of the most common memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialised
         memory</a>. <a href="https://reviews.llvm.org/D54604">Clang</a> and <a href="https://gcc.gnu.org/pipermail/gcc-patches/2021-February/565514.html">
-        GCC</a> both have options to automatically initialise variables</a> with either zero or a specific pattern. It is recommended to initialise
+        GCC</a> both have options to automatically initialise variables with either zero or a specific pattern. It is recommended to initialise
         variables to zero, as using other patterns is more suitable for bug finding than exploit mitigation. To enable this, you must apply the following
         compilation flag:
 
