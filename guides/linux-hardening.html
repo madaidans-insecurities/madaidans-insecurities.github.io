@@ -78,9 +78,9 @@
         <a href="#gvisor">4.4 gVisor</a> <br>
         <a href="#virtual-machines">4.5 Virtual machines</a> <br>
     </details>
-    <a href="#hardened-malloc" class="nodropdown">5. Hardened memory allocator</a> <br>      
+    <a href="#hardened-malloc" class="nodropdown">5. Hardened memory allocator</a> <br>
     <a href="#hardened-compilation-flags" class="nodropdown">6. Hardened compilation flags</a> <br>
-    <a href="#memory-safe-languages" class="nodropdown">7. Memory safe languages</a> <br> 
+    <a href="#memory-safe-languages" class="nodropdown">7. Memory safe languages</a> <br>
     <details>
         <summary><a href="#root">8. The root account</a></summary>
         <a href="#securetty">8.1 /etc/securetty</a> <br>
@@ -90,7 +90,7 @@
         <a href="#increase-hashing-rounds">8.5 Increasing the number of hashing rounds</a> <br>
         <a href="#restricting-xorg">8.6 Restricting Xorg root access</a> <br>
         <a href="#accessing-root-securely">8.7 Accessing root securely</a> <br>
-    </details>        
+    </details>
     <a href="#firewalls" class="nodropdown">9. Firewalls</a> <br>
     <details>
         <summary><a href="#identifiers">10. Identifiers</a></summary>
@@ -147,7 +147,7 @@
             <summary><a href="#bootloader-passwords">21.3 Bootloader passwords</a></summary>
             <a href="#grub">21.3.1 GRUB</a> <br>
             <a href="#syslinux">21.3.2 Syslinux</a> <br>
-            <a href="#systemd-boot">21.3.3 systemd-boot</a> <br> 
+            <a href="#systemd-boot">21.3.3 systemd-boot</a> <br>
         </details>
         <a href="#verified-boot">21.4 Verified boot</a> <br>
         <a href="#usbs">21.5 USBs</a> <br>
@@ -477,14 +477,14 @@ fs.protected_regular=2</code></pre>
       similar to sysctl. Bootloaders often differ in how boot parameters are set. A few examples are listed below, but you should
       research the required steps for your specific bootloader.
     </p>
-    
+
     <ul>
       <li>If using GRUB as your bootloader, edit <code>/etc/default/grub</code>, and add your parameters to the <code>
       GRUB_CMDLINE_LINUX_DEFAULT=</code> line.</li>
       <li>If using Syslinux, edit <code>/boot/syslinux/syslinux.cfg</code>, and add them to the <code>APPEND</code> line.</li>
       <li>If using systemd-boot, edit your loader entry, and append them to the end of the <code>linux</code> line.</li>
     </ul>
-    
+
     <p>
       The following settings are recommended to increase security. <br>
       <br>
@@ -529,9 +529,9 @@ fs.protected_regular=2</code></pre>
       This enables <a href="https://en.wikipedia.org/wiki/Kernel_page-table_isolation">Kernel Page Table Isolation</a>, which mitigates
       Meltdown and prevents some KASLR bypasses.
     </p>
-    
+
     <pre><code>randomize_kstack_offset=on</code></pre>
-    
+
     <p>
       This option <a href="https://lkml.org/lkml/2019/3/18/246">randomises the kernel stack offset on each syscall</a>, which makes attacks that rely on
       deterministic kernel stack layout significantly more difficult, such as the <a href="https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html">
@@ -1988,7 +1988,7 @@ install thunderbolt /bin/false</code></pre>
     <p>
       You should perform as much varied research as possible and not rely on a single source of information. One of the largest security problems is the user. These are links to other guides that I find valuable:
     </p>
-    
+
     <ul>
       <li><a href="https://wiki.archlinux.org/index.php/Security">Arch Linux Security wiki page</a></li>
       <li><a href="https://www.whonix.org/wiki/Documentation">Whonix Documentation</a></li>
