@@ -17,6 +17,7 @@ body {
     color: #222;
     max-width: 700px;
     margin: auto;
+    transition: all .25s ease-in-out;
 }
 
 ul {
