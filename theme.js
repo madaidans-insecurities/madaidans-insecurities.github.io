@@ -28,22 +28,6 @@ window.addEventListener("change", () => {
     }
 });
 
-function changeTheme() {
-    const theme = localStorage.getItem(key);
-    if (!theme) {
-        matchSystem();
-    }
-
-    switch (localStorage.getItem(key)) {
-        case "light":
-            localStorage.setItem(key, "dark");
-            break;
-        case "dark":
-            localStorage.setItem(key, "light");
-    }
-    window.dispatchEvent(change);
-}
-
 // Set page theme to change when the system theme is changed
 media.onchange = () => {
     localStorage.setItem(key, media.matches ? "light" : "dark");
@@ -57,11 +41,5 @@ window.onstorage = (e) => {
     window.dispatchEvent(change);
 };
 
-(() => {
-    localStorage.getItem(key) ?  window.dispatchEvent(change) : matchSystem();
-    document.head.appendChild(style);
-
-    const button = document.querySelector("button");
-    button.style.visibility = "visible";
-    button.addEventListener("click", () => changeTheme());
-})();
+localStorage.getItem(key) ?  window.dispatchEvent(change) : matchSystem();
+document.head.appendChild(style);
