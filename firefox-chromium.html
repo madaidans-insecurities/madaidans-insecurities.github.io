@@ -4,14 +4,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
   <meta name="referrer" content="no-referrer">
-  <link rel="stylesheet" type="text/css" href="styles.css">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+  <script type="module" src="/theme.js"></script>
   <title>Firefox and Chromium | Madaidan's Insecurities</title>
 </head>
 
 <body>
+  <button class="theme-toggle">🌓</button>
   <h1>Firefox and Chromium</h1>
 
   <p class="date"><em><time datetime="2022-03-11">Last edited: March 11th, 2022</time></em></p>
@@ -387,7 +388,7 @@
     of gadgets) rather than fine-grained. Some are probabilistic (they rely on a secret being held and the security properties are not guaranteed) rather than
     deterministic.
   </p>
-  
+
   <h4 id="forward-edge-cfi"><a href="#forward-edge-cfi">2.2.1 Forward-edge CFI</a></h4>
 
   <p>
@@ -400,9 +401,9 @@
     progress. <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1438868">Firefox only enables CFG on Windows</a>; this is not as effective as Clang's CFI because it is
     coarse-grained rather than fine-grained, and this does not apply to other platforms, which are currently devoid of any protection.
   </p>
-  
+
   <h4 id="backward-edge-cfi"><a href="#backward-edge-cfi">2.2.2 Backward-edge CFI</a></h4>
-  
+
   <p>
     As for backward-edge protection, in 2021, <a href="https://security.googleblog.com/2021/05/enabling-hardware-enforced-stack.html">Chrome implemented shadow stacks
     using Intel's Control-flow Enforcement Technology (CET)</a>. <a href="https://en.wikipedia.org/wiki/Shadow_stack">Shadow stacks</a> protect a program's return address
@@ -625,82 +626,82 @@
   <p>
     Many security experts also share these views about Firefox, and a few examples are listed below:
   </p>
-  
+
   <ul>
     <li class="lilist">
       thegrugq, information security researcher: <br>
       <a href="https://medium.com/@thegrugq/tor-and-its-discontents-ef5164845908">Tor and its Discontents</a>
     </li>
-    
+
     <li class="lilist">
       Kenn White, security researcher: <br>
       <a href="https://twitter.com/kennwhite/status/804142071133126656">https://twitter.com/kennwhite/status/804142071133126656</a>
     </li>
-    
+
     <li class="lilist">
       PaXTeam, developer of PaX: <br>
       <a href="https://archive.fo/9aBLk">https://archive.fo/9aBLk</a>
     </li>
-    
+
     <li class="lilist">
       Daniel Micay, lead developer of GrapheneOS: <br>
       <a href="https://grapheneos.org/usage#web-browsing">https://grapheneos.org/usage#web-browsing</a>
     </li>
-    
+
     <li class="lilist">
       Matthew Garrett, Linux developer: <br>
       <a href="https://news.ycombinator.com/item?id=13800323">https://news.ycombinator.com/item?id=13800323</a>
     </li>
-    
+
     <li class="lilist">
       Dan Guido, CEO of Trail of Bits: <br>
       <a href="https://news.ycombinator.com/item?id=13623735">https://news.ycombinator.com/item?id=13623735</a>
     </li>
-    
+
     <li class="lilist">
       Theo de Raadt, lead developer of OpenBsd: <br>
       <a href="https://marc.info/?l=openbsd-misc&m=152872551609819&w=2">https://marc.info/?l=openbsd-misc&m=152872551609819&w=2</a>
     </li>
-    
+
     <li class="lilist">
       Thomas Ptacek, co-founder of Latacora and Matasano Security: <br>
       <a href="https://twitter.com/tqbf/status/930807512609296384">https://twitter.com/tqbf/status/930807512609296384</a>, <br>
       <a href="https://twitter.com/tqbf/status/930860544927649792">https://twitter.com/tqbf/status/930860544927649792</a>, <br>
       <a href="https://twitter.com/tqbf/status/830511154950766595">https://twitter.com/tqbf/status/830511154950766595</a>
     </li>
-    
+
     <li class="lilist">
        qwertyoruiopz, iOS exploit developer: <br>
       <a href="https://twitter.com/qwertyoruiopz/status/805887567493271556">https://twitter.com/qwertyoruiopz/status/805887567493271556</a>, <br>
       <a href="https://twitter.com/qwertyoruiopz/status/730704655748075520">https://twitter.com/qwertyoruiopz/status/730704655748075520</a>
     </li>
-    
+
     <li class="lilist">
       John Wu, Android security engineer: <br>
       <a href="https://twitter.com/topjohnwu/status/1105739918444253184">https://twitter.com/topjohnwu/status/1105739918444253184</a>, <br>
       <a href="https://twitter.com/topjohnwu/status/1455606288419733505">https://twitter.com/topjohnwu/status/1455606288419733505</a>
     </li>
-    
+
     <li class="lilist">
       Chris Rohlf, security engineer: <br>
       <a href="https://twitter.com/chrisrohlf/status/1455549993536966671">https://twitter.com/chrisrohlf/status/1455549993536966671</a>
     </li>
-    
+
     <li class="lilist">
       Matthew Green, cryptographer at Johns Hopkins University: <br>
       <a href="https://twitter.com/matthew_d_green/status/830488564672626690">https://twitter.com/matthew_d_green/status/830488564672626690</a>
     </li>
-    
+
     <li class="lilist">
       Bruno Keith, security researcher at Dataflow Security: <br>
       <a href="https://twitter.com/bkth_/status/1265971734777380865">https://twitter.com/bkth_/status/1265971734777380865</a>
     </li>
-    
+
     <li class="lilist">
       Niklas Baumstark, security researcher at Dataflow Security: <br>
       <a href="https://twitter.com/_niklasb/status/1131129708073107456">https://twitter.com/_niklasb/status/1131129708073107456</a>
     </li>
-    
+
     <li class="lilist">
       The Tor Project investigating ways to harden the Tor Browser; in particular, they conclude that Firefox is too poorly written
       for them to apply PaX's Reuse Attack Protector (in comparison, <a href="https://twitter.com/paxteam/status/730902448018231300">
@@ -708,11 +709,7 @@
       <a href="https://gitlab.torproject.org/tpo/applications/tor-browser/-/wikis/Hardening">https://gitlab.torproject.org/tpo/applications/tor-browser/-/wikis/Hardening</a>
   </ul>
 
-  <p class="p-final">
-    <a href="index.html" class="back">Go back</a>
-  </p>
+  <a class="back" href="/index.html">Go back</a>
 
-  <button class="dark-mode-toggle">🌓</button>
-  <script type="text/javascript" src="toggle.js"></script>
 </body>
 </html>

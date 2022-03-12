@@ -4,14 +4,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; form-action 'none'; upgrade-insecure-requests; block-all-mixed-content; base-uri 'none'">
   <meta name="referrer" content="no-referrer">
-  <link rel="stylesheet" type="text/css" href="styles.css">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+  <script type="module" src="/theme.js"></script>
   <title>Android | Madaidan's Insecurities</title>
 </head>
 
 <body>
+  <button class="theme-toggle">🌓</button>
   <h1>Android</h1>
 
   <p class="date"><em><time datetime="2022-03-11">Last edited: March 11th, 2022</time></em></p>
@@ -172,7 +173,7 @@
       boot. On Pixels, verified boot is implemented securely, and alternative operating systems are often signed with custom
       keys to keep the security model intact.
     </li>
-    
+
     <li class="lilist">
       <a href="https://www.blog.google/products/pixel/titan-m-makes-pixel-3-our-most-secure-phone-yet/">The Titan M chip</a> —
       the Titan M is a tamper-resistant hardware security module that provides a number of security properties. It can securely
@@ -196,7 +197,7 @@
       attacks, among various other mitigations. While such mitigations are commonly deployed throughout user space, as briefly mentioned at
       the beginning of the article, it is up to the OEM to enable it in the kernel, which is uncommon outside of Pixel devices.
     </li>
-    
+
     <li class="lilist">
       Wi-Fi privacy features — devices connected to a Wi-Fi network can be tracked through a variety of different methods. Primarily, this occurs
       through <a href="https://en.wikipedia.org/wiki/MAC_address">MAC addresses</a>, which are unique identifiers assigned to network interface
@@ -215,11 +216,7 @@
     careful regardless of the operating system.
   </p>
 
-  <p class="p-final">
-    <a href="index.html" class="back">Go back</a>
-  </p>
+  <a class="back" href="/index.html">Go back</a>
 
-  <button class="dark-mode-toggle">🌓</button>
-  <script type="text/javascript" src="toggle.js"></script>
 </body>
 </html>
