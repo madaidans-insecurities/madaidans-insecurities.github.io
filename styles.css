@@ -7,11 +7,11 @@
 }
 
 html {
-    font-size: calc(1em + 0.33vw);
+    font-size: calc(1em + .33vw);
 }
 
 body {
-    font-family: Arial, Helvetica Neue, sans-serif;
+    font-family: Arial, 'Helvetica Neue', sans-serif;
     line-height: 1.5;
     background-color: #fefefe;
     color: #222;
@@ -33,7 +33,7 @@ br, li+li, body {
 }
 
 p+p {
-    margin-top: 0.75rem;
+    margin-top: .75rem;
 }
 
 a {
@@ -78,7 +78,7 @@ pre {
 
 code {
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    font-size: 0.85em;
+    font-size: .85em;
     background-color: transparent;
 }
 
@@ -130,7 +130,7 @@ thead, tfoot {
 }
 
 .index-row:after {
-    content: "";
+    content: '';
     display: table;
     clear: both;
 }
@@ -141,10 +141,10 @@ thead, tfoot {
 
 .back {
     font-size: 1.25rem;
-    border-radius: 0.33em;
+    border-radius: .33em;
     background: #111;
     color: #fefefe;
-    padding: 0.75rem;
+    padding: .75rem;
     border: 0;
 }
 
@@ -194,7 +194,7 @@ a.nodropdown {
 
 summary {
     font-size: 1.33rem;
-    margin-left: 0.2rem;
+    margin-left: .2rem;
 }
 
 details[open] > details {
