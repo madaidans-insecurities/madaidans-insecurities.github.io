@@ -14,7 +14,7 @@ function changeTheme() {
     const transition = document.createElement("style");
     transition.textContent = "body { transition: all .25s ease-in-out; }";
     document.head.appendChild(transition);
-    window.dispatchEvent(change);
+    applyTheme();
     setTimeout(() => {document.head.removeChild(transition)}, 250);
 }
 

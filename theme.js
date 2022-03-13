@@ -1,4 +1,3 @@
-const change = new Event("change");
 const key = "mode";
 const media = window.matchMedia("(prefers-color-scheme: light)");
 const style = document.createElement("style");
@@ -14,7 +13,7 @@ const light = `body {
 
 function matchSystem() { localStorage.setItem(key, media.matches ? "light" : "dark"); }
 
-window.addEventListener("change", () => {
+function applyTheme() {
     switch (localStorage.getItem(key)) {
         case "light":
             style.textContent = media.matches ? null : light;
@@ -24,22 +23,22 @@ window.addEventListener("change", () => {
             break;
         default:
             matchSystem();
-            window.dispatchEvent(change);
+            applyTheme();
     }
-});
+}
 
 // Set page theme to change when the system theme is changed
 media.onchange = (e) => {
     localStorage.setItem(key, e.matches ? "light" : "dark");
-    window.dispatchEvent(change);
+    applyTheme();
 };
 
+// Listen for changes in other documents
 window.onstorage = (e) => {
-    if (e.key != key) {
-        return;
+    if (e.key === key) {
+        applyTheme();
     }
-    window.dispatchEvent(change);
 };
 
-localStorage.getItem(key) ?  window.dispatchEvent(change) : matchSystem();
+localStorage.getItem(key) ?  applyTheme() : matchSystem();
 document.head.appendChild(style);
