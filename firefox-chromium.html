@@ -16,7 +16,7 @@
   <button class="theme-toggle">🌓</button>
   <h1>Firefox and Chromium</h1>
 
-  <p class="date"><em><time datetime="2022-03-12">Last edited: March 12th, 2022</time></em></p>
+  <p class="date"><em><time datetime="2022-03-13">Last edited: March 13th, 2022</time></em></p>
 
   <p>
     Firefox is sometimes recommended as a supposedly more secure browser because of its parent company's privacy practices.
@@ -74,7 +74,7 @@
     and utilise a multi-process architecture. The browser splits itself up into different processes (e.g. the content
     process, GPU process, RDD process, etc.) and sandboxes them individually, strictly adhering to the <a
     href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>. It is very important
-    that a browser uses a sandbox as it processes untrusted input by design, poses enormous attack surface and is one of the
+    that a browser uses a sandbox, as it processes untrusted input by design, poses enormous attack surface and is one of the
     most used applications on the system. Without a sandbox, any exploit in the browser can be used to take over the rest of
     the system. Whereas with a sandbox, the attacker would need to chain their exploit with an additional sandbox escape
     vulnerability. <br>
@@ -163,7 +163,7 @@
     is substantially less restrictive than the one imposed by Chromium's sandbox and does not restrict anywhere near the same amount of syscalls and their arguments.
     One example of this is that <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1302711">there is very little filtering of ioctl calls</a> — <a
     href="https://searchfox.org/mozilla-central/rev/9ae77e4ce3378bd683ac9a86b729ea6b6bd22cb8/security/sandbox/linux/SandboxFilter.cpp#1291">only TTY-related ioctls
-    are blocked in the content process</a>. This is problematic because ioctl is a particularly powerful syscall that presents a massive kernel attack surface as it
+    are blocked in the content process</a>. This is problematic because ioctl is a particularly powerful syscall that presents a massive kernel attack surface, as it
     comprises of hundreds of different syscalls, somewhat similar to NT's Win32k. Unlike Firefox, <a
     href="https://github.com/chromium/chromium/search?q=path%3A%2Fsandbox+RestrictIoctl">Chromium permits only the few ioctls that are necessary in its sandbox</a>,
     which reduces kernel attack surface by a considerable amount. In a similar fashion, <a href="https://kernsec.org/files/lss2015/vanderstoep.pdf">Android implemented
@@ -266,8 +266,8 @@
     <br>
     However, Chromium's application of ACG is still currently limited due to the inherent incompatibility with JIT engines, which dynamically generate code
     (<a href="#jit-hardening">JIT is explained in further detail below</a>). <a
-    href="https://github.com/chromium/chromium/search?q=MITIGATION_DYNAMIC_CODE_DISABLE">ACG is primarily enabled in relatively minor processes, such as the
-    proxy resolver and icon reader processes</a>, however, some notable ones, such as the audio process, also have it enabled. Additionally, if V8's
+    href="https://github.com/chromium/chromium/search?q=MITIGATION_DYNAMIC_CODE_DISABLE">ACG is primarily enabled in relatively minor processes</a>, such as the
+    proxy resolver and icon reader processes; however, some notable ones, such as the audio process, also have it enabled. Additionally, if V8's
     <a href="https://v8.dev/blog/jitless">JITless mode</a> is enabled, then Chromium also
     <a href="https://github.com/chromium/chromium/commit/9475a21dd27b4a487f410e62a167ff86b4d35287">enables ACG in the renderer process</a>; Firefox does not
     enable ACG in the renderer regardless of JIT.
@@ -413,7 +413,7 @@
     href="https://github.com/chromium/chromium/blob/12c232c43ce7324d308afab5349b38b7707d8226/content/public/common/sandboxed_process_launcher_delegate.cc#L38">Chromium
     automatically enables this for all processes</a> with a flag to opt out of it on a case-by-case basis. The only notable process that does opt out of CET is the renderer
     process however, <a href="https://github.com/chromium/chromium/blob/12c232c43ce7324d308afab5349b38b7707d8226/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.cc#L107">
-    CET is enabled when V8 is running in JITless mode</a>, similar to ACG, as mentioned above. <br>
+    CET is enabled in the renderer when V8 is running in JITless mode</a>, similar to ACG, as mentioned above. <br>
     <br>
     Stable releases of Firefox currently lack any backward-edge protection. <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1626950">CET support has only been implemented
     in Firefox Nightly</a>, but <a href="https://searchfox.org/mozilla-central/rev/c3894603d85d2e45dbebf9697f1951ab998b22cb/modules/libpref/init/StaticPrefList.yaml#11673">this
@@ -545,7 +545,7 @@
   <p>
     Furthermore, Firefox lacks a hardened memory allocator. Firefox currently uses <a href="https://searchfox.org/mozilla-central/source/memory/build/mozjemalloc.cpp">
     mozjemalloc</a>, which is a fork of <a href="https://github.com/jemalloc/jemalloc">jemalloc</a>. Jemalloc is a performance-oriented
-    memory allocator — it does not have a focus on security which makes it <a
+    memory allocator — it does not have a focus on security, which makes it <a
     href="https://media.blackhat.com/bh-us-12/Briefings/Argyoudis/BH_US_12_Argyroudis_Exploiting_the_%20jemalloc_Memory_%20Allocator_Slides.pdf">
     very prone to exploitation</a>. Mozjemalloc does add on a few security features to jemalloc which are useful, but <a
     href="https://lists.torproject.org/pipermail/tor-dev/2019-August/013990.html">they are not enough to
@@ -592,7 +592,10 @@
   <h4 id="partitionalloc-other"><a href="#partitionalloc-other">2.5.3 Other</a></h4>
 
   <p>
-    In addition, PartitionAlloc is working on many promising upcoming security features, such as their <a href="https://docs.google.com/presentation/d/1QvfZXx5HdUl0IdkBcrx-NM0ua-PVcTi2jNx0Sf-n8Fo/">
+    PartitionAlloc has a <a href="https://github.com/chromium/chromium/blob/44b86c998d26d0072bc48d63b3d0f5570ee50f31/base/allocator/partition_allocator/partition_page.h#L688-L689">naive check for
+    double frees</a>, but <a href="https://blog.infosectcbr.com.au/2020/05/double-frees-in-chromes-partition-alloc.html">it isn't difficult to bypass</a>, so it's not a major feature. <br>
+    <br>
+    More importantly, PartitionAlloc is working on many promising upcoming security features, such as their <a href="https://docs.google.com/presentation/d/1QvfZXx5HdUl0IdkBcrx-NM0ua-PVcTi2jNx0Sf-n8Fo/">
     MiraclePtr and *Scan</a> projects to effectively mitigate most use-after-free exploits.
   </p>
 
