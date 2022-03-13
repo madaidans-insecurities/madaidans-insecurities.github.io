@@ -29,8 +29,8 @@ window.addEventListener("change", () => {
 });
 
 // Set page theme to change when the system theme is changed
-media.onchange = () => {
-    localStorage.setItem(key, media.matches ? "light" : "dark");
+media.onchange = (e) => {
+    localStorage.setItem(key, e.matches ? "light" : "dark");
     window.dispatchEvent(change);
 };
 
