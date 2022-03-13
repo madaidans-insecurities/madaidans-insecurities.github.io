@@ -1,3 +1,13 @@
+let firstLoad = true;
+
+window.addEventListener("pageshow", () => {
+    if (!firstLoad) {
+        localStorage.getItem(key) ?  applyTheme() : matchSystem();
+        return
+    }
+    firstLoad = false;
+});
+
 function changeTheme() {
     const theme = localStorage.getItem(key);
     if (!theme) {
@@ -14,7 +24,7 @@ function changeTheme() {
     const transition = document.createElement("style");
     transition.textContent = "body { transition: all .25s ease-in-out; }";
     document.head.appendChild(transition);
-    window.dispatchEvent(change);
+    applyTheme();
     setTimeout(() => {document.head.removeChild(transition)}, 250);
 }
 
