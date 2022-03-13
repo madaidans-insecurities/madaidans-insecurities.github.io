@@ -515,7 +515,7 @@
     <br>
     Something similar to Safari's <a href="https://googleprojectzero.blogspot.com/2020/09/jitsploitation-three.html">"Bulletproof JIT"</a>
     would have been a better approach, utilising two separate mappings — one writable and one executable, with the writable mapping being placed at a secret location in memory,
-    concealed via execute-only memory. Similarly, <a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/09_2_2.pdf">secure dynamic code generation</a> (SDCG),
+    concealed via execute-only memory. Similarly, <a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/09_2_2.pdf">secure dynamic code generation</a> (SDCG)
     would also be a better approach — SDCG works by dynamically generating code inside a separate, trusted process. This means that it's not easily exploitable from within an
     untrusted renderer because the code is always read-only under all circumstances. <br>
     <br>
@@ -627,9 +627,9 @@
     Windows' Control Flow Guard support in Clang</a>. <br>
     <br>
     Firefox also uses <a href="https://hacks.mozilla.org/2020/02/securing-firefox-with-webassembly/">RLBox</a>, but <a
-    href="https://bugzilla.mozilla.org/show_bug.cgi?id=1673529">this is only used to sandbox three libraries</a> (<a
-    href="https://bugzilla.mozilla.org/show_bug.cgi?id=1566288">Graphite</a>, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1625876">Ogg</a> and
-    <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1653659">hunspell</a>), which again, is not anything substantial.
+    href="https://searchfox.org/mozilla-central/rev/e3ac5a25db15a6ec1636a1bb317b304b75a0bc95/security/rlbox/moz.build">this is currently only used to
+    sandbox five libraries</a>, which again, is not anything substantial and is not a replacement for a fine-grained sandboxing architecture covering the
+    browser as a whole.
   </p>
 
   <h2 id="security-researcher-views"><a href="#security-researcher-views">4. Other Security Researchers' Views on Firefox</a></h2>
