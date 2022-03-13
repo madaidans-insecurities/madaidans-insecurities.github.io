@@ -562,7 +562,7 @@
 
   <p>
     <a href="https://labs.f-secure.com/archive/isolated-heap-friends-object-allocation-hardening-in-web-browsers/">Memory partitioning</a> is an exploit mitigation in which the memory allocator
-    segregates different types of objects into their own separate, isolated heap so that, for example, a heap overflow would not be able corrupt an object from another heap. <br>
+    segregates different objects into their own separate, isolated heap, based on their type and size so that, for example, a heap overflow would not be able corrupt an object from another heap. <br>
     <br>
     Chromium's PartitionAlloc was explicitly designed with this mitigation in mind (hence the name); <a
     href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md#security">strong memory partitioning with no reused memory between partitions
