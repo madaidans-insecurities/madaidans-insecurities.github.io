@@ -15,7 +15,7 @@
   <button class="theme-toggle">🌓</button>
   <h1>Firefox and Chromium</h1>
 
-  <p class="date"><em><time datetime="2022-03-11">Last edited: March 11th, 2022</time></em></p>
+  <p class="date"><em><time datetime="2022-03-12">Last edited: March 12th, 2022</time></em></p>
 
   <p>
     Firefox is sometimes recommended as a supposedly more secure browser because of its parent company's privacy practices.
@@ -263,8 +263,8 @@
     Firefox only enables ACG and CIG in the socket process</a> (<a href="#missing-processes">which isn't enabled yet</a>) and <a
     href="https://bugzilla.mozilla.org/show_bug.cgi?id=1620114">CIG in the RDD process</a>. <br>
     <br>
-    However, Chromium's application of ACG is still currently limited due to the inherent incompatibility with JIT engines which require memory that is
-    simultaneously writable and executable (<a href="#jit-hardening">JIT is explained in further detail below</a>). <a
+    However, Chromium's application of ACG is still currently limited due to the inherent incompatibility with JIT engines, which dynamically generate code
+    (<a href="#jit-hardening">JIT is explained in further detail below</a>). <a
     href="https://github.com/chromium/chromium/search?q=MITIGATION_DYNAMIC_CODE_DISABLE">ACG is primarily enabled in relatively minor processes, such as the
     proxy resolver and icon reader processes</a>, however, some notable ones, such as the audio process, also have it enabled. Additionally, if V8's
     <a href="https://v8.dev/blog/jitless">JITless mode</a> is enabled, then Chromium also
@@ -477,14 +477,15 @@
   <h3 id="jit-hardening"><a href="#jit-hardening">2.4 JIT Hardening</a></h3>
 
   <p>
-    All common browsers include a <a href="https://en.wikipedia.org/wiki/Just-in-time_compilation">JIT compiler</a> to improve performance. There is an inherent security
-    hole in JIT however and that is the requirement of memory that is both writable and executable — a <a href="https://en.wikipedia.org/wiki/W%5EX">W^X</a> violation
-    which, <a href="#acg-cig">as discussed above</a>, can aid exploitation. In an attempt to lessen the security risks posed by this feature without sacrificing the
-    performance gains, <a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2017_10-4_Lian_paper.pdf">browsers have adopted JIT hardening techniques</a>
-    to make exploiting the JIT compiler significantly more difficult. <a href="https://github.com/struct/research/blob/master/Attacking_Clientside_JIT_Compilers_Paper.pdf">
-    In a study on attacking JIT compilers by Chris Rohlf</a>, the hardening techniques implemented in various JIT engines were analysed and compared. This study showed that
-    the JIT engine in Chromium (<a href="https://v8.dev/">V8</a>) has substantially better protections than the one used in Firefox (<a
-    href="https://wiki.mozilla.org/JaegerMonkey">JaegerMonkey</a>). In particular, the mitigations which Chromium used that Firefox did not use include:
+    All mainstream browsers include a <a href="https://en.wikipedia.org/wiki/Just-in-time_compilation">JIT compiler</a> to improve performance. This involves dynamically
+    compiling and executing JavaScript as native code; however, there is an inherent security hole in JIT, and that is the possibility of an attacker injecting arbitrary
+    code as a result of JIT being an innate <a href="https://en.wikipedia.org/wiki/W%5EX">W^X</a> violation, <a href="#acg-cig">as discussed above</a>. In an attempt
+    to lessen the security risks posed by this feature without sacrificing the performance gains,
+    <a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2017_10-4_Lian_paper.pdf">browsers have adopted JIT hardening techniques</a> to make exploiting
+    the JIT compiler more difficult. <a href="https://github.com/struct/research/blob/master/Attacking_Clientside_JIT_Compilers_Paper.pdf">In a study on attacking JIT
+    compilers published by Chris Rohlf</a>, the hardening techniques implemented in various JIT engines were analysed and compared. This study demonstrated that the JIT
+    engine used in Chromium (<a href="https://v8.dev/">V8</a>) applies substantially better protections than the engine used in Firefox (<a
+    href="https://wiki.mozilla.org/JaegerMonkey">JaegerMonkey</a>). In particular, the mitigations which Chromium implemented that Firefox did not use include:
   </p>
 
   <ul>
@@ -497,16 +498,25 @@
   </ul>
 
   <p>
-    Since the publication of the paper, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=677272">Firefox has not made much progress on adopting these techniques</a>.
-    Examples of such include <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1376819"> constant blinding</a> and <a
-    href="https://bugzilla.mozilla.org/show_bug.cgi?id=729824">NOP insertion</a>. <br>
+    Since the publication of the paper, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=677272">Firefox has made limited progress on adopting these techniques</a>.
+    Examples of lacking mitigations include <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1376819">constant blinding</a> and <a
+    href="https://bugzilla.mozilla.org/show_bug.cgi?id=729824">NOP insertion</a>. On the other hand, <a
+    href="https://www.usenix.org/system/files/conference/woot18/woot18-paper-gawlik.pdf">JIT hardening mitigations are not particularly strong</a> and can often be bypassed,
+    so these may not be as consequential as other security features. <br>
     <br>
-    Firefox attempted to harden the JIT engine by adding a so-called "W^X JIT", but this fails to hinder actual exploits as it is vulnerable to a race window in which an attacker can
-    write their shellcode to the memory mapping when it's writable and wait for the engine to transition it to executable. Additionally, due to the lack of CFI in Firefox, there are
-    also many gadgets available for an attacker to force transition the mapping to executable, such as <code>ExecutableAllocator::makeExecutable</code> or <code>mprotect</code> /
-    <code>VirtualAlloc</code> in the C library. Something similar to Safari's <a href="https://googleprojectzero.blogspot.com/2020/09/jitsploitation-three.html">"Bulletproof JIT"</a>
-    would have been a better approach, utilising two separate mappings — one writable and one executable with the writable mapping being placed at a secret location in memory, concealed
-    via execute-only memory. <br>
+    Firefox did attempt to harden the JIT engine by adding a so-called <a href="https://jandemooij.nl/blog/wx-jit-code-enabled-in-firefox/">"W^X JIT"</a>, but this fails to
+    hinder actual exploits, as <a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/09_2_2.pdf">it is vulnerable to a race window</a> in which an attacker can
+    write their shellcode to the memory mapping when it's writable and wait for the engine to transition it to executable. Additionally, due to the lack of CFI in Firefox,
+    there are also many gadgets available for an attacker to force transition the mapping to executable, such as <code>ExecutableAllocator::makeExecutable</code> or
+    <code>mprotect</code> / <code>VirtualAlloc</code> in the C library. Furthermore, <a
+    href="https://github.com/v8/v8/blob/fb39eec368c1433d01ec38775be5fbdd7ba8c015/src/flags/flag-definitions.h#L1260">V8 has also adopted a similar, equally futile mitigation</a>,
+    so even if this were useful, it's not an advantage over Chromium. <br>
+    <br>
+    Something similar to Safari's <a href="https://googleprojectzero.blogspot.com/2020/09/jitsploitation-three.html">"Bulletproof JIT"</a>
+    would have been a better approach, utilising two separate mappings — one writable and one executable, with the writable mapping being placed at a secret location in memory,
+    concealed via execute-only memory. Similarly, <a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/09_2_2.pdf">secure dynamic code generation</a> (SDCG),
+    would also be a better approach — SDCG works by dynamically generating code inside a separate, trusted process. This means that it's not easily exploitable from within an
+    untrusted renderer because the code is always read-only under all circumstances. <br>
     <br>
     <a href="https://archive.fo/9aBLk">As PaX Team noted in 2015</a>: <br>
     <br>
