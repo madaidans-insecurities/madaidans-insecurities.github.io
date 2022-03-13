@@ -1,3 +1,13 @@
+let firstLoad = true;
+
+window.addEventListener("pageshow", () => {
+    if (!firstLoad) {
+        localStorage.getItem(key) ?  applyTheme() : matchSystem();
+        return
+    }
+    firstLoad = false;
+});
+
 function changeTheme() {
     const theme = localStorage.getItem(key);
     if (!theme) {
