@@ -101,7 +101,7 @@
     href="https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/security/side-channel-threat-model.md">the only proper
     mitigation is through site isolation</a>. <br>
     <br>
-    Firefox fully rolled out their Fission project in <a href="https://www.mozilla.org/en-US/firefox/95.0/releasenotes/">Firefox 95</a> however,
+    Firefox fully rolled out their Fission project in <a href="https://www.mozilla.org/en-US/firefox/95.0/releasenotes/">Firefox 95</a>. However,
     Fission in its current state is not as mature as Chromium's site isolation, and it will take many more years for it to reach that point.
     Fission still suffers from all the security issues of the baseline content process sandbox, as documented below, and it is
     not a panacea for all sandboxing issues. However, more specific to Fission itself, there are <a
@@ -115,7 +115,7 @@
   <p>
     Excluding the issue
     of site isolation, only the Firefox sandbox on Windows is even comparable to the <a
-    href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md">Chromium sandbox</a> however,
+    href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md">Chromium sandbox</a>; however,
     <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=win32k">it still lacks</a> <a
     href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md#win32k_sys-lockdown">win32k lockdown</a>. Win32k is a set of
     dangerous system calls in the NT kernel that expose a lot of attack surface and <a
@@ -147,7 +147,7 @@
     </li>
 
     <li class="lilist">
-      <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/">PulseAudio</a> is a common sound server on Linux however, <a
+      <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/">PulseAudio</a> is a common sound server on Linux. However, <a
       href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/AccessControl/">it was not written with isolation in mind</a>, making it
       possible to escape sandboxes with it. Like X11, <a href="https://searchfox.org/mozilla-central/search?q=pulseaudio&path=security%2Fsandbox%2Flinux">Firefox
       exposes this directly to the content process</a>, permitting another trivial sandbox escape, while <a
@@ -190,7 +190,7 @@
   <ul>
     <li class="lilist">
       On Linux, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1653444">Firefox has no separate GPU process</a>, meaning it cannot be independently sandboxed.
-      <a href="https://wiki.mozilla.org/Security/Sandbox/Process_model#GPU_Process">This process exists on Windows</a> however, <a
+      <a href="https://wiki.mozilla.org/Security/Sandbox/Process_model#GPU_Process">This process exists on Windows</a>, although <a
       href="https://bugzilla.mozilla.org/show_bug.cgi?id=1347710">the sandboxing for it is still not enabled</a>.
     </li>
 
@@ -213,7 +213,7 @@
   </ul>
 
   <p>
-    Later in this article, tables are presented which directly compare some of the mitigations used in Chromium processes to their Firefox equivalents however, they
+    Later in this article, tables are presented which directly compare some of the mitigations used in Chromium processes to their Firefox equivalents. However, they
     do not list every single process because they would become huge and Firefox would only have a small fraction of processes to be compared with. Instead, only a subset
     of particularly important processes are included.
   </p>
@@ -412,7 +412,7 @@
     differ. If so, this would indicate an attack and the program will abort, therefore mitigating ROP attacks. <a
     href="https://github.com/chromium/chromium/blob/12c232c43ce7324d308afab5349b38b7707d8226/content/public/common/sandboxed_process_launcher_delegate.cc#L38">Chromium
     automatically enables this for all processes</a> with a flag to opt out of it on a case-by-case basis. The only notable process that does opt out of CET is the renderer
-    process however, <a href="https://github.com/chromium/chromium/blob/12c232c43ce7324d308afab5349b38b7707d8226/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.cc#L107">
+    process. However, <a href="https://github.com/chromium/chromium/blob/12c232c43ce7324d308afab5349b38b7707d8226/content/browser/renderer_host/renderer_sandboxed_process_launcher_delegate.cc#L107">
     CET is enabled in the renderer when V8 is running in JITless mode</a>, similar to ACG, as mentioned above. <br>
     <br>
     Stable releases of Firefox currently lack any backward-edge protection. <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1626950">CET support has only been implemented
@@ -426,7 +426,7 @@
     Untrusted fonts have historically been a common source of vulnerabilities within Windows. As such, Windows includes a mitigation to <a
     href="https://docs.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/feature-to-block-untrusted-fonts">block untrusted fonts from specific processes
     to reduce attack surface</a>. <a href="https://github.com/chromium/chromium/commit/441d852dbcb7b9b31328393c7e31562b1e268399">Chromium added support for this in 2016</a>
-    in the form of <code>MITIGATION_NONSYSTEM_FONT_DISABLE</code> and enabled it for most child processes however, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1689128">
+    in the form of <code>MITIGATION_NONSYSTEM_FONT_DISABLE</code> and enabled it for most child processes; however, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1689128">
     Firefox has yet to enable this in any</a>.
   </p>
 
@@ -568,7 +568,7 @@
     href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md#security">strong memory partitioning with no reused memory between partitions
     is one of PartitionAlloc's core goals</a>. <br>
     <br>
-    <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1052575">Firefox's mozjemalloc also eventually implemented some support for partitioning</a> however, <a
+    <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1052575">Firefox's mozjemalloc also eventually implemented some support for partitioning</a>. However, <a
     href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446046">memory is reused across partitions</a>, thus severely weakening this feature and allowing it to be bypassed. Therefore, mozjemalloc's
     implementation of memory partitioning does not guarantee strong isolation to the same extent as PartitionAlloc. In fact, a real-world exploit used by the FBI to unmask users of the Tor Browser
     <a href="https://twitter.com/dguido/status/803838692645335040">was possible due to the lack of memory partitioning</a>.
@@ -579,7 +579,7 @@
   <p>
     <a href="https://scarybeastsecurity.blogspot.com/2017/05/further-hardening-glibc-malloc-against.html">Traditional heap exploitation techniques often rely on corrupting the memory allocator
     metadata</a>. <a href="https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md#security">PartitionAlloc stores most metadata out-of-line
-    in a dedicated region</a> (with the exception of freelist pointers however, they have other protections) rather than having it adjacent to the allocations, thereby significantly
+    in a dedicated region</a> (with the exception of freelist pointers, although they have other protections) rather than having it adjacent to the allocations, thereby significantly
     increasing the difficulty of performing such techniques. <br>
     <br>
     Unlike PartitionAlloc, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1446045">mozjemalloc currently places heap metadata in-line with allocations</a>. As such, the aforementioned

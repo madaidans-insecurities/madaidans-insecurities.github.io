@@ -332,7 +332,7 @@ net.core.bpf_jit_harden=2</code></pre>
     <pre><code>kernel.unprivileged_userns_clone=0</code></pre>
 
     <p>
-      User namespaces are a feature in the kernel which aim to improve sandboxing and make it easily accessible for unprivileged users however, <a
+      User namespaces are a feature in the kernel which aim to improve sandboxing and make it easily accessible for unprivileged users. However, <a
       href="../linux.html#kernel">this feature exposes significant kernel attack surface for privilege escalation</a>, so this sysctl restricts the
       usage of user namespaces to the <code>CAP_SYS_ADMIN</code> <a href="#capabilities">capability</a>. For unprivileged sandboxing,
       it is instead recommended to use a setuid binary with little attack surface to minimise the potential for privilege escalation. This topic is
@@ -489,7 +489,7 @@ fs.protected_regular=2</code></pre>
     <p>
       The following settings are recommended to increase security. <br>
       <br>
-      This section originally recommended to apply various <code>slub_debug</code> options however, due to <a
+      This section originally recommended to apply various <code>slub_debug</code> options; however, due to <a
       href="https://github.com/torvalds/linux/commit/792702911f581f7793962fbeb99d5c3a1b28f4c3">Linux deciding to implicitly
       disable kernel pointer hashing</a> when using this option, in addition to several other issues with these features, they can no
       longer be recommended. Users are instead advised to use <code>init_on_free</code> as a replacement for memory poisoning
@@ -756,7 +756,7 @@ install btusb /bin/false</code></pre>
     <p>
       This disables the webcam to prevent it from being used to spy on you. <br>
       <br>
-      You can also blacklist the microphone module however, this can differ from system to system. To find the name of the module, look in <code>/proc/asound/modules</code>
+      You can also blacklist the microphone module; however, this can differ from system to system. To find the name of the module, look in <code>/proc/asound/modules</code>
       and blacklist it. For example, one such module is <code>snd_hda_intel</code>. <br>
       <br>
       Be aware though that sometimes the kernel module for the microphone is the same as the module for the speaker. This means that disabling the microphone like
@@ -781,7 +781,7 @@ install btusb /bin/false</code></pre>
     <pre><code>rfkill unblock wifi</code></pre>
 
     <p>
-      On systems using systemd, <a href="https://www.freedesktop.org/software/systemd/man/systemd-rfkill.service.html">rfkill persists across sessions</a> however, on systems using a
+      On systems using systemd, <a href="https://www.freedesktop.org/software/systemd/man/systemd-rfkill.service.html">rfkill persists across sessions</a>. However, on systems using a
       different init system, you may have to create an init script to execute these commands upon boot.
     </p>
 
@@ -1044,7 +1044,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
     <p>
       Ordinary sandboxes inherently share the same kernel as the host. You are trusting the kernel, which we have <a href="#kernel">already evaluated to be insecure</a>, to confine these programs properly. <a
       href="https://unit42.paloaltonetworks.com/making-containers-more-isolated-an-overview-of-sandboxed-container-technologies/">A kernel exploit from within the sandbox can bypass any restrictions, as the host kernel's entire
-      attack surface is completely exposed</a>. There have been efforts to limit the attack surface with seccomp however, it is not enough to fully fix this issue. <a href="https://gvisor.dev/">gVisor</a> is a solution to this
+      attack surface is completely exposed</a>. There have been efforts to limit the attack surface with seccomp; however, it is not enough to fully fix this issue. <a href="https://gvisor.dev/">gVisor</a> is a solution to this
       problem. It provides each application with its own kernel that reimplements a large portion of the Linux kernel's syscalls but in a <a href="#memory-safe-languages">memory safe language</a>, therefore providing
       significantly stronger isolation.
     </p>
@@ -1130,7 +1130,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
         <a href="https://en.wikipedia.org/wiki/Shadow_stack">Shadow stacks</a> protect a program's return address by replicating it in a different,
         hidden stack. The return addresses in the main stack and the shadow stack are then compared in the function epilogue to see if either differ.
         If so, this would indicate an attack and the program will abort, therefore mitigating ROP attacks. Clang has a feature known as <a
-        href="https://clang.llvm.org/docs/ShadowCallStack.html">ShadowCallStack</a> which accomplishes this however, it is only available on ARM64.
+        href="https://clang.llvm.org/docs/ShadowCallStack.html">ShadowCallStack</a> which accomplishes this, although it is only available on ARM64.
         To enable this, you must apply the following compilation flag:
 
         <pre><code>-fsanitize=shadow-call-stack</code></pre> <br>
@@ -1169,7 +1169,7 @@ AppArmorProfile=/etc/apparmor.d/usr.bin.example</code></pre>
         <pre><code>-fsanitize=signed-integer-overflow,unsigned-integer-overflow -fsanitize-trap=signed-integer-overflow,unsigned-integer-overflow</code></pre> <br>
 
         Note that these options can cause a substantial performance regression. An alternative is to use the <code>-fwrapv</code> flag, which causes signed
-        overflows to wrap rather than causing undefined behaviour however, this isn't as comprehensive as UBSan.
+        overflows to wrap rather than causing undefined behaviour, although this isn't as comprehensive as UBSan.
       </li>
 
       <li class="lilist">
@@ -1886,7 +1886,7 @@ password_pbkdf2 $username $password</code></pre>
       a physical attacker or a malicious application that has managed to hook itself into the operating system. For example, if a remote attacker has managed to exploit the system and gain high
       privileges, verified boot would revert their changes upon reboot and ensure that they cannot persist. <br>
       <br>
-      The most common verified boot implementation is <a href="https://www.intel.com/content/www/us/en/support/articles/000006942/boards-and-kits/desktop-boards.html">UEFI Secure Boot</a> however,
+      The most common verified boot implementation is <a href="https://www.intel.com/content/www/us/en/support/articles/000006942/boards-and-kits/desktop-boards.html">UEFI Secure Boot</a>. However,
       this by itself is not a complete implementation, as this only verifies the bootloader and kernel, meaning there are ways to bypass this:
     </p>
 
@@ -2025,7 +2025,7 @@ install thunderbolt /bin/false</code></pre>
       In the Linux kernel, "root privileges" are split up into various different <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities</a>. This
       is helpful in applying the <a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a> — instead of giving a process total root
       privileges, you can grant them only a specific subset instead. For example, if a program simply needs to set your system time, then it only needs <code>CAP_SYS_TIME</code>
-      rather than total root. This could limit the potential damage that can be done however, you must still be cautious with granting capabilities, as <a
+      rather than total root. This could limit the potential damage that can be done; however, you must still be cautious with granting capabilities, as <a
       href="https://forums.grsecurity.net/viewtopic.php?t=2522">many of them can be abused to gain full root privileges anyway</a>.
     </p>
 

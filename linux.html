@@ -149,7 +149,7 @@
   <h3 id="firejail"><a href="#firejail">1.2 Firejail</a></h3>
 
   <p>
-    <a href="https://firejail.wordpress.com/">Firejail</a> is another common sandboxing technology however, it is also insufficient.
+    <a href="https://firejail.wordpress.com/">Firejail</a> is another common sandboxing technology; however, it is also insufficient.
     Firejail worsens security by acting as a privilege escalation hole — Firejail requires being <a
     href="https://en.wikipedia.org/wiki/Setuid">setuid</a>, meaning that it executes with the privileges of the executable's owner,
     which in this case, is the root user. This means that a vulnerability in Firejail can allow escalating to root privileges. <br>
@@ -194,7 +194,7 @@
     exploit mitigations</a>. Microsoft is the only vendor to have solved the aforementioned problem <a
     href="https://msrc-blog.microsoft.com/2020/08/17/control-flow-guard-for-clang-llvm-and-rust/">by implementing Control Flow Guard support for Rust</a>. <br>
     <br>
-    Furthermore, modern exploit mitigations, such as Control Flow Integrity (CFI), are also not widely used on Linux. A few examples are explained below
+    Furthermore, modern exploit mitigations, such as Control Flow Integrity (CFI), are also not widely used on Linux. A few examples are explained below;
     however, it does not attempt to be an exhaustive list.
   </p>
 
@@ -216,7 +216,7 @@
     <br>
     Attackers often inject their shellcode into writable memory pages and then use these code reuse techniques to transition memory pages to executable
     (using syscalls such as <code>mprotect</code> or <code>VirtualAlloc</code>), consequently allowing it to be executed. Linux has yet to provide strong
-    mitigations against this avenue of attacks. SELinux does provide the <code>execmem</code> boolean however, this is rarely ever
+    mitigations against this avenue of attacks. SELinux does provide the <code>execmem</code> boolean; however, this is rarely ever
     used. There is also the <a href="https://lore.kernel.org/lkml/1562410493-8661-1-git-send-email-s.mesoraca16@gmail.com/">S.A.R.A. LSM</a>, but this has
     not yet been accepted upstream. In comparison to other operating systems:
   </p>
