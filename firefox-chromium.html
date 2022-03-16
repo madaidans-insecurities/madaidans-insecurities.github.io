@@ -16,7 +16,7 @@
   <button class="theme-toggle">🌓</button>
   <h1>Firefox and Chromium</h1>
 
-  <p class="date"><em><time datetime="2022-03-13">Last edited: March 13th, 2022</time></em></p>
+  <p class="date"><em><time datetime="2022-03-16">Last edited: March 16th, 2022</time></em></p>
 
   <p>
     Firefox is sometimes recommended as a supposedly more secure browser because of its parent company's privacy practices.
@@ -173,10 +173,10 @@
   <h3 id="android-sandbox"><a href="#android-sandbox">1.4 Android</a></h3>
 
   <p>
-    On Android, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1565196">Firefox does not have a multi-process architecture or a sandbox at all beyond the OS app
-    sandbox</a>, while Chromium uses the <a href="https://developer.android.com/guide/topics/manifest/service-element#isolated"><code>isolatedProcess</code> feature</a>,
-    along with <a href="https://github.com/chromium/chromium/blob/master/sandbox/linux/seccomp-bpf-helpers/baseline_policy_android.cc">a more restrictive seccomp-bpf
-    filter</a>.
+    On Android, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1530770">Firefox has implemented a multi-process architecture since 2021</a>; however, this is
+    still severely limited, and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1565196">no sandboxing is enabled</a>. Whereas Chromium
+    uses the <a href="https://developer.android.com/guide/topics/manifest/service-element#isolated"><code>isolatedProcess</code> feature</a>, along with
+    <a href="https://github.com/chromium/chromium/blob/master/sandbox/linux/seccomp-bpf-helpers/baseline_policy_android.cc">a more restrictive seccomp-bpf filter</a>.
   </p>
 
   <h3 id="missing-processes"><a href="#missing-processes">1.5 Missing Processes</a></h3>
