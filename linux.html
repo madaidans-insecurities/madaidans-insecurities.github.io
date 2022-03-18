@@ -14,9 +14,9 @@
 
 <body>
   <button class="theme-toggle">🌓</button>
-  <h1>Linux (In)security</h1>
+  <h1>Linux</h1>
 
-  <p class="date"><em><time datetime="2022-03-06">Last edited: March 6th, 2022</time></em></p>
+  <p class="date"><em><time datetime="2022-03-18">Last edited: March 18th, 2022</time></em></p>
 
   <p>
     Linux being secure is a common misconception in the security and privacy realm. Linux is thought to be secure primarily
@@ -270,9 +270,9 @@
 
   <p>
     One of the most common classes of memory corruption vulnerabilities is <a href="https://en.wikipedia.org/wiki/Uninitialized_variable">uninitialised memory</a>.
-    Windows <a href="https://msrc-blog.microsoft.com/2020/05/13/solving-uninitialized-stack-memory-on-windows/">uses InitAll</a> to automatically initialise stack variables
+    <a href="https://msrc-blog.microsoft.com/2020/05/13/solving-uninitialized-stack-memory-on-windows/">Windows uses InitAll</a> to automatically initialise stack variables
     to zero for the kernel and some user space code, as well as <a href="https://msrc-blog.microsoft.com/2020/07/02/solving-uninitialized-kernel-pool-memory-on-windows/">
-    safer APIs for the kernel pool</a>, whereas on Linux, there are mitigations specifically for kernel stack and heap memory, but this does not cover
+    safer APIs for the kernel pool</a>. Whereas on Linux, there are mitigations specifically for kernel stack and heap memory, but this does not cover
     any user space code, and most mainstream distributions don't actually enable them.
   </p>
 
@@ -298,10 +298,19 @@
       href="https://www.blackhat.com/docs/asia-17/materials/asia-17-Sun-The-Power-Of-Data-Oriented-Attacks-Bypassing-Memory-Mitigation-Using-Data-Only-Exploitation-Technique.pdf">
       data-only attacks</a> more difficult.
     </li>
+
+    <li class="lilist">
+      <a href="https://en.wikipedia.org/wiki/Kernel_Patch_Protection">PatchGuard</a> is a feature that verifies the integrity of the Windows kernel at runtime by <a
+      href="https://blog.tetrane.com/downloads/Tetrane_PatchGuard_Analysis_RS4_v1.01.pdf">periodically checking for corruption of important kernel data structures</a>. Although
+      because PatchGuard runs at the same privilege level as a kernel exploit, an attacker could simply find a way to patch it out — historically, the only obstable to this has
+      been heavy code obfuscation techniques that can make it hard to disable. However, with VBS, Microsoft have reinforced this protection with
+      <a href="https://windows-internals.com/hyperguard-secure-kernel-patch-guard-part-1-skpg-initialization/">HyperGuard</a>, which leverages the hypervisor to implement it a
+      higher privilege level, thereby making it immune to PatchGuard's weaknesses and substantially more difficult to bypass.
+    </li>
   </ul>
 
   <p>
-    On Linux, there is no equivalent.
+    On Linux, there is currently no equivalent to VBS.
   </p>
 
   <h2 id="kernel"><a href="#kernel">3. Kernel</a></h2>
@@ -328,14 +337,14 @@
     href="https://lists.archlinux.org/pipermail/arch-general/2017-February/043066.html">numerous</a> <a
     href="https://lists.archlinux.org/pipermail/arch-general/2017-February/043078.html">privilege</a> <a
     href="https://github.com/a13xp0p0v/kconfig-hardened-check#questions-and-answers">escalation</a>
-    <a href="https://github.com/subgraph/oz/issues/11#issuecomment-163396758">vulnerabilities</a> which is why many distributions, <a
+    <a href="https://github.com/subgraph/oz/issues/11#issuecomment-163396758">vulnerabilities</a>, which is why many distributions, <a
     href="https://salsa.debian.org/kernel-team/linux/-/blob/master/debian/patches/debian/add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by-default.patch">
     such as Debian</a>, had started to restrict access to this functionality by default, although most distributions eventually dropped these patches in favour of usability. The endless stream
     of vulnerabilities arising from this feature shows no sign of stopping either, <a href="https://www.openwall.com/lists/oss-security/2022/01/29/1">even after years since its introduction</a>. <br>
     <br>
     The kernel is written entirely in a memory unsafe language and has hundreds of bugs, many being security vulnerabilities, <a
     href="https://events19.linuxfoundation.org/wp-content/uploads/2017/11/Syzbot-and-the-Tale-of-Thousand-Kernel-Bugs-Dmitry-Vyukov-Google.pdf">discovered
-    each <em>month</em></a>. In fact, there are so many bugs being found in the kernel, developers can’t keep up which
+    each <em>month</em></a>. In fact, there are so many bugs being found in the kernel, developers can’t keep up, which
     results in many of the bugs <a href="https://syzkaller.appspot.com/upstream">staying unfixed for a long time</a>.
     <a href="https://jon.oberheide.org/files/syscan12-exploitinglinux.pdf">The kernel is decades behind in exploit
     mitigations</a>, and many kernel developers simply <a
@@ -358,7 +367,7 @@
   <p>
     On ordinary Linux desktops, <a href="https://www.whonix.org/wiki/Dev/Strong_Linux_User_Account_Isolation">a compromised non-root user account with access to
     sudo is equal to full root compromise</a>, as there are an abundance of ways for an attacker to retrieve the sudo password. Usually, the standard
-    user is part of the "sudo" or "wheel" group which makes a sudo password security theatre. For example, the attacker can exploit the plethora of keylogging
+    user is part of the "sudo" or "wheel" group, which makes a sudo password security theatre. For example, the attacker can exploit the plethora of keylogging
     opportunities, such as <a href="https://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html">Xorg’s lack of GUI isolation</a>,
     <a href="https://www.usenix.org/legacy/event/sec09/tech/full_papers/zhang.pdf">the</a> <a href="https://www.openwall.com/lists/oss-security/2011/11/05/3">many</a>
     <a href="https://staff.ie.cuhk.edu.hk/~khzhang/my-papers/2016-oakland-interrupt.pdf">infoleaks</a> <a href="https://www.repository.cam.ac.uk/handle/1810/254306">in the</a>
@@ -445,7 +454,7 @@ xinput test id # Replace "id" with the ID from the above command.</code></pre>
     is exploitable at first. <br>
     <br>
     Distribution maintainers cannot analyse every single commit perfectly and backport every security fix, so they have to rely
-    on CVEs which people do not use properly. For example, the Linux kernel <a
+    on CVEs, which people do not use properly. For example, the Linux kernel <a
     href="https://github.com/gregkh/presentation-cve-is-dead/blob/master/cve-linux-kernel.pdf">is</a> <a
     href="https://grsecurity.net/reports_of_cves_death_greatly_exaggerated">particularly</a> <a
     href="https://blog.frizn.fr/linux-kernel/cve-2020-14381">bad</a> <a href="https://seclists.org/oss-sec/2019/q2/165">at this</a>.
