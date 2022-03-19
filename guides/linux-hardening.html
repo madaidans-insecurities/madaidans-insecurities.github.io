@@ -14,7 +14,7 @@
     <button class="theme-toggle">🌓</button>
     <h1>Linux Hardening Guide</h1>
 
-    <p class="date"><em><time datetime="2022-03-06">Last edited: March 6th, 2022</time></em></p>
+    <p class="date"><em><time datetime="2022-03-19">Last edited: March 19th, 2022</time></em></p>
 
     <p>
       <a href="../linux.html">Linux is not a secure operating system</a>. However, there are steps you can take to improve it. This guide aims to explain
@@ -254,6 +254,10 @@
     <p>
       To change sysctls permanently, you can add the one you want to change to <code>/etc/sysctl.conf</code> or the corresponding files within
       <code>/etc/sysctl.d</code>, depending on your Linux distribution. <br>
+      <br>
+      Since Linux 5.8, <a href="https://github.com/torvalds/linux/blob/97e9c8eb4bb1dc57859acb1338dfddbd967d7484/Documentation/admin-guide/kernel-parameters.txt#L5681-L5688">
+      sysctls can also be set</a> via the <code>sysctl.$tunable=$value</code> <a href="#boot-parameters">boot parameter</a>. This may be better,
+      as it is set at the beginning of the boot process, without depending on a user space service to read the values from configuration files. <br>
       <br>
       The following are the recommended sysctl settings that you should change.
     </p>
