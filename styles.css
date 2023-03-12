@@ -166,6 +166,7 @@ thead, tfoot {
     position: absolute;
     top: 0;
     right: 20px;
+    cursor: pointer;
 }
 
 .p-final {
