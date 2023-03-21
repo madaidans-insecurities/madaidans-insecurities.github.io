@@ -307,6 +307,13 @@ net.core.bpf_jit_harden=2</code></pre>
       ioctl, which <a href="https://a13xp0p0v.github.io/2017/03/24/CVE-2017-2636.html">has been abused in a number of exploits before</a>.
     </p>
 
+    <pre><code>dev.tty.legacy_tiocsti = 0</code></pre>
+
+    <p>
+      This <a href="https://lkml.kernel.org/lkml/202211011946.F7B4C690@keescook/T/">prevents processes to feed input to a terminal</a>. This has been
+      used in many <a href="https://lore.kernel.org/linux-hardening/Y0m9l52AKmw6Yxi1@hostpad/">sandbox breakouts</a> before.
+    </p>
+
     <pre><code>vm.unprivileged_userfaultfd=0</code></pre>
 
     <p>
