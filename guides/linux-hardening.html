@@ -637,6 +637,7 @@ fs.protected_regular=2</code></pre>
     <pre><code>[Service]
 SupplementaryGroups=proc</code></pre>
 
+    <p> However, systemd ignores <code>hidepid</code>, <a href="https://access.redhat.com/solutions/6704531" >and still exposes this information at the api level</a> via D-Bus.
     <h3 id="kernel-attack-surface-reduction"><a href="#kernel-attack-surface-reduction">2.5 Kernel attack surface reduction</a></h3>
 
     <p>
